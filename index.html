@@ -2,18 +2,25 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>QuickBill - 견적서 대시보드</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif; }
-        .invoice-preview { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 400px; }
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #f8fafc; }
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 16px); }
+        input, select, button { -webkit-appearance: none; appearance: none; }
+        input:focus, select:focus { outline: none; }
+        .bottom-nav-item { transition: all 0.15s; }
+        .bottom-nav-item.active { color: #2563eb; }
+        .card { background: white; border-radius: 16px; border: 1px solid #e5e7eb; }
+        .scroll-area { -webkit-overflow-scrolling: touch; }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
 <div id="root"></div>
 <script type="text/babel">
 const { useState } = React;
@@ -44,123 +51,119 @@ function App() {
     const [invoices, setInvoices] = useState(MOCK_INVOICES);
     const [clients, setClients] = useState(MOCK_CLIENTS);
     const [selectedInvoice, setSelectedInvoice] = useState(null);
+
+    const goCreate = (invoice = null) => { setSelectedInvoice(invoice); setCurrentView("create"); };
+
     return (
-        <div className="min-h-screen flex">
-            <Sidebar currentView={currentView} setCurrentView={setCurrentView} />
-            <main className="flex-1 overflow-auto">
-                <Header user={MOCK_USER} />
-                <div className="p-6">
-                    {currentView === "dashboard" && <Dashboard invoices={invoices} setCurrentView={setCurrentView} setSelectedInvoice={setSelectedInvoice} />}
-                    {currentView === "invoices" && <InvoiceList invoices={invoices} setCurrentView={setCurrentView} setSelectedInvoice={setSelectedInvoice} />}
-                    {currentView === "create" && <InvoiceEditor clients={clients} invoices={invoices} setInvoices={setInvoices} setCurrentView={setCurrentView} editingInvoice={selectedInvoice} />}
-                    {currentView === "clients" && <ClientList clients={clients} setClients={setClients} />}
-                    {currentView === "settings" && <Settings user={MOCK_USER} />}
+        <div className="flex flex-col min-h-screen bg-gray-50">
+            {/* 상단 헤더 */}
+            <header className="bg-white border-b border-gray-100 px-4 py-3 flex justify-between items-center sticky top-0 z-10 shadow-sm">
+                <div>
+                    <span className="text-xl font-black text-blue-600">⚡ QuickBill</span>
                 </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full font-medium">Starter</span>
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                        {MOCK_USER.name[0]}
+                    </div>
+                </div>
+            </header>
+
+            {/* 메인 컨텐츠 */}
+            <main className="flex-1 overflow-y-auto scroll-area pb-24">
+                {currentView === "dashboard" && <Dashboard invoices={invoices} goCreate={goCreate} />}
+                {currentView === "invoices" && <InvoiceList invoices={invoices} goCreate={goCreate} />}
+                {currentView === "create" && (
+                    <InvoiceEditor clients={clients} invoices={invoices} setInvoices={setInvoices}
+                        setCurrentView={setCurrentView} editingInvoice={selectedInvoice} />
+                )}
+                {currentView === "clients" && <ClientList clients={clients} setClients={setClients} />}
+                {currentView === "settings" && <Settings user={MOCK_USER} />}
             </main>
+
+            {/* 하단 탭 네비게이션 */}
+            {currentView !== "create" && (
+                <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-bottom z-20">
+                    <div className="flex">
+                        {[
+                            { id: "dashboard", icon: "📊", label: "홈" },
+                            { id: "invoices",  icon: "📄", label: "견적서" },
+                            { id: "clients",   icon: "👥", label: "거래처" },
+                            { id: "settings",  icon: "⚙️", label: "설정" }
+                        ].map(item => (
+                            <button key={item.id} onClick={() => setCurrentView(item.id)}
+                                className={"flex-1 flex flex-col items-center justify-center py-3 bottom-nav-item " +
+                                    (currentView === item.id ? "active text-blue-600" : "text-gray-400")}>
+                                <span className="text-xl leading-none">{item.icon}</span>
+                                <span className={"text-xs mt-1 font-medium " + (currentView === item.id ? "text-blue-600" : "text-gray-400")}>
+                                    {item.label}
+                                </span>
+                                {currentView === item.id && (
+                                    <span className="absolute bottom-0 w-8 h-0.5 bg-blue-600 rounded-full"></span>
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                </nav>
+            )}
         </div>
     );
 }
 
-function Sidebar({ currentView, setCurrentView }) {
-    const items = [
-        { id: "dashboard", icon: "📊", label: "대시보드" },
-        { id: "invoices", icon: "📄", label: "견적서 관리" },
-        { id: "clients", icon: "👥", label: "거래처 관리" },
-        { id: "settings", icon: "⚙️", label: "설정" }
-    ];
-    return (
-        <aside className="w-64 bg-white border-r border-gray-200 min-h-screen">
-            <div className="p-6">
-                <h1 className="text-2xl font-bold text-blue-600">⚡ QuickBill</h1>
-                <p className="text-xs text-gray-500 mt-1">1분 견적서 솔루션</p>
-            </div>
-            <nav className="px-3">
-                {items.map(item => (
-                    <button key={item.id} onClick={() => setCurrentView(item.id)}
-                        className={"w-full flex items-center px-4 py-3 mb-1 rounded-lg transition-colors " +
-                            (currentView === item.id ? "bg-blue-50 text-blue-600 font-medium" : "text-gray-700 hover:bg-gray-50")}>
-                        <span className="text-xl mr-3">{item.icon}</span>{item.label}
-                    </button>
-                ))}
-            </nav>
-            <div className="mx-3 mt-6 p-4 bg-blue-50 rounded-lg">
-                <p className="text-xs font-semibold text-blue-700 mb-1">Starter 플랜</p>
-                <p className="text-xs text-blue-600">월 30건 이용 가능</p>
-                <div className="mt-2 bg-blue-200 rounded-full h-2">
-                    <div className="bg-blue-600 h-2 rounded-full" style={{width:"10%"}}></div>
-                </div>
-                <p className="text-xs text-blue-500 mt-1">3 / 30건 사용</p>
-            </div>
-        </aside>
-    );
-}
-
-function Header({ user }) {
-    return (
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-xl font-semibold text-gray-800">안녕하세요, {user.name}님 👋</h2>
-                    <p className="text-sm text-gray-500 mt-1">{user.businessName} · Starter 플랜</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-500">2026년 3월 6일</span>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">Pro 업그레이드</button>
-                </div>
-            </div>
-        </header>
-    );
-}
-
-function Dashboard({ invoices, setCurrentView, setSelectedInvoice }) {
+function Dashboard({ invoices, goCreate }) {
     const thisMonth = invoices.filter(i => i.date.startsWith("2026-03"));
     const thisMonthTotal = thisMonth.reduce((s, i) => s + i.total, 0);
+    const sentCount = invoices.filter(i => i.status === "sent").length;
+
     return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">대시보드</h2>
-                <button onClick={() => { setSelectedInvoice(null); setCurrentView("create"); }}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm">
+        <div className="p-4 space-y-4">
+            {/* 인사 + 새 견적서 */}
+            <div className="card p-5">
+                <p className="text-gray-500 text-sm">안녕하세요 👋</p>
+                <h2 className="text-xl font-bold text-gray-800 mt-0.5">{MOCK_USER.name}님</h2>
+                <p className="text-xs text-gray-400 mt-1">{MOCK_USER.businessName}</p>
+                <button onClick={() => goCreate()}
+                    className="w-full mt-4 py-3.5 bg-blue-600 text-white rounded-xl font-semibold text-base active:bg-blue-700">
                     + 새 견적서 작성
                 </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+            {/* 통계 카드 */}
+            <div className="grid grid-cols-3 gap-3">
                 {[
-                    { icon: "📝", label: "이번 달 견적서", value: thisMonth.length + "건", bg: "bg-blue-50", text: "text-blue-600" },
-                    { icon: "💰", label: "이번 달 총액", value: (thisMonthTotal/10000).toFixed(0) + "만원", bg: "bg-green-50", text: "text-green-600" },
-                    { icon: "📈", label: "전체 견적서", value: invoices.length + "건", bg: "bg-purple-50", text: "text-purple-600" }
+                    { label: "이번달", value: thisMonth.length + "건", icon: "📝", color: "bg-blue-50 text-blue-600" },
+                    { label: "총 금액", value: (thisMonthTotal/10000).toFixed(0) + "만", icon: "💰", color: "bg-green-50 text-green-600" },
+                    { label: "발송완료", value: sentCount + "건", icon: "✅", color: "bg-purple-50 text-purple-600" },
                 ].map((s, i) => (
-                    <div key={i} className={"p-6 rounded-xl " + s.bg}>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className={"text-sm font-medium " + s.text + " opacity-80"}>{s.label}</p>
-                                <p className={"text-3xl font-bold mt-2 " + s.text}>{s.value}</p>
-                            </div>
-                            <span className="text-4xl">{s.icon}</span>
-                        </div>
+                    <div key={i} className={"card p-3 text-center " + s.color}>
+                        <div className="text-2xl">{s.icon}</div>
+                        <div className="text-lg font-black mt-1">{s.value}</div>
+                        <div className="text-xs mt-0.5 opacity-70">{s.label}</div>
                     </div>
                 ))}
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">최근 견적서</h3>
-                <div className="space-y-3">
-                    {invoices.map(invoice => (
-                        <div key={invoice.id} onClick={() => { setSelectedInvoice(invoice); setCurrentView("create"); }}
-                            className="flex justify-between items-center p-4 border border-gray-100 rounded-lg hover:bg-blue-50 hover:border-blue-200 transition-all cursor-pointer">
-                            <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">
-                                    {invoice.clientName[0]}
+
+            {/* 최근 견적서 */}
+            <div className="card p-4">
+                <h3 className="font-bold text-gray-800 mb-3">최근 견적서</h3>
+                <div className="space-y-2">
+                    {invoices.map(inv => (
+                        <div key={inv.id} onClick={() => goCreate(inv)}
+                            className="flex items-center justify-between p-3 rounded-xl bg-gray-50 active:bg-blue-50 cursor-pointer">
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-sm flex-shrink-0">
+                                    {inv.clientName[0]}
                                 </div>
                                 <div>
-                                    <h4 className="font-medium text-gray-800">{invoice.clientName}</h4>
-                                    <p className="text-sm text-gray-500">{invoice.date} · {invoice.items.length}개 품목</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{inv.clientName}</p>
+                                    <p className="text-xs text-gray-400">{inv.date}</p>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="font-bold text-gray-800">{invoice.total.toLocaleString()}원</p>
-                                <span className={"inline-block mt-1 px-3 py-1 text-xs rounded-full font-medium " +
-                                    (invoice.status === "sent" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700")}>
-                                    {invoice.status === "sent" ? "✓ 발송완료" : "◎ 임시저장"}
+                                <p className="font-bold text-gray-800 text-sm">{(inv.total/10000).toFixed(0)}만원</p>
+                                <span className={"text-xs px-2 py-0.5 rounded-full " +
+                                    (inv.status === "sent" ? "bg-green-100 text-green-600" : "bg-yellow-100 text-yellow-600")}>
+                                    {inv.status === "sent" ? "발송" : "임시"}
                                 </span>
                             </div>
                         </div>
@@ -171,46 +174,38 @@ function Dashboard({ invoices, setCurrentView, setSelectedInvoice }) {
     );
 }
 
-function InvoiceList({ invoices, setCurrentView, setSelectedInvoice }) {
+function InvoiceList({ invoices, goCreate }) {
     return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">견적서 관리</h2>
-                <button onClick={() => { setSelectedInvoice(null); setCurrentView("create"); }}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        <div className="p-4 space-y-4">
+            <div className="flex justify-between items-center">
+                <h2 className="text-lg font-bold text-gray-800">견적서 관리</h2>
+                <button onClick={() => goCreate()}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold active:bg-blue-700">
                     + 새 견적서
                 </button>
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-gray-50 border-b border-gray-200">
-                        <tr>
-                            {["날짜","거래처","품목","금액","상태","액션"].map(h => (
-                                <th key={h} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{h}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                        {invoices.map(inv => (
-                            <tr key={inv.id} className="hover:bg-gray-50 transition-colors">
-                                <td className="px-6 py-4 text-sm text-gray-600">{inv.date}</td>
-                                <td className="px-6 py-4 text-sm font-medium text-gray-800">{inv.clientName}</td>
-                                <td className="px-6 py-4 text-sm text-gray-500">{inv.items[0].name} {inv.items.length > 1 ? "외 " + (inv.items.length-1) + "건" : ""}</td>
-                                <td className="px-6 py-4 text-sm font-bold text-gray-800">{inv.total.toLocaleString()}원</td>
-                                <td className="px-6 py-4">
-                                    <span className={"px-3 py-1 text-xs rounded-full font-medium " +
-                                        (inv.status === "sent" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700")}>
-                                        {inv.status === "sent" ? "발송완료" : "임시저장"}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button onClick={() => { setSelectedInvoice(inv); setCurrentView("create"); }}
-                                        className="text-blue-600 hover:text-blue-800 font-medium text-sm">편집</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <div className="space-y-3">
+                {invoices.map(inv => (
+                    <div key={inv.id} onClick={() => goCreate(inv)}
+                        className="card p-4 flex justify-between items-center active:bg-gray-50 cursor-pointer">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold flex-shrink-0">
+                                {inv.clientName[0]}
+                            </div>
+                            <div>
+                                <p className="font-semibold text-gray-800">{inv.clientName}</p>
+                                <p className="text-xs text-gray-400 mt-0.5">{inv.date} · {inv.items.length}개 품목</p>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <p className="font-bold text-gray-800">{inv.total.toLocaleString()}원</p>
+                            <span className={"text-xs px-2 py-0.5 rounded-full mt-1 inline-block " +
+                                (inv.status === "sent" ? "bg-green-100 text-green-600" : "bg-yellow-100 text-yellow-600")}>
+                                {inv.status === "sent" ? "✓ 발송완료" : "◎ 임시저장"}
+                            </span>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -220,6 +215,7 @@ function InvoiceEditor({ clients, invoices, setInvoices, setCurrentView, editing
     const [selectedClient, setSelectedClient] = useState(editingInvoice?.clientName || "");
     const [items, setItems] = useState(editingInvoice?.items || [{ name: "", quantity: 1, price: 0 }]);
     const [includeVAT, setIncludeVAT] = useState(true);
+    const [showPreview, setShowPreview] = useState(false);
     const [saved, setSaved] = useState(false);
 
     const subtotal = items.reduce((s, i) => s + i.quantity * i.price, 0);
@@ -231,127 +227,151 @@ function InvoiceEditor({ clients, invoices, setInvoices, setCurrentView, editing
     const updateItem = (idx, field, val) => {
         const n = [...items]; n[idx][field] = val; setItems(n);
     };
-
     const saveInvoice = () => {
         const newInv = { id: editingInvoice?.id || Date.now(), clientName: selectedClient,
             date: new Date().toISOString().split("T")[0], items, total, status: "sent" };
         if (editingInvoice) setInvoices(invoices.map(i => i.id === editingInvoice.id ? newInv : i));
         else setInvoices([newInv, ...invoices]);
         setSaved(true);
-        setTimeout(() => setCurrentView("dashboard"), 1200);
+        setTimeout(() => setCurrentView("dashboard"), 1000);
     };
 
-    return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">{editingInvoice ? "견적서 편집" : "새 견적서 작성"}</h2>
-                <button onClick={() => setCurrentView("dashboard")} className="text-gray-400 hover:text-gray-600 text-2xl">✕</button>
+    if (showPreview) return (
+        <div className="p-4">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-bold text-gray-800">미리보기</h2>
+                <button onClick={() => setShowPreview(false)} className="text-blue-600 font-medium">← 뒤로</button>
             </div>
-            {saved && <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 font-medium text-center">✅ 견적서가 저장되었습니다! 대시보드로 이동 중...</div>}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="space-y-5">
-                    <div className="bg-white rounded-xl border border-gray-200 p-6">
-                        <h3 className="font-semibold text-gray-800 mb-3">🏢 거래처</h3>
-                        <select value={selectedClient} onChange={e => setSelectedClient(e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <option value="">거래처를 선택하세요</option>
-                            {clients.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
-                        </select>
+            <div className="card p-6">
+                <div className="flex justify-between items-start mb-6">
+                    <div><h2 className="text-2xl font-black text-gray-900">견적서</h2><p className="text-xs text-gray-400">QUOTATION</p></div>
+                    <div className="text-right"><div className="font-black text-blue-600">⚡ QuickBill</div><p className="text-xs text-gray-400">{new Date().toLocaleDateString("ko-KR")}</p></div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl mb-5 text-sm">
+                    <div><p className="text-xs text-gray-400">발신</p><p className="font-bold">{MOCK_USER.businessName}</p><p className="text-gray-500 text-xs">{MOCK_USER.phone}</p></div>
+                    <div><p className="text-xs text-gray-400">수신</p><p className="font-bold">{selectedClient || "—"}</p></div>
+                </div>
+                <table className="w-full text-sm mb-5">
+                    <thead><tr className="border-b-2 border-gray-200">
+                        <th className="pb-2 text-left text-xs text-gray-400">품목</th>
+                        <th className="pb-2 text-center text-xs text-gray-400">수량</th>
+                        <th className="pb-2 text-right text-xs text-gray-400">금액</th>
+                    </tr></thead>
+                    <tbody>{items.map((item, i) => (
+                        <tr key={i} className="border-b border-gray-100">
+                            <td className="py-2 text-gray-800">{item.name || "—"}</td>
+                            <td className="py-2 text-center text-gray-500">{item.quantity}</td>
+                            <td className="py-2 text-right font-medium">{(item.quantity*item.price).toLocaleString()}</td>
+                        </tr>
+                    ))}</tbody>
+                </table>
+                <div className="space-y-2 text-sm border-t-2 border-gray-200 pt-3">
+                    <div className="flex justify-between text-gray-500"><span>소계</span><span>{subtotal.toLocaleString()}원</span></div>
+                    {includeVAT && <div className="flex justify-between text-gray-500"><span>부가세 10%</span><span>{vat.toLocaleString()}원</span></div>}
+                    <div className="flex justify-between pt-2 border-t border-gray-200">
+                        <span className="font-bold text-gray-800 text-base">합계</span>
+                        <span className="font-black text-blue-600 text-xl">{total.toLocaleString()}원</span>
                     </div>
-                    <div className="bg-white rounded-xl border border-gray-200 p-6">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold text-gray-800">📦 품목</h3>
-                            <button onClick={addItem} className="text-sm text-blue-600 hover:text-blue-800 font-medium bg-blue-50 px-3 py-1.5 rounded-lg">+ 품목 추가</button>
-                        </div>
-                        <div className="space-y-2">
-                            <div className="grid grid-cols-12 gap-2 text-xs text-gray-500 font-medium px-1">
-                                <span className="col-span-5">품목명</span>
-                                <span className="col-span-2 text-center">수량</span>
-                                <span className="col-span-4 text-right">단가(원)</span>
-                            </div>
-                            {items.map((item, idx) => (
-                                <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                </div>
+            </div>
+            <button onClick={saveInvoice} disabled={saved}
+                className="w-full mt-4 py-4 bg-blue-600 text-white rounded-xl font-bold text-base active:bg-blue-700 disabled:bg-gray-300">
+                {saved ? "✅ 저장 완료!" : "💾 저장 및 발송"}
+            </button>
+        </div>
+    );
+
+    return (
+        <div className="p-4">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-bold text-gray-800">{editingInvoice ? "견적서 편집" : "새 견적서"}</h2>
+                <button onClick={() => setCurrentView("dashboard")} className="text-gray-400 text-2xl font-light">✕</button>
+            </div>
+            {saved && <div className="mb-4 p-3 bg-green-50 rounded-xl text-green-700 text-sm text-center font-medium">✅ 저장됐어요! 이동 중...</div>}
+
+            <div className="space-y-4">
+                <div className="card p-4">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">🏢 거래처</label>
+                    <select value={selectedClient} onChange={e => setSelectedClient(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 bg-white text-base">
+                        <option value="">거래처를 선택하세요</option>
+                        {clients.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                    </select>
+                </div>
+
+                <div className="card p-4">
+                    <div className="flex justify-between items-center mb-3">
+                        <label className="text-sm font-semibold text-gray-700">📦 품목</label>
+                        <button onClick={addItem} className="text-sm text-blue-600 font-semibold bg-blue-50 px-3 py-1.5 rounded-lg active:bg-blue-100">
+                            + 추가
+                        </button>
+                    </div>
+                    <div className="space-y-3">
+                        {items.map((item, idx) => (
+                            <div key={idx} className="bg-gray-50 rounded-xl p-3 space-y-2">
+                                <div className="flex gap-2">
                                     <input type="text" placeholder="품목명" value={item.name}
                                         onChange={e => updateItem(idx, "name", e.target.value)}
-                                        className="col-span-5 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                                    <input type="number" value={item.quantity}
-                                        onChange={e => updateItem(idx, "quantity", parseInt(e.target.value)||0)}
-                                        className="col-span-2 px-3 py-2 border border-gray-300 rounded-lg text-sm text-center focus:ring-2 focus:ring-blue-500" />
-                                    <input type="number" value={item.price}
-                                        onChange={e => updateItem(idx, "price", parseInt(e.target.value)||0)}
-                                        className="col-span-4 px-3 py-2 border border-gray-300 rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500" />
-                                    <button onClick={() => removeItem(idx)} className="col-span-1 text-red-400 hover:text-red-600 text-lg text-center">✕</button>
+                                        className="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg text-sm bg-white" />
+                                    <button onClick={() => removeItem(idx)}
+                                        className="w-9 h-9 flex items-center justify-center text-red-400 bg-red-50 rounded-lg text-lg flex-shrink-0">
+                                        ✕
+                                    </button>
                                 </div>
-                            ))}
-                        </div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <p className="text-xs text-gray-400 mb-1">수량</p>
+                                        <input type="number" value={item.quantity}
+                                            onChange={e => updateItem(idx, "quantity", parseInt(e.target.value)||0)}
+                                            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-center bg-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-400 mb-1">단가 (원)</p>
+                                        <input type="number" value={item.price}
+                                            onChange={e => updateItem(idx, "price", parseInt(e.target.value)||0)}
+                                            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-right bg-white" />
+                                    </div>
+                                </div>
+                                <div className="flex justify-between text-xs text-gray-500 px-1">
+                                    <span>소계</span>
+                                    <span className="font-semibold text-gray-700">{(item.quantity*item.price).toLocaleString()}원</span>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <div className="bg-white rounded-xl border border-gray-200 p-6">
-                        <h3 className="font-semibold text-gray-800 mb-3">⚙️ 옵션</h3>
-                        <label className="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" checked={includeVAT} onChange={e => setIncludeVAT(e.target.checked)}
-                                className="w-5 h-5 text-blue-600 rounded" />
-                            <span className="text-gray-700">부가세 10% 포함</span>
-                        </label>
-                    </div>
-                    <button onClick={saveInvoice} disabled={!selectedClient || saved}
-                        className="w-full px-6 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold text-lg disabled:bg-gray-300 disabled:cursor-not-allowed shadow-sm">
-                        💾 견적서 저장 및 발송
-                    </button>
                 </div>
-                {/* 미리보기 */}
-                <div className="bg-white rounded-xl border-2 border-blue-100 p-8 invoice-preview">
-                    <div className="flex justify-between items-start mb-8">
-                        <div>
-                            <h2 className="text-3xl font-bold text-gray-900">견적서</h2>
-                            <p className="text-sm text-gray-400 mt-1">QUOTATION</p>
+
+                <div className="card p-4">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                        <div onClick={() => {}} className={"w-12 h-7 rounded-full transition-colors flex items-center px-1 " + (includeVAT ? "bg-blue-600" : "bg-gray-300")}
+                            onClick={() => setIncludeVAT(!includeVAT)}>
+                            <div className={"w-5 h-5 bg-white rounded-full shadow transition-transform " + (includeVAT ? "translate-x-5" : "translate-x-0")}></div>
                         </div>
-                        <div className="text-right">
-                            <div className="text-2xl font-bold text-blue-600">⚡ QuickBill</div>
-                            <p className="text-xs text-gray-400 mt-1">작성일: {new Date().toLocaleDateString("ko-KR")}</p>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl mb-6 text-sm">
-                        <div>
-                            <p className="text-xs text-gray-400 mb-1 uppercase tracking-wide">발신</p>
-                            <p className="font-bold text-gray-800">{MOCK_USER.businessName}</p>
-                            <p className="text-gray-500">{MOCK_USER.phone}</p>
-                        </div>
-                        <div>
-                            <p className="text-xs text-gray-400 mb-1 uppercase tracking-wide">수신</p>
-                            <p className="font-bold text-gray-800">{selectedClient || "—"}</p>
+                        <span className="font-medium text-gray-700">부가세 10% 포함</span>
+                    </label>
+                </div>
+
+                {/* 합계 요약 */}
+                <div className="card p-4 bg-blue-50 border-blue-100">
+                    <div className="space-y-1.5 text-sm">
+                        <div className="flex justify-between text-gray-500"><span>소계</span><span>{subtotal.toLocaleString()}원</span></div>
+                        {includeVAT && <div className="flex justify-between text-gray-500"><span>부가세</span><span>{vat.toLocaleString()}원</span></div>}
+                        <div className="flex justify-between pt-2 border-t border-blue-200">
+                            <span className="font-bold text-gray-800">최종 합계</span>
+                            <span className="font-black text-blue-600 text-xl">{total.toLocaleString()}원</span>
                         </div>
                     </div>
-                    <table className="w-full mb-6 text-sm">
-                        <thead>
-                            <tr className="border-b-2 border-gray-200">
-                                <th className="pb-2 text-left text-xs text-gray-500 uppercase">품목</th>
-                                <th className="pb-2 text-center text-xs text-gray-500 uppercase">수량</th>
-                                <th className="pb-2 text-right text-xs text-gray-500 uppercase">단가</th>
-                                <th className="pb-2 text-right text-xs text-gray-500 uppercase">금액</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {items.map((item, idx) => (
-                                <tr key={idx}>
-                                    <td className="py-2.5 text-gray-800">{item.name || "—"}</td>
-                                    <td className="py-2.5 text-center text-gray-600">{item.quantity}</td>
-                                    <td className="py-2.5 text-right text-gray-600">{item.price.toLocaleString()}</td>
-                                    <td className="py-2.5 text-right font-medium text-gray-800">{(item.quantity*item.price).toLocaleString()}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <div className="border-t-2 border-gray-200 pt-4 space-y-2 text-sm">
-                        <div className="flex justify-between text-gray-600"><span>소계</span><span>{subtotal.toLocaleString()}원</span></div>
-                        {includeVAT && <div className="flex justify-between text-gray-600"><span>부가세 (10%)</span><span>{vat.toLocaleString()}원</span></div>}
-                        <div className="flex justify-between pt-3 border-t-2 border-gray-200">
-                            <span className="text-lg font-bold text-gray-800">최종 합계</span>
-                            <span className="text-2xl font-black text-blue-600">{total.toLocaleString()}원</span>
-                        </div>
-                    </div>
-                    <div className="mt-8 pt-4 border-t border-dashed border-gray-200 text-center text-xs text-gray-400">
-                        본 견적서는 작성일로부터 30일간 유효합니다.
-                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 pb-4">
+                    <button onClick={() => setShowPreview(true)}
+                        className="py-4 border-2 border-blue-600 text-blue-600 rounded-xl font-bold text-base active:bg-blue-50">
+                        👁 미리보기
+                    </button>
+                    <button onClick={saveInvoice} disabled={!selectedClient || saved}
+                        className="py-4 bg-blue-600 text-white rounded-xl font-bold text-base active:bg-blue-700 disabled:bg-gray-300">
+                        💾 저장
+                    </button>
                 </div>
             </div>
         </div>
@@ -361,55 +381,53 @@ function InvoiceEditor({ clients, invoices, setInvoices, setCurrentView, editing
 function ClientList({ clients, setClients }) {
     const [showForm, setShowForm] = useState(false);
     const [newClient, setNewClient] = useState({ name: "", phone: "", email: "" });
+
     const addClient = () => {
         if (!newClient.name) return;
         setClients([...clients, { ...newClient, id: Date.now() }]);
         setNewClient({ name: "", phone: "", email: "" });
         setShowForm(false);
     };
+
     return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">거래처 관리</h2>
+        <div className="p-4 space-y-4">
+            <div className="flex justify-between items-center">
+                <h2 className="text-lg font-bold text-gray-800">거래처 관리</h2>
                 <button onClick={() => setShowForm(!showForm)}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    {showForm ? "취소" : "+ 새 거래처"}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold">
+                    {showForm ? "취소" : "+ 추가"}
                 </button>
             </div>
             {showForm && (
-                <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-                    <h3 className="font-semibold text-gray-800 mb-4">새 거래처 추가</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        {[["name","거래처명"],["phone","연락처"],["email","이메일"]].map(([f,p]) => (
-                            <input key={f} type="text" placeholder={p} value={newClient[f]}
-                                onChange={e => setNewClient({...newClient, [f]: e.target.value})}
-                                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                        ))}
-                    </div>
-                    <button onClick={addClient} className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">저장</button>
+                <div className="card p-4 space-y-3">
+                    <h3 className="font-semibold text-gray-800">새 거래처</h3>
+                    {[["name","거래처명 *"],["phone","연락처"],["email","이메일"]].map(([f, p]) => (
+                        <input key={f} type="text" placeholder={p} value={newClient[f]}
+                            onChange={e => setNewClient({...newClient, [f]: e.target.value})}
+                            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-base" />
+                    ))}
+                    <button onClick={addClient}
+                        className="w-full py-3 bg-green-600 text-white rounded-xl font-semibold active:bg-green-700">저장</button>
                 </div>
             )}
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-gray-50 border-b border-gray-200">
-                        <tr>{["거래처명","연락처","이메일","액션"].map(h => (
-                            <th key={h} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{h}</th>
-                        ))}</tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                        {clients.map(c => (
-                            <tr key={c.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 font-medium text-gray-800">{c.name}</td>
-                                <td className="px-6 py-4 text-sm text-gray-600">{c.phone}</td>
-                                <td className="px-6 py-4 text-sm text-gray-600">{c.email}</td>
-                                <td className="px-6 py-4">
-                                    <button onClick={() => setClients(clients.filter(x => x.id !== c.id))}
-                                        className="text-red-500 hover:text-red-700 text-sm font-medium">삭제</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <div className="space-y-3">
+                {clients.map(c => (
+                    <div key={c.id} className="card p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 font-bold flex-shrink-0">
+                                {c.name[0]}
+                            </div>
+                            <div>
+                                <p className="font-semibold text-gray-800">{c.name}</p>
+                                <p className="text-xs text-gray-400">{c.phone}</p>
+                            </div>
+                        </div>
+                        <button onClick={() => setClients(clients.filter(x => x.id !== c.id))}
+                            className="w-8 h-8 flex items-center justify-center text-red-400 bg-red-50 rounded-lg">
+                            🗑
+                        </button>
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -417,40 +435,55 @@ function ClientList({ clients, setClients }) {
 
 function Settings({ user }) {
     return (
-        <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">설정</h2>
-            <div className="space-y-6">
-                <div className="bg-white rounded-xl border border-gray-200 p-6">
-                    <h3 className="font-semibold text-gray-800 mb-4">내 정보</h3>
-                    <div className="space-y-4">
-                        {[["사업자명",user.businessName],["연락처",user.phone],["이메일",user.email]].map(([l,v]) => (
-                            <div key={l}>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">{l}</label>
-                                <input type="text" value={v} disabled
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700" />
-                            </div>
-                        ))}
-                        <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">수정하기</button>
-                    </div>
+        <div className="p-4 space-y-4">
+            <h2 className="text-lg font-bold text-gray-800">설정</h2>
+
+            {/* 프로필 카드 */}
+            <div className="card p-5 flex items-center gap-4">
+                <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-black flex-shrink-0">
+                    {user.name[0]}
                 </div>
-                <div className="bg-white rounded-xl border border-gray-200 p-6">
-                    <h3 className="font-semibold text-gray-800 mb-4">구독 플랜</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {[
-                            { name: "Free", price: "무료", desc: "월 5건", active: false },
-                            { name: "Starter", price: "9,900원/월", desc: "월 30건", active: true },
-                            { name: "Pro", price: "19,900원/월", desc: "무제한", active: false }
-                        ].map(plan => (
-                            <div key={plan.name} className={"p-4 rounded-xl border-2 text-center " +
-                                (plan.active ? "border-blue-500 bg-blue-50" : "border-gray-200")}>
-                                <p className="font-bold text-gray-800 text-lg">{plan.name}</p>
-                                <p className={"font-semibold mt-1 " + (plan.active ? "text-blue-600" : "text-gray-600")}>{plan.price}</p>
-                                <p className="text-sm text-gray-500 mt-1">{plan.desc}</p>
-                                {plan.active && <span className="mt-2 inline-block px-3 py-1 bg-blue-600 text-white text-xs rounded-full">현재 플랜</span>}
-                            </div>
-                        ))}
-                    </div>
+                <div>
+                    <p className="font-bold text-gray-800 text-lg">{user.name}</p>
+                    <p className="text-sm text-gray-500">{user.businessName}</p>
+                    <p className="text-xs text-gray-400">{user.email}</p>
                 </div>
+            </div>
+
+            {/* 플랜 선택 */}
+            <div className="card p-4">
+                <h3 className="font-bold text-gray-800 mb-3">구독 플랜</h3>
+                <div className="space-y-2">
+                    {[
+                        { name: "Free", price: "무료", desc: "월 5건", active: false },
+                        { name: "Starter", price: "9,900원/월", desc: "월 30건 · 모든 템플릿", active: true },
+                        { name: "Pro", price: "19,900원/월", desc: "무제한 · 팀 기능", active: false }
+                    ].map(plan => (
+                        <div key={plan.name} className={"flex justify-between items-center p-3 rounded-xl " +
+                            (plan.active ? "bg-blue-50 border-2 border-blue-500" : "bg-gray-50 border-2 border-transparent")}>
+                            <div>
+                                <p className={"font-bold " + (plan.active ? "text-blue-700" : "text-gray-700")}>{plan.name}</p>
+                                <p className="text-xs text-gray-400">{plan.desc}</p>
+                            </div>
+                            <div className="text-right">
+                                <p className={"font-semibold text-sm " + (plan.active ? "text-blue-600" : "text-gray-600")}>{plan.price}</p>
+                                {plan.active && <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full">현재</span>}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="card p-4">
+                <h3 className="font-bold text-gray-800 mb-3">내 정보 수정</h3>
+                {[["사업자명", user.businessName], ["연락처", user.phone], ["이메일", user.email]].map(([l, v]) => (
+                    <div key={l} className="mb-3">
+                        <label className="block text-xs text-gray-400 mb-1">{l}</label>
+                        <input type="text" defaultValue={v}
+                            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-base bg-gray-50" />
+                    </div>
+                ))}
+                <button className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold mt-1 active:bg-blue-700">저장</button>
             </div>
         </div>
     );
