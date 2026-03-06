@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QuickBill</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body, #root {
+        width: 100%; height: 100%;
+        font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", sans-serif;
+        background: #f1f5f9;
+        overflow: hidden;
+      }
+      .app-shell {
+        display: flex; flex-direction: column;
+        width: 100vw; height: 100dvh;
+        max-width: 100%; margin: 0 auto;
+        background: #f1f5f9;
+        position: relative;
+      }
+      .scroll-body {
+        flex: 1; overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 80px;
+      }
+      /* PC에서 하단 네비 숨기고 사이드바 표시 */
+      @media (min-width: 768px) {
+        .app-shell { flex-direction: row; }
+        .scroll-body { padding-bottom: 0; }
+        .bottom-nav { display: none !important; }
+        .desktop-sidebar { display: flex !important; }
+        .mobile-header { display: none !important; }
+        .desktop-content { flex: 1; overflow-y: auto; }
+      }
+      .desktop-sidebar {
+        display: none;
+        flex-direction: column;
+        width: 220px;
+        background: white;
+        border-right: 1px solid #e2e8f0;
+        flex-shrink: 0;
+      }
+      .bottom-nav {
+        position: absolute; bottom: 0; left: 0; right: 0;
+        height: 64px;
+        background: white;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        z-index: 20;
+      }
+      .nav-btn {
+        flex: 1; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 3px;
+        border: none; background: none; cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .card {
+        background: white; border-radius: 16px;
+        padding: 16px; margin-bottom: 12px;
+      }
+      input, select {
+        width: 100%; padding: 12px 14px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px; font-size: 15px;
+        background: white; color: #1e293b;
+        -webkit-appearance: none;
+      }
+      input:focus, select:focus { outline: none; border-color: #2563eb; }
+      .btn-primary {
+        width: 100%; padding: 15px;
+        background: #2563eb; color: white;
+        border: none; border-radius: 14px;
+        font-size: 16px; font-weight: 700;
+        cursor: pointer;
+      }
+      .btn-primary:active { background: #1d4ed8; }
+      .btn-primary:disabled { background: #cbd5e1; }
+      .tag-green { background:#dcfce7; color:#16a34a; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:600; }
+      .tag-yellow { background:#fef9c3; color:#ca8a04; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:600; }
+      /* PC 분할 레이아웃 */
+      .editor-split { display: flex; gap: 20px; }
+      .editor-form { flex: 1; min-width: 0; }
+      .editor-preview-panel {
+        width: 380px; flex-shrink: 0;
+        position: sticky; top: 20px;
+        align-self: flex-start;
+      }
+      @media (max-width: 1024px) {
+        .editor-preview-panel { width: 320px; }
+      }
+      @media (max-width: 767px) {
+        .editor-split { flex-direction: column; }
+        .editor-preview-panel { display: none; }
+        .mobile-preview-btn { display: flex !important; }
+      }
+      .mobile-preview-btn { display: none; }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const USER = { name:"김대표", biz:"(주)디자인스튜디오", phone:"010-1234-5678", email:"kim@design.com" };
+const INIT_CLIENTS = [
+  { id:1, name:"카페 오너스", phone:"010-2222-3333" },
+  { id:2, name:"(주)테크컴퍼니", phone:"02-1111-2222" },
+  { id:3, name:"인테리어 공방", phone:"010-5555-6666" }
+];
+const INIT_INVOICES = [
+  { id:1, client:"카페 오너스", date:"2026-03-05", total:715000, status:"sent",
+    items:[{name:"로고 디자인",qty:1,price:500000},{name:"명함 디자인",qty:1,price:150000}] },
+  { id:2, client:"(주)테크컴퍼니", date:"2026-03-03", total:3850000, status:"draft",
+    items:[{name:"웹사이트 리뉴얼",qty:1,price:3000000},{name:"반응형 최적화",qty:1,price:500000}] },
+  { id:3, client:"인테리어 공방", date:"2026-02-28", total:550000, status:"sent",
+    items:[{name:"SNS 콘텐츠 제작",qty:10,price:50000}] }
+];
+
+/* ─── 견적서 미리보기 (공통 컴포넌트) ─── */
+function InvoicePreview({ client, items, vat, total, subtotal, tax }) {
+  return (
+    <div style={{background:"white", borderRadius:20, padding:28, border:"2px solid #e2e8f0", boxShadow:"0 4px 24px rgba(0,0,0,0.08)"}}>
+      {/* 헤더 */}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:20}}>
+        <div>
+          <p style={{fontSize:26,fontWeight:900,color:"#1e293b"}}>견적서</p>
+          <p style={{fontSize:11,color:"#94a3b8",marginTop:2}}>QUOTATION</p>
+        </div>
+        <div style={{textAlign:"right"}}>
+          <p style={{fontWeight:900,color:"#2563eb",fontSize:16}}>⚡ QuickBill</p>
+          <p style={{fontSize:11,color:"#94a3b8",marginTop:2}}>{new Date().toLocaleDateString("ko-KR")}</p>
+        </div>
+      </div>
+      {/* 발신/수신 */}
+      <div style={{background:"#f8fafc",borderRadius:12,padding:14,marginBottom:18,display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+        <div>
+          <p style={{fontSize:10,color:"#94a3b8",marginBottom:3,textTransform:"uppercase",letterSpacing:"0.05em"}}>발신</p>
+          <p style={{fontWeight:700,fontSize:13,color:"#1e293b"}}>{USER.biz}</p>
+          <p style={{fontSize:12,color:"#64748b",marginTop:2}}>{USER.phone}</p>
+        </div>
+        <div>
+          <p style={{fontSize:10,color:"#94a3b8",marginBottom:3,textTransform:"uppercase",letterSpacing:"0.05em"}}>수신</p>
+          <p style={{fontWeight:700,fontSize:13,color:client?"#1e293b":"#cbd5e1"}}>{client||"거래처 미선택"}</p>
+        </div>
+      </div>
+      {/* 품목 테이블 */}
+      <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,marginBottom:16}}>
+        <thead>
+          <tr style={{borderBottom:"2px solid #e2e8f0"}}>
+            <th style={{padding:"6px 4px",textAlign:"left",color:"#94a3b8",fontWeight:600,fontSize:11}}>품목</th>
+            <th style={{padding:"6px 4px",textAlign:"center",color:"#94a3b8",fontWeight:600,fontSize:11}}>수량</th>
+            <th style={{padding:"6px 4px",textAlign:"right",color:"#94a3b8",fontWeight:600,fontSize:11}}>단가</th>
+            <th style={{padding:"6px 4px",textAlign:"right",color:"#94a3b8",fontWeight:600,fontSize:11}}>금액</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((it,i)=>(
+            <tr key={i} style={{borderBottom:"1px solid #f1f5f9"}}>
+              <td style={{padding:"9px 4px",color:it.name?"#1e293b":"#cbd5e1"}}>{it.name||"—"}</td>
+              <td style={{padding:"9px 4px",textAlign:"center",color:"#64748b"}}>{it.qty}</td>
+              <td style={{padding:"9px 4px",textAlign:"right",color:"#64748b"}}>{it.price.toLocaleString()}</td>
+              <td style={{padding:"9px 4px",textAlign:"right",fontWeight:600,color:"#1e293b"}}>{(it.qty*it.price).toLocaleString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {/* 합계 */}
+      <div style={{borderTop:"2px solid #e2e8f0",paddingTop:12}}>
+        <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:"#64748b",marginBottom:4}}>
+          <span>소계</span><span>{subtotal.toLocaleString()}원</span>
+        </div>
+        {vat && <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:"#64748b",marginBottom:8}}>
+          <span>부가세 10%</span><span>{tax.toLocaleString()}원</span>
+        </div>}
+        <div style={{display:"flex",justifyContent:"space-between",borderTop:"1px solid #e2e8f0",paddingTop:10}}>
+          <span style={{fontWeight:700,fontSize:15,color:"#1e293b"}}>최종 합계</span>
+          <span style={{fontWeight:900,fontSize:22,color:"#2563eb"}}>{total.toLocaleString()}원</span>
+        </div>
+      </div>
+      <div style={{marginTop:16,paddingTop:12,borderTop:"1px dashed #e2e8f0",textAlign:"center",fontSize:11,color:"#cbd5e1"}}>
+        본 견적서는 작성일로부터 30일간 유효합니다.
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [tab, setTab] = useState("home");
+  const [invoices, setInvoices] = useState(INIT_INVOICES);
+  const [clients, setClients] = useState(INIT_CLIENTS);
+  const [editing, setEditing] = useState(null);
+  const [mode, setMode] = useState(null);
+
+  const openCreate = (inv=null) => { setEditing(inv); setMode("create"); };
+  const closeCreate = () => { setEditing(null); setMode(null); };
+
+  const TABS = [
+    { id:"home", icon:"🏠", label:"홈" },
+    { id:"list", icon:"📄", label:"견적서" },
+    { id:"clients", icon:"👥", label:"거래처" },
+    { id:"settings", icon:"⚙️", label:"설정" },
+  ];
+
+  return (
+    <div className="app-shell">
+      {/* PC 사이드바 */}
+      <aside className="desktop-sidebar">
+        <div style={{padding:"24px 20px 16px"}}>
+          <div style={{fontWeight:900,fontSize:20,color:"#2563eb"}}>⚡ QuickBill</div>
+          <div style={{fontSize:11,color:"#94a3b8",marginTop:3}}>1분 견적서 솔루션</div>
+        </div>
+        <nav style={{padding:"0 12px",flex:1}}>
+          {TABS.map(t=>(
+            <button key={t.id} onClick={()=>{setMode(null);setTab(t.id);}}
+              style={{width:"100%",display:"flex",alignItems:"center",gap:10,padding:"10px 12px",borderRadius:10,
+                      border:"none",cursor:"pointer",marginBottom:4,fontSize:14,fontWeight:600,
+                      background:(!mode&&tab===t.id)?"#eff6ff":"transparent",
+                      color:(!mode&&tab===t.id)?"#2563eb":"#64748b"}}>
+              <span style={{fontSize:18}}>{t.icon}</span>{t.label}
+            </button>
+          ))}
+        </nav>
+        <div style={{padding:"12px 20px 20px"}}>
+          <div style={{background:"#eff6ff",borderRadius:12,padding:"12px 14px"}}>
+            <p style={{fontSize:11,fontWeight:700,color:"#2563eb"}}>Starter 플랜</p>
+            <p style={{fontSize:11,color:"#94a3b8",marginTop:2}}>월 30건 이용 가능</p>
+            <div style={{marginTop:8,background:"#bfdbfe",borderRadius:99,height:6}}>
+              <div style={{background:"#2563eb",height:6,borderRadius:99,width:"10%"}}></div>
+            </div>
+            <p style={{fontSize:11,color:"#93c5fd",marginTop:4}}>3 / 30건 사용</p>
+          </div>
+        </div>
+      </aside>
+
+      {/* 모바일 헤더 */}
+      <header className="mobile-header" style={{background:"white",borderBottom:"1px solid #e2e8f0",padding:"12px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0,zIndex:10}}>
+        {mode==="create" ? (
+          <>
+            <button onClick={closeCreate} style={{fontSize:20,border:"none",background:"none",color:"#64748b",cursor:"pointer"}}>←</button>
+            <span style={{fontWeight:700,fontSize:16,color:"#1e293b"}}>{editing?"견적서 편집":"새 견적서"}</span>
+            <div style={{width:24}}/>
+          </>
+        ) : (
+          <>
+            <span style={{fontWeight:900,fontSize:20,color:"#2563eb"}}>⚡ QuickBill</span>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontSize:11,background:"#eff6ff",color:"#2563eb",padding:"3px 8px",borderRadius:99,fontWeight:600}}>Starter</span>
+              <div style={{width:32,height:32,borderRadius:"50%",background:"#2563eb",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,fontSize:14}}>{USER.name[0]}</div>
+            </div>
+          </>
+        )}
+      </header>
+
+      {/* PC용 컨텐츠 영역 */}
+      <div className="desktop-content scroll-body" style={{flex:1,overflowY:"auto"}}>
+        {/* PC 헤더 */}
+        <div style={{background:"white",borderBottom:"1px solid #e2e8f0",padding:"14px 24px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          {mode==="create" ? (
+            <>
+              <button onClick={closeCreate} style={{display:"flex",alignItems:"center",gap:6,fontSize:14,color:"#64748b",border:"none",background:"none",cursor:"pointer",fontWeight:600}}>← 뒤로가기</button>
+              <span style={{fontWeight:700,fontSize:17,color:"#1e293b"}}>{editing?"견적서 편집":"새 견적서 작성"}</span>
+              <div/>
+            </>
+          ) : (
+            <>
+              <div>
+                <p style={{fontWeight:700,fontSize:16,color:"#1e293b"}}>안녕하세요, {USER.name}님 👋</p>
+                <p style={{fontSize:13,color:"#94a3b8",marginTop:2}}>{USER.biz}</p>
+              </div>
+              <button onClick={()=>openCreate(null)}
+                style={{padding:"10px 20px",background:"#2563eb",color:"white",border:"none",borderRadius:10,fontWeight:700,cursor:"pointer",fontSize:14}}>
+                + 새 견적서 작성
+              </button>
+            </>
+          )}
+        </div>
+
+        <div style={{padding:"20px 24px"}}>
+          {mode==="create"
+            ? <CreateView clients={clients} invoices={invoices} setInvoices={setInvoices} editing={editing} onDone={closeCreate} />
+            : tab==="home"    ? <HomeView invoices={invoices} openCreate={openCreate} />
+            : tab==="list"    ? <ListView invoices={invoices} openCreate={openCreate} />
+            : tab==="clients" ? <ClientsView clients={clients} setClients={setClients} />
+            : <SettingsView />
+          }
+        </div>
+      </div>
+
+      {/* 모바일 하단 네비 */}
+      {mode!=="create" && (
+        <nav className="bottom-nav">
+          {TABS.map(t=>(
+            <button key={t.id} className="nav-btn" onClick={()=>setTab(t.id)}>
+              <span style={{fontSize:22,lineHeight:1}}>{t.icon}</span>
+              <span style={{fontSize:10,fontWeight:600,color:tab===t.id?"#2563eb":"#94a3b8"}}>{t.label}</span>
+            </button>
+          ))}
+        </nav>
+      )}
+    </div>
+  );
+}
+
+function HomeView({ invoices, openCreate }) {
+  const mInv = invoices.filter(i=>i.date.startsWith("2026-03"));
+  const mTotal = mInv.reduce((s,i)=>s+i.total,0);
+  return (
+    <div>
+      <div style={{display:"flex",gap:12,marginBottom:16}}>
+        {[
+          {label:"이번달 건수",val:mInv.length+"건",icon:"📝",c:"#eff6ff",t:"#2563eb"},
+          {label:"이번달 금액",val:(mTotal/10000).toFixed(0)+"만원",icon:"💰",c:"#f0fdf4",t:"#16a34a"},
+          {label:"전체 건수",val:invoices.length+"건",icon:"📊",c:"#faf5ff",t:"#7c3aed"},
+        ].map((s,i)=>(
+          <div key={i} style={{flex:1,background:s.c,borderRadius:16,padding:"16px 12px",textAlign:"center"}}>
+            <div style={{fontSize:24}}>{s.icon}</div>
+            <div style={{fontWeight:900,fontSize:18,color:s.t,marginTop:6}}>{s.val}</div>
+            <div style={{fontSize:11,color:"#94a3b8",marginTop:2}}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+      <div className="card">
+        <p style={{fontWeight:700,fontSize:15,color:"#1e293b",marginBottom:12}}>최근 견적서</p>
+        {invoices.map(inv=>(
+          <div key={inv.id} onClick={()=>openCreate(inv)}
+            style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0",borderBottom:"1px solid #f1f5f9",cursor:"pointer"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12}}>
+              <div style={{width:40,height:40,borderRadius:"50%",background:"#eff6ff",display:"flex",alignItems:"center",justifyContent:"center",color:"#2563eb",fontWeight:700,fontSize:15,flexShrink:0}}>{inv.client[0]}</div>
+              <div>
+                <p style={{fontWeight:600,color:"#1e293b",fontSize:14}}>{inv.client}</p>
+                <p style={{fontSize:12,color:"#94a3b8",marginTop:1}}>{inv.date}</p>
+              </div>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <p style={{fontWeight:700,color:"#1e293b",fontSize:14}}>{(inv.total/10000).toFixed(0)}만원</p>
+              <span className={inv.status==="sent"?"tag-green":"tag-yellow"} style={{marginTop:4,display:"inline-block"}}>
+                {inv.status==="sent"?"발송":"임시"}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ListView({ invoices, openCreate }) {
+  return (
+    <div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <p style={{fontWeight:700,fontSize:17,color:"#1e293b"}}>견적서 관리</p>
+        <button onClick={()=>openCreate(null)} style={{padding:"9px 18px",background:"#2563eb",color:"white",border:"none",borderRadius:10,fontWeight:600,fontSize:13,cursor:"pointer"}}>+ 새 견적서</button>
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:10}}>
+        {invoices.map(inv=>(
+          <div key={inv.id} className="card" style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer",marginBottom:0}} onClick={()=>openCreate(inv)}>
+            <div style={{display:"flex",alignItems:"center",gap:12}}>
+              <div style={{width:42,height:42,borderRadius:"50%",background:"#eff6ff",display:"flex",alignItems:"center",justifyContent:"center",color:"#2563eb",fontWeight:700,fontSize:16,flexShrink:0}}>{inv.client[0]}</div>
+              <div>
+                <p style={{fontWeight:600,color:"#1e293b",fontSize:14}}>{inv.client}</p>
+                <p style={{fontSize:11,color:"#94a3b8",marginTop:2}}>{inv.date} · {inv.items.length}개 품목</p>
+              </div>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <p style={{fontWeight:700,color:"#1e293b"}}>{inv.total.toLocaleString()}원</p>
+              <span className={inv.status==="sent"?"tag-green":"tag-yellow"} style={{marginTop:4,display:"inline-block"}}>
+                {inv.status==="sent"?"✓ 발송":"◎ 임시"}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CreateView({ clients, invoices, setInvoices, editing, onDone }) {
+  const [client, setClient] = useState(editing?.client||"");
+  const [items, setItems] = useState(editing?.items||[{name:"",qty:1,price:0}]);
+  const [vat, setVat] = useState(true);
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const sub = items.reduce((s,i)=>s+i.qty*i.price,0);
+  const tax = vat ? Math.round(sub*0.1) : 0;
+  const total = sub+tax;
+
+  const save = () => {
+    const inv = {id:editing?.id||Date.now(),client,date:new Date().toISOString().split("T")[0],items,total,status:"sent"};
+    if(editing) setInvoices(invoices.map(i=>i.id===editing.id?inv:i));
+    else setInvoices([inv,...invoices]);
+    setDone(true); setTimeout(onDone,900);
+  };
+
+  // 모바일 미리보기 전체화면
+  if(showMobilePreview) return (
+    <div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <h3 style={{fontWeight:700,fontSize:16,color:"#1e293b"}}>👁 미리보기</h3>
+        <button onClick={()=>setShowMobilePreview(false)} style={{fontSize:14,color:"#2563eb",border:"none",background:"none",fontWeight:600,cursor:"pointer"}}>← 수정하기</button>
+      </div>
+      <InvoicePreview client={client} items={items} vat={vat} total={total} subtotal={sub} tax={tax} />
+      <button className="btn-primary" onClick={save} disabled={!client||done} style={{marginTop:12}}>
+        {done?"✅ 저장 완료!":"💾 저장 및 발송"}
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="editor-split">
+      {/* 입력 폼 */}
+      <div className="editor-form">
+        {done && <div style={{background:"#f0fdf4",border:"1px solid #86efac",borderRadius:12,padding:12,textAlign:"center",color:"#16a34a",fontWeight:600,marginBottom:12}}>✅ 저장됐어요!</div>}
+
+        <div className="card">
+          <p style={{fontWeight:700,fontSize:14,color:"#1e293b",marginBottom:10}}>🏢 거래처</p>
+          <select value={client} onChange={e=>setClient(e.target.value)}>
+            <option value="">거래처를 선택하세요</option>
+            {clients.map(c=><option key={c.id} value={c.name}>{c.name}</option>)}
+          </select>
+        </div>
+
+        <div className="card">
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+            <p style={{fontWeight:700,fontSize:14,color:"#1e293b"}}>📦 품목</p>
+            <button onClick={()=>setItems([...items,{name:"",qty:1,price:0}])}
+              style={{padding:"6px 12px",background:"#eff6ff",color:"#2563eb",border:"none",borderRadius:8,fontWeight:600,fontSize:13,cursor:"pointer"}}>
+              + 추가
+            </button>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:10}}>
+            {items.map((it,i)=>(
+              <div key={i} style={{background:"#f8fafc",borderRadius:12,padding:12}}>
+                <div style={{display:"flex",gap:8,marginBottom:8}}>
+                  <input placeholder="품목명" value={it.name}
+                    onChange={e=>{const n=[...items];n[i].name=e.target.value;setItems(n);}} style={{flex:1}} />
+                  <button onClick={()=>setItems(items.filter((_,x)=>x!==i))}
+                    style={{width:38,height:44,background:"#fee2e2",color:"#ef4444",border:"none",borderRadius:10,fontSize:16,flexShrink:0,cursor:"pointer"}}>✕</button>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                  <div>
+                    <p style={{fontSize:11,color:"#94a3b8",marginBottom:4}}>수량</p>
+                    <input type="number" value={it.qty} style={{textAlign:"center"}}
+                      onChange={e=>{const n=[...items];n[i].qty=parseInt(e.target.value)||0;setItems(n);}} />
+                  </div>
+                  <div>
+                    <p style={{fontSize:11,color:"#94a3b8",marginBottom:4}}>단가(원)</p>
+                    <input type="number" value={it.price} style={{textAlign:"right"}}
+                      onChange={e=>{const n=[...items];n[i].price=parseInt(e.target.value)||0;setItems(n);}} />
+                  </div>
+                </div>
+                <p style={{fontSize:12,color:"#64748b",textAlign:"right",marginTop:6}}>
+                  소계 <strong style={{color:"#1e293b"}}>{(it.qty*it.price).toLocaleString()}원</strong>
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card" style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <span style={{fontWeight:600,color:"#1e293b"}}>부가세 10% 포함</span>
+          <div onClick={()=>setVat(!vat)}
+            style={{width:48,height:28,borderRadius:99,background:vat?"#2563eb":"#e2e8f0",padding:"3px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:vat?"flex-end":"flex-start",transition:"background 0.2s"}}>
+            <div style={{width:22,height:22,borderRadius:"50%",background:"white",boxShadow:"0 1px 3px rgba(0,0,0,.2)"}}/>
+          </div>
+        </div>
+
+        {/* 합계 요약 */}
+        <div className="card" style={{background:"#eff6ff",border:"1.5px solid #bfdbfe"}}>
+          <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:"#64748b",marginBottom:4}}><span>소계</span><span>{sub.toLocaleString()}원</span></div>
+          {vat&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:"#64748b",marginBottom:8}}><span>부가세</span><span>{tax.toLocaleString()}원</span></div>}
+          <div style={{display:"flex",justifyContent:"space-between",borderTop:"1px solid #bfdbfe",paddingTop:10}}>
+            <span style={{fontWeight:700,fontSize:15,color:"#1e293b"}}>최종 합계</span>
+            <span style={{fontWeight:900,fontSize:22,color:"#2563eb"}}>{total.toLocaleString()}원</span>
+          </div>
+        </div>
+
+        {/* 모바일: 미리보기 버튼 + 저장 */}
+        <div className="mobile-preview-btn" style={{gap:10,paddingBottom:8}}>
+          <button onClick={()=>setShowMobilePreview(true)}
+            style={{flex:1,padding:15,border:"2px solid #2563eb",background:"white",color:"#2563eb",borderRadius:14,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+            👁 미리보기
+          </button>
+          <button className="btn-primary" onClick={save} disabled={!client||done}
+            style={{flex:1,padding:15,borderRadius:14,fontSize:15}}>
+            {done?"✅":"💾 저장"}
+          </button>
+        </div>
+
+        {/* PC: 저장 버튼만 */}
+        <button className="btn-primary" onClick={save} disabled={!client||done}
+          style={{display:"block",marginTop:4,borderRadius:14,fontSize:15}}>
+          {done?"✅ 저장 완료!":"💾 저장 및 발송"}
+        </button>
+      </div>
+
+      {/* PC 우측 미리보기 패널 */}
+      <div className="editor-preview-panel">
+        <p style={{fontWeight:700,fontSize:14,color:"#64748b",marginBottom:12,textAlign:"center"}}>👁 실시간 미리보기</p>
+        <InvoicePreview client={client} items={items} vat={vat} total={total} subtotal={sub} tax={tax} />
+      </div>
+    </div>
+  );
+}
+
+function ClientsView({ clients, setClients }) {
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({name:"",phone:""});
+  const add = () => {
+    if(!form.name) return;
+    setClients([...clients,{...form,id:Date.now()}]);
+    setForm({name:"",phone:""}); setOpen(false);
+  };
+  return (
+    <div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <p style={{fontWeight:700,fontSize:17,color:"#1e293b"}}>거래처 관리</p>
+        <button onClick={()=>setOpen(!open)}
+          style={{padding:"9px 16px",background:open?"#f1f5f9":"#2563eb",color:open?"#64748b":"white",border:"none",borderRadius:10,fontWeight:600,fontSize:13,cursor:"pointer"}}>
+          {open?"취소":"+ 추가"}
+        </button>
+      </div>
+      {open&&(
+        <div className="card" style={{marginBottom:12}}>
+          <p style={{fontWeight:700,marginBottom:10,color:"#1e293b"}}>새 거래처</p>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            <input placeholder="거래처명 *" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} />
+            <input placeholder="연락처" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} />
+            <button className="btn-primary" onClick={add} style={{marginTop:4}}>저장</button>
+          </div>
+        </div>
+      )}
+      <div style={{display:"flex",flexDirection:"column",gap:10}}>
+        {clients.map(c=>(
+          <div key={c.id} className="card" style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:0}}>
+            <div style={{display:"flex",alignItems:"center",gap:12}}>
+              <div style={{width:42,height:42,borderRadius:"50%",background:"#f1f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,fontSize:16,color:"#475569",flexShrink:0}}>{c.name[0]}</div>
+              <div>
+                <p style={{fontWeight:600,color:"#1e293b"}}>{c.name}</p>
+                <p style={{fontSize:12,color:"#94a3b8"}}>{c.phone}</p>
+              </div>
+            </div>
+            <button onClick={()=>setClients(clients.filter(x=>x.id!==c.id))}
+              style={{width:36,height:36,borderRadius:10,background:"#fee2e2",color:"#ef4444",border:"none",fontSize:16,cursor:"pointer"}}>🗑</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SettingsView() {
+  return (
+    <div>
+      <p style={{fontWeight:700,fontSize:17,color:"#1e293b",marginBottom:16}}>설정</p>
+      <div className="card" style={{display:"flex",alignItems:"center",gap:14,marginBottom:12}}>
+        <div style={{width:56,height:56,borderRadius:"50%",background:"#2563eb",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,fontWeight:900,flexShrink:0}}>{USER.name[0]}</div>
+        <div>
+          <p style={{fontWeight:700,fontSize:17,color:"#1e293b"}}>{USER.name}</p>
+          <p style={{fontSize:13,color:"#64748b"}}>{USER.biz}</p>
+        </div>
+      </div>
+      <div className="card">
+        <p style={{fontWeight:700,fontSize:14,color:"#1e293b",marginBottom:12}}>구독 플랜</p>
+        {[
+          {name:"Free",price:"무료",desc:"월 5건",active:false},
+          {name:"Starter",price:"9,900원/월",desc:"월 30건",active:true},
+          {name:"Pro",price:"19,900원/월",desc:"무제한",active:false},
+        ].map(p=>(
+          <div key={p.name} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 14px",borderRadius:12,marginBottom:8,background:p.active?"#eff6ff":"#f8fafc",border:p.active?"2px solid #2563eb":"2px solid transparent"}}>
+            <div>
+              <p style={{fontWeight:700,color:p.active?"#2563eb":"#1e293b"}}>{p.name}</p>
+              <p style={{fontSize:12,color:"#94a3b8"}}>{p.desc}</p>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <p style={{fontWeight:600,fontSize:13,color:p.active?"#2563eb":"#64748b"}}>{p.price}</p>
+              {p.active&&<span style={{fontSize:10,background:"#2563eb",color:"white",padding:"2px 8px",borderRadius:99}}>현재</span>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<App/>, document.getElementById("root"));
+</script>
+</body>
+</html>
