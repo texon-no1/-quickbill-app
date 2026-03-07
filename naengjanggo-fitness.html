@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>냉장고 피트니스 - 헬스·다이어트 냉장고 파먹기</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", system-ui, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background-color: #f5f7fa;
+      color: #222;
+    }
+
+    header {
+      background-color: #2e7d32;
+      color: #fff;
+      padding: 16px 20px;
+    }
+
+    header .title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    header .subtitle {
+      font-size: 14px;
+      margin-top: 4px;
+      opacity: 0.9;
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 24px auto;
+      padding: 0 16px 40px;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .radio-pill {
+      border-radius: 999px;
+      border: 1px solid #cfd8dc;
+      padding: 6px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background-color: #fafbfd;
+    }
+
+    .radio-pill input {
+      margin: 0;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #cfd8dc;
+      resize: vertical;
+      font-size: 14px;
+    }
+
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #2e7d32;
+      box-shadow: 0 0 0 2px rgba(46,125,50,0.15);
+    }
+
+    button {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: none;
+      background-color: #2e7d32;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    button:disabled {
+      background-color: #9e9e9e;
+      cursor: not-allowed;
+    }
+
+    .recipes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .recipes-header small {
+      font-size: 12px;
+      color: #777;
+    }
+
+    .recipe-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .recipe-card {
+      border-radius: 10px;
+      border: 1px solid #e0e0e0;
+      padding: 12px 14px;
+      background-color: #fafafa;
+    }
+
+    .recipe-name {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .recipe-tags {
+      font-size: 12px;
+      color: #2e7d32;
+      margin-bottom: 6px;
+    }
+
+    .recipe-desc {
+      font-size: 13px;
+      color: #444;
+      margin-bottom: 6px;
+    }
+
+    .recipe-link a {
+      font-size: 12px;
+      color: #1565c0;
+      text-decoration: none;
+    }
+
+    .recipe-link a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 11px;
+      color: #888;
+      padding: 12px 0 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">냉장고 피트니스</div>
+    <div class="subtitle">
+      냉장고 속 재료와 목표(다이어트·근력·유지)를 넣으면, 지금 몸 상태에 맞는 한 끼를 추천해 드립니다.
+    </div>
+  </header>
+
+  <main>
+    <!-- 왼쪽: 입력 패널 -->
+    <section class="panel">
+      <div class="panel-title">1. 목표와 재료를 알려주세요</div>
+
+      <div class="field-group">
+        <label class="field-label">헬스 목표</label>
+        <div class="help-text">원하는 방향을 고르면, 그에 맞는 한 끼를 추천해 드려요.</div>
+        <div class="radio-group">
+          <label class="radio-pill">
+            <input type="radio" name="goal" value="diet" checked />
+            다이어트
+          </label>
+          <label class="radio-pill">
+            <input type="radio" name="goal" value="muscle" />
+            근력 / 벌크업
+          </label>
+          <label class="radio-pill">
+            <input type="radio" name="goal" value="maintain" />
+            유지 / 건강관리
+          </label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">식단 스타일</label>
+        <div class="help-text">일단은 간단하게 두 가지만 제공해요.</div>
+        <div class="radio-group">
+          <label class="radio-pill">
+            <input type="radio" name="style" value="basic" checked />
+            기본 한국식
+          </label>
+          <label class="radio-pill">
+            <input type="radio" name="style" value="high_protein" />
+            고단백 위주
+          </label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">냉장고 속 재료</label>
+        <div class="help-text">콤마(,)로 나눠 적어 주세요. 예: 닭가슴살, 고구마, 브로콜리</div>
+        <textarea id="ingredients" placeholder="예: 닭가슴살, 달걀, 방울토마토"></textarea>
+      </div>
+
+      <button id="recommendBtn">레시피 3개 추천 받기</button>
+    </section>
+
+    <!-- 오른쪽: 결과 패널 -->
+    <section class="panel">
+      <div class="recipes-header">
+        <div class="panel-title">2. 추천 레시피</div>
+        <small id="recipesHint">왼쪽에서 정보를 입력하고 버튼을 눌러 주세요.</small>
+      </div>
+      <div class="recipe-list" id="recipeList">
+        <!-- 여기 안에 JS로 레시피 카드가 채워집니다 -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    냉장고 피트니스 · 초기 실험 버전 · 실제 건강 상태는 꼭 전문가와 상의하세요.
+  </footer>
+
+  <script>
+    const ingredientsInput = document.getElementById('ingredients');
+    const recommendBtn = document.getElementById('recommendBtn');
+    const recipeList = document.getElementById('recipeList');
+    const recipesHint = document.getElementById('recipesHint');
+
+    function getSelectedValue(name) {
+      const nodeList = document.querySelectorAll('input[name="' + name + '"]');
+      for (const n of nodeList) {
+        if (n.checked) return n.value;
+      }
+      return null;
+    }
+
+    function createRecipeCard(recipe) {
+      const div = document.createElement('div');
+      div.className = 'recipe-card';
+
+      div.innerHTML = `
+        <div class="recipe-name">${recipe.name}</div>
+        <div class="recipe-tags">${recipe.tags}</div>
+        <div class="recipe-desc">${recipe.desc}</div>
+        <div class="recipe-link">
+          <a href="${recipe.youtube}" target="_blank" rel="noopener noreferrer">
+            유튜브에서 비슷한 레시피 보기 &rarr;
+          </a>
+        </div>
+      `;
+      return div;
+    }
+
+    function dummyRecommendRecipes(goal, style, ingredientsText) {
+      const ing = ingredientsText.trim() || '냉장고 재료';
+
+      const baseQuery = encodeURIComponent(
+        ing + ' ' + (goal === 'diet'
+          ? '다이어트 레시피'
+          : goal === 'muscle'
+          ? '고단백 레시피'
+          : '건강식 레시피')
+      );
+
+      const youtubeSearchUrl = 'https://www.youtube.com/results?search_query=' + baseQuery;
+
+      const goalLabel =
+        goal === 'diet' ? '저칼로리·포만감' :
+        goal === 'muscle' ? '고단백·운동 후 식사' :
+        '균형 잡힌 한 끼';
+
+      const styleLabel =
+        style === 'high_protein'
+          ? '단백질을 충분히 챙기는 메뉴예요.'
+          : '한국 집밥 느낌의 메뉴예요.';
+
+      return [
+        {
+          name: ing + ' 한 끼 샐러드 볼',
+          tags: goalLabel + ' · ' + (style === 'high_protein' ? '고단백 샐러드' : '가벼운 샐러드'),
+          desc: ing + '를(을) 사용해서 간단하게 만들 수 있는 샐러드입니다. ' + styleLabel,
+          youtube: youtubeSearchUrl
+        },
+        {
+          name: ing + ' 구이 플레이트',
+          tags: goalLabel + ' · 간단 구이 요리',
+          desc: '오븐이나 팬에 구워서 만드는 플레이트 스타일 한 끼입니다. 야채를 함께 곁들이면 더 좋아요.',
+          youtube: youtubeSearchUrl
+        },
+        {
+          name: ing + ' 한 그릇 덮밥',
+          tags: goalLabel + ' · 한 그릇 요리',
+          desc: '바쁜 날에 빠르게 먹기 좋은 한 그릇 메뉴입니다. 탄수와 단백질을 함께 챙길 수 있어요.',
+          youtube: youtubeSearchUrl
+        }
+      ];
+    }
+
+    recommendBtn.addEventListener('click', () => {
+      const goal = getSelectedValue('goal');
+      const style = getSelectedValue('style');
+      const ingredientsText = ingredientsInput.value;
+
+      if (!ingredientsText.trim()) {
+        alert('냉장고 속 재료를 한 가지 이상 입력해 주세요.');
+        ingredientsInput.focus();
+        return;
+      }
+
+      const recipes = dummyRecommendRecipes(goal, style, ingredientsText);
+
+      recipeList.innerHTML = '';
+      recipesHint.textContent =
+        '추천 결과는 참고용입니다. 실제 재료 상태와 알레르기를 꼭 확인하세요.';
+
+      recipes.forEach((r) => {
+        const card = createRecipeCard(r);
+        recipeList.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>
