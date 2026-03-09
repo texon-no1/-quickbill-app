@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,7 +54,7 @@
       background-color: #fff;
       border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
     }
 
     .panel-title {
@@ -115,7 +116,7 @@
     select:focus {
       outline: none;
       border-color: #2e7d32;
-      box-shadow: 0 0 0 2px rgba(46,125,50,0.15);
+      box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.15);
     }
 
     button {
@@ -197,6 +198,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     <div class="title">냉장고 피트니스</div>
@@ -326,9 +328,9 @@
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-             goal: goal,
-             style: style,
-             ingredients: ingredientsText
+            goal: goal,
+            style: style,
+            ingredients: ingredientsText
           })
         });
 
@@ -341,9 +343,9 @@
 
         // 3. 응답받은 레시피 화면에 그리기
         recipesHint.textContent = '추천 결과는 참고용입니다. 실제 재료 상태와 알레르기를 꼭 확인하세요.';
-        
+
         if (recipes.length === 0) {
-           recipeList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">레시피를 생성하지 못했습니다. 재료를 다시 확인해 주세요.</div>';
+          recipeList.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">레시피를 생성하지 못했습니다. 재료를 다시 확인해 주세요.</div>';
         }
 
         recipes.forEach((r) => {
@@ -351,13 +353,41 @@
           const searchQuery = encodeURIComponent(r.youtube_query || r.name);
           const youtubeLink = 'https://www.youtube.com/results?search_query=' + searchQuery;
 
+          let ingredientsHtml = '';
+          if (r.ingredients && r.ingredients.length > 0) {
+            ingredientsHtml = `
+              <div style="margin-top: 12px;">
+                <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">🥗 재료</div>
+                <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #333;">
+                  ${r.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+                </ul>
+              </div>
+            `;
+          }
+
+          const hasSteps = r.steps && r.steps.length > 0;
+
+          const stepsToggleHtml = hasSteps ? `
+            <button class="steps-toggle-btn" style="margin-top: 8px; font-size: 13px; padding: 4px 12px; border-radius: 4px; border: 1px solid #ddd; background-color: #f8f9fa; cursor: pointer;">
+              🍳 조리 순서 보기
+            </button>
+            <div class="steps-panel" style="display:none; margin-top:8px;">
+              <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">🍳 조리 순서</div>
+              <ol style="margin:0; padding-left:20px; font-size:13px; color:#333;">
+                ${r.steps.map(step => `<li>${step.replace(/^[0-9]+[\.\)\]]*\s*/, '')}</li>`).join('')}
+              </ol>
+            </div>
+          ` : '';
+
           const div = document.createElement('div');
           div.className = 'recipe-card';
           div.innerHTML = `
             <div class="recipe-name">${r.name}</div>
             <div class="recipe-tags">${r.tags}</div>
             <div class="recipe-desc">${r.desc}</div>
-            <div class="recipe-link">
+            ${ingredientsHtml}
+            ${stepsToggleHtml}
+            <div class="recipe-link" style="margin-top: 8px;">
               <a href="${youtubeLink}" target="_blank" rel="noopener noreferrer">
                 유튜브에서 비슷한 레시피 보기 &rarr;
               </a>
@@ -376,6 +406,19 @@
         recommendBtn.disabled = false;
       }
     });
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.steps-toggle-btn');
+      if (!btn) return;
+
+      const panel = btn.nextElementSibling;
+      if (!panel || !panel.classList.contains('steps-panel')) return;
+
+      const isOpen = panel.style.display === 'block';
+      panel.style.display = isOpen ? 'none' : 'block';
+      btn.textContent = isOpen ? '🍳 조리 순서 보기' : '🍳 조리 순서 닫기';
+    });
   </script>
 </body>
+
 </html>
