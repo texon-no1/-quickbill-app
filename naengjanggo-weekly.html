@@ -1,180 +1,417 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>냉장고 피트니스 - 1주일 다이어트 식단</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border-color: #334155;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Outfit', 'Noto+Sans+KR', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      line-height: 1.6;
-      min-height: 100vh;
-      padding-bottom: 50px;
-    }
-    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-    header { text-align: center; padding: 40px 0; }
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
-    }
-    .subtitle { color: var(--text-muted); font-size: 1.1rem; }
-    .controls {
-      background: var(--card-bg); padding: 24px; border-radius: 20px;
-      border: 1px solid var(--border-color); margin-bottom: 30px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-    }
-    .form-group { margin-bottom: 20px; }
-    label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
-    select, textarea {
-      width: 100%; padding: 12px 16px; background: var(--bg-color);
-      border: 1px solid var(--border-color); border-radius: 12px;
-      color: var(--text-main); font-size: 1rem; outline: none; transition: border-color 0.2s;
-    }
-    select:focus, textarea:focus { border-color: #38bdf8; }
-    .generate-btn {
-      width: 100%; padding: 16px; background: var(--accent-gradient);
-      border: none; border-radius: 12px; color: white;
-      font-size: 1.1rem; font-weight: 700; cursor: pointer;
-      transition: transform 0.2s, opacity 0.2s;
-    }
-    .generate-btn:hover { transform: translateY(-2px); opacity: 0.9; }
-    .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .plan-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-    .day-card {
-      background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color);
-      padding: 20px; transition: transform 0.2s;
-    }
-    .day-card:hover { transform: scale(1.01); border-color: #38bdf8; }
-    .day-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); color: #38bdf8; }
-    .meal { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.05); }
-    .meal:last-child { border-bottom: none; }
-    .meal-header { display: flex; align-items: center; margin-bottom: 4px; flex-wrap: wrap; }
-    .meal-label {
-      font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);
-      background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px; margin-right: 8px; width: 50px; text-align: center;
-    }
-    .meal-name { font-size: 1rem; font-weight: 400; flex: 1; min-width: 150px; }
-    .ingredients-toggle-btn {
-      font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; border: 1px solid #334155;
-      background: transparent; color: #38bdf8; cursor: pointer; margin-left: 8px; transition: background 0.2s;
-    }
-    .ingredients-toggle-btn:hover { background: rgba(56, 189, 248, 0.1); }
-    .ingredients-panel { margin-top: 8px; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 8px; display: none; }
-    .ingredients-list { margin: 0; padding-left: 16px; font-size: 0.8rem; color: #94a3b8; }
-    .footer-actions { margin-top: 40px; text-align: center; }
-    .back-link { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-    .back-link:hover { color: var(--text-main); }
-    #loading { text-align: center; padding: 40px; display: none; }
-    .spinner {
-      width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-left-color: #38bdf8;
-      border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (min-width: 640px) { .plan-grid { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>냉장고 피트니스 - 1주일 다이너트 식단</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FAFAF7;
+            --card-bg: #FFFFFF;
+            --accent-olive: #5A7A4A;
+            --accent-orange: #E8734A;
+            --text-main: #2C2416;
+            --text-muted: #7A7060;
+            --border-color: #E8E4DC;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'DM Sans', 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-olive) 0%, var(--accent-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus,
+        textarea:focus {
+            border-color: var(--accent-olive);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-olive) 0%, #7A9A6A 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .plan-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .day-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .day-card:hover {
+            transform: scale(1.01);
+            border-color: var(--accent-olive);
+        }
+
+        .day-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--accent-orange);
+        }
+
+        .meal {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .meal:last-child {
+            border-bottom: none;
+        }
+
+        .meal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+
+        .meal-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: #f0f4ef;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-right: 12px;
+            width: 50px;
+            text-align: center;
+        }
+
+        .meal-name {
+            font-size: 1rem;
+            font-weight: 500;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .ingredients-toggle-btn {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--accent-olive);
+            cursor: pointer;
+            margin-left: 8px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .ingredients-toggle-btn:hover {
+            background: #f0f4ef;
+        }
+
+        .ingredients-panel {
+            margin-top: 10px;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .ingredients-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-actions {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: var(--text-main);
+        }
+
+        #loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-left-color: var(--accent-olive);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (min-width: 640px) {
+            .plan-grid {
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <div class="container">
-    <header>
-      <h1>Weekly Diet Plan</h1>
-      <p class="subtitle">당신의 목표에 맞춘 1주일 맞춤형 식단</p>
-    </header>
-    <div class="controls">
-      <div class="form-group">
-        <label>헬스 목표</label>
-        <select id="goal">
-          <option value="diet">다이어트 (체지방 감량)</option>
-          <option value="muscle">근질 향상 (벌크업)</option>
-          <option value="maintain">체중 유지 / 건강 관리</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>식단 스타일</label>
-        <select id="style">
-          <option value="basic">기본 한국식 식단</option>
-          <option value="high_protein">고단백 위주 식단</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>활용할 재료 (선택)</label>
-        <textarea id="ingredients" rows="2" placeholder="예: 닭가슴살, 고구마, 브로콜리..."></textarea>
-      </div>
-      <button id="generate-btn" class="generate-btn">오늘부터 1주일 식단 만들기</button>
+    <div class="container">
+        <header>
+            <h1>Weekly Diet Plan 📅</h1>
+            <p class="subtitle">당신의 목표에 맞춘 1주일 맞춤형 식단</p>
+        </header>
+
+        <div class="controls">
+            <div class="form-group">
+                <label>헬스 목표</label>
+                <select id="goal">
+                    <option value="diet">다이어트 (체지방 감량)</option>
+                    <option value="muscle">근질 향상 (벌크업)</option>
+                    <option value="maintain">체중 유지 / 건강 관리</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>식단 스타일</label>
+                <select id="style">
+                    <option value="basic">기본 한국식 식단</option>
+                    <option value="high_protein">고단백 위주 식단</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>활용할 재료 (선택)</label>
+                <textarea id="ingredients" rows="2" placeholder="예: 닭가슴살, 고구마, 브로콜리..."></textarea>
+            </div>
+
+            <button id="generate-btn" class="generate-btn">오늘부터 1주일 식단 만들기</button>
+        </div>
+
+        <div id="loading">
+            <div class="spinner"></div>
+            <p style="color: var(--text-muted);">따뜻하고 건강한 식단을 짜고 있어요...</p>
+        </div>
+
+        <div id="plan-container" class="plan-grid">
+            <!-- 식단 카드들이 여기에 렌더링됩니다 -->
+        </div>
+
+        <div class="footer-actions">
+            <a href="naengjanggo-fitness.html" class="back-link">← 레시피 검색으로 돌아가기</a>
+        </div>
     </div>
-    <div id="loading">
-      <div class="spinner"></div>
-      <p>당신을 위한 건강한 식단을 짜고 있어요...</p>
-    </div>
-    <div id="plan-container" class="plan-grid"></div>
-    <div class="footer-actions">
-      <a href="naengjanggo-fitness.html" class="back-link">← 레시피 검색으로 돌아가기</a>
-    </div>
-  </div>
-  <script>
-    const API_BASE = "https://naengjanggo-fitness-api-1.onrender.com";
-    const generateBtn = document.getElementById('generate-btn');
-    const planContainer = document.getElementById('plan-container');
-    const loading = document.getElementById('loading');
-    window.onload = () => {
-      const savedIngredients = localStorage.getItem('naengjanggo_ingredients');
-      if (savedIngredients) document.getElementById('ingredients').value = savedIngredients;
-    };
-    generateBtn.onclick = async () => {
-      const goal = document.getElementById('goal').value;
-      const style = document.getElementById('style').value;
-      const ingredients = document.getElementById('ingredients').value;
-      localStorage.setItem('naengjanggo_ingredients', ingredients);
-      planContainer.innerHTML = '';
-      loading.style.display = 'block';
-      generateBtn.disabled = true;
-      try {
-        const res = await fetch(`${API_BASE}/api/weekly-plan`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ goal, style, ingredients })
+
+    <script>
+        const API_BASE = "https://naengjanggo-fitness-api-1.onrender.com";
+        const generateBtn = document.getElementById('generate-btn');
+        const planContainer = document.getElementById('plan-container');
+        const loading = document.getElementById('loading');
+
+        window.onload = () => {
+            const savedIngredients = localStorage.getItem('naengjanggo_ingredients');
+            if (savedIngredients) {
+                document.getElementById('ingredients').value = savedIngredients;
+            }
+        };
+
+        generateBtn.onclick = async () => {
+            const goal = document.getElementById('goal').value;
+            const style = document.getElementById('style').value;
+            const ingredients = document.getElementById('ingredients').value;
+
+            localStorage.setItem('naengjanggo_ingredients', ingredients);
+
+            planContainer.innerHTML = '';
+            loading.style.display = 'block';
+            generateBtn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/weekly-plan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ goal, style, ingredients })
+                });
+
+                const data = await res.json();
+
+                if (data.plan && data.plan.length > 0) {
+                    renderPlan(data.plan);
+                } else {
+                    alert('식단을 생성하지 못했습니다. 다시 시도해 주세요.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('서버와 통신 중 에러가 발생했습니다.');
+            } finally {
+                loading.style.display = 'none';
+                generateBtn.disabled = false;
+            }
+        };
+
+        function renderIngredients(ingredients) {
+            if (!ingredients || ingredients.length === 0) return '';
+            return `
+        <div class="ingredients-panel">
+          <ul class="ingredients-list">
+            ${ingredients.map(ing => `<li>${ing}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+        }
+
+        function renderMeal(label, mealName, ingredients) {
+            const hasIngredients = ingredients && ingredients.length > 0;
+            return `
+        <div class="meal">
+          <div class="meal-header">
+            <span class="meal-label">${label}</span>
+            <span class="meal-name">${mealName}</span>
+            ${hasIngredients ? `
+              <button class="ingredients-toggle-btn">
+                재료 보기 ▼
+              </button>
+            ` : ''}
+          </div>
+          ${hasIngredients ? renderIngredients(ingredients) : ''}
+        </div>
+      `;
+        }
+
+        function renderPlan(plan) {
+            planContainer.innerHTML = plan.map(day => `
+        <div class="day-card">
+          <div class="day-title">${day.day}</div>
+          ${renderMeal('아침', day.breakfast, day.breakfast_ingredients)}
+          ${renderMeal('점심', day.lunch, day.lunch_ingredients)}
+          ${renderMeal('저녁', day.dinner, day.dinner_ingredients)}
+        </div>
+      `).join('');
+        }
+
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.ingredients-toggle-btn');
+            if (!btn) return;
+
+            const panel = btn.parentElement.nextElementSibling;
+            if (!panel || !panel.classList.contains('ingredients-panel')) return;
+
+            const isOpen = panel.style.display === 'block';
+            panel.style.display = isOpen ? 'none' : 'block';
+            btn.textContent = isOpen ? '재료 보기 ▼' : '재료 닫기 ▲';
         });
-        const data = await res.json();
-        if (data.plan && data.plan.length > 0) renderPlan(data.plan);
-        else alert('식단을 생성하지 못했습니다. 다시 시도해 주세요.');
-      } catch (err) { alert('서버와 통신 중 에러가 발생했습니다.'); }
-      finally { loading.style.display = 'none'; generateBtn.disabled = false; }
-    };
-    function renderIngredients(ingredients) {
-      if (!ingredients || ingredients.length === 0) return '';
-      return `<div class="ingredients-panel"><ul class="ingredients-list">${ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul></div>`;
-    }
-    function renderMeal(label, mealName, ingredients) {
-      const hasIngredients = ingredients && ingredients.length > 0;
-      return `<div class="meal"><div class="meal-header"><span class="meal-label">${label}</span><span class="meal-name">${mealName}</span>${hasIngredients ? `<button class="ingredients-toggle-btn">재료 보기 ▼</button>` : ''}</div>${hasIngredients ? renderIngredients(ingredients) : ''}</div>`;
-    }
-    function renderPlan(plan) {
-      planContainer.innerHTML = plan.map(day => `<div class="day-card"><div class="day-title">${day.day}</div>${renderMeal('아침', day.breakfast, day.breakfast_ingredients)}${renderMeal('점심', day.lunch, day.lunch_ingredients)}${renderMeal('저녁', day.dinner, day.dinner_ingredients)}</div>`).join('');
-    }
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('.ingredients-toggle-btn');
-      if (!btn) return;
-      const panel = btn.parentElement.nextElementSibling;
-      if (!panel || !panel.classList.contains('ingredients-panel')) return;
-      const isOpen = panel.style.display === 'block';
-      panel.style.display = isOpen ? 'none' : 'block';
-      btn.textContent = isOpen ? '재료 보기 ▼' : '재료 닫기 ▲';
-    });
-  </script>
+    </script>
 </body>
+
 </html>
