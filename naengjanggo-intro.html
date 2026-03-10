@@ -12,62 +12,70 @@
     }
     *{box-sizing:border-box;margin:0;padding:0;font-family:'DM Sans','Noto Sans KR',sans-serif;}
     body{background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;}
-    header{background:var(--olive);color:white;padding:28px 20px 0;text-align:center;}
+    header{background:var(--olive);color:white;padding:36px 20px 0;text-align:center;}
     header h1{font-size:2rem;font-weight:700;margin-bottom:6px;}
-    header p{font-size:.95rem;opacity:.9;margin-bottom:20px;}
+    header p{font-size:.95rem;opacity:.9;margin-bottom:24px;}
 
-    /* ── 냉장고 문 ── */
-    .door{transform-box:fill-box;transform-origin:left center;}
-    .door-ex    {animation:openDoor 3.8s ease-in-out infinite 0s;}
-    .door-diet  {animation:openDoor 3.8s ease-in-out infinite 1.27s;}
-    .door-mu    {animation:openDoor 3.8s ease-in-out infinite 2.53s;}
-    @keyframes openDoor{
-      0%,18%  {transform:scaleX(1);}
-      32%,66% {transform:scaleX(0.04);}
-      84%,100%{transform:scaleX(1);}
+    /* ── 냉장고 문 (위/아래 각각) ── */
+    .fridge-door-top {
+      transform-box: fill-box;
+      transform-origin: left center;
+      animation: openTop 4s ease-in-out infinite;
+    }
+    .fridge-door-bottom {
+      transform-box: fill-box;
+      transform-origin: left center;
+      animation: openBottom 4s ease-in-out infinite;
+    }
+    @keyframes openTop {
+      0%,15%   { transform: scaleX(1); }
+      30%,68%  { transform: scaleX(0.05); }
+      85%,100% { transform: scaleX(1); }
+    }
+    @keyframes openBottom {
+      0%,18%   { transform: scaleX(1); }
+      33%,68%  { transform: scaleX(0.05); }
+      85%,100% { transform: scaleX(1); }
     }
 
-    /* ── 팔 뻗기 ── */
-    .arm-ex  {animation:armOut 3.8s ease-in-out infinite 0s;}
-    .arm-diet{animation:armOut 3.8s ease-in-out infinite 1.27s;}
-    .arm-mu  {animation:armOut 3.8s ease-in-out infinite 2.53s;}
-    @keyframes armOut{
-      0%,18%  {transform:translateX(0);}
-      32%,66% {transform:translateX(-9px);}
-      84%,100%{transform:translateX(0);}
+    /* 냉장고 빛 glow */
+    .fridge-light {
+      animation: glowLight 4s ease-in-out infinite;
+    }
+    @keyframes glowLight {
+      0%,20%   { opacity: 0; }
+      35%,65%  { opacity: 1; }
+      82%,100% { opacity: 0; }
     }
 
-    /* ── 몸통 기울기 ── */
-    .lean-ex  {animation:leanIn 3.8s ease-in-out infinite 0s;}
-    .lean-diet{animation:leanIn 3.8s ease-in-out infinite 1.27s;}
-    .lean-mu  {animation:leanIn 3.8s ease-in-out infinite 2.53s;}
-    @keyframes leanIn{
-      0%,18%  {transform:rotate(0deg) translateX(0);}
-      32%,66% {transform:rotate(-6deg) translateX(-3px);}
-      84%,100%{transform:rotate(0deg) translateX(0);}
+    /* 음식 아이템 팝업 */
+    .food-item {
+      animation: foodPop 4s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center bottom;
+    }
+    .food-item:nth-child(1) { animation-delay: .1s; }
+    .food-item:nth-child(2) { animation-delay: .2s; }
+    .food-item:nth-child(3) { animation-delay: .3s; }
+    .food-item:nth-child(4) { animation-delay: .4s; }
+    .food-item:nth-child(5) { animation-delay: .5s; }
+    @keyframes foodPop {
+      0%,22%   { transform: scale(0.6); opacity: 0; }
+      38%,65%  { transform: scale(1);   opacity: 1; }
+      82%,100% { transform: scale(0.6); opacity: 0; }
     }
 
-    /* ── 근력 알통 flex ── */
-    .flex-arm{transform-box:fill-box;transform-origin:bottom right;
-      animation:flexUp 3.8s ease-in-out infinite 2.53s;}
-    @keyframes flexUp{
-      0%,18%  {transform:rotate(0deg);}
-      32%,66% {transform:rotate(-30deg);}
-      84%,100%{transform:rotate(0deg);}
+    /* 냉장고 전체 살짝 둥실 */
+    .fridge-wrap {
+      animation: fridgeBob 2.5s ease-in-out infinite alternate;
+      display: flex; justify-content: center; padding-bottom: 0;
+    }
+    @keyframes fridgeBob {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-6px); }
     }
 
-    /* ── 씬 바운스 ── */
-    .sb{animation:sBounce 1.7s ease-in-out infinite alternate;}
-    .sb:nth-child(2){animation-delay:.57s;}
-    .sb:nth-child(3){animation-delay:1.13s;}
-    @keyframes sBounce{from{transform:translateY(0);}to{transform:translateY(-5px);}}
-
-    .scenes-wrapper{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
-    .scene-wrap{display:flex;flex-direction:column;align-items:center;}
-    .scene-label{margin:6px 0 10px;font-size:.8rem;font-weight:700;
-      color:rgba(255,255,255,.95);background:rgba(0,0,0,.18);
-      padding:3px 12px;border-radius:999px;}
-
+    /* ── 나머지 레이아웃 ── */
     .main-intro{max-width:780px;margin:56px auto 36px;text-align:center;padding:0 20px;}
     .main-intro h2{font-size:1.75rem;margin-bottom:14px;word-break:keep-all;}
     .main-intro p{font-size:1.02rem;color:var(--muted);}
@@ -82,15 +90,13 @@
     .cta-section{text-align:center;margin:56px 0;padding:0 20px;}
     .cta-buttons{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;}
     .btn{display:inline-block;padding:16px 32px;border-radius:999px;
-      font-size:1rem;font-weight:700;text-decoration:none;
-      transition:transform .2s;border:none;cursor:pointer;}
+      font-size:1rem;font-weight:700;text-decoration:none;transition:transform .2s;border:none;cursor:pointer;}
     .btn:hover{transform:scale(1.04);}
     .btn-recipe{background:var(--olive);color:white;}
     .btn-weekly{background:var(--orange);color:white;}
     .trust-badges{margin-top:28px;color:var(--muted);font-size:.88rem;}
     .trust-badges span{margin:0 8px;}
     footer{background:var(--border);padding:28px 20px;text-align:center;font-size:.83rem;color:var(--muted);margin-top:56px;}
-    @media(max-width:480px){header h1{font-size:1.5rem;}.scenes-wrapper{gap:6px;}}
   </style>
 </head>
 <body>
@@ -98,228 +104,182 @@
   <h1>냉장고 피트니스 🥗</h1>
   <p>냉장고 속 재료 + 내 목표 = 오늘의 식단</p>
 
-  <div class="scenes-wrapper">
+  <div class="fridge-wrap">
+  <svg width="220" height="240" viewBox="0 0 220 240">
+    <defs>
+      <!-- 냉장고 본체 그라디언트 -->
+      <linearGradient id="fridgeBody" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0%"   stop-color="#C8C4BE"/>
+        <stop offset="30%"  stop-color="#E8E4DE"/>
+        <stop offset="70%"  stop-color="#DEDAD4"/>
+        <stop offset="100%" stop-color="#B8B4AE"/>
+      </linearGradient>
+      <!-- 문 그라디언트 -->
+      <linearGradient id="doorGrad" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0%"   stop-color="#B0ACA6"/>
+        <stop offset="25%"  stop-color="#E0DCD6"/>
+        <stop offset="75%"  stop-color="#D6D2CC"/>
+        <stop offset="100%" stop-color="#A8A49E"/>
+      </linearGradient>
+      <!-- 내부 빛 -->
+      <radialGradient id="innerLight" cx="50%" cy="40%" r="55%">
+        <stop offset="0%"   stop-color="#FFFDE8" stop-opacity=".95"/>
+        <stop offset="100%" stop-color="#F0ECD8" stop-opacity=".6"/>
+      </radialGradient>
+    </defs>
 
-    <!-- ══════ 씬1: 운동 ══════ -->
-    <div class="scene-wrap">
-      <svg class="sb" width="150" height="150" viewBox="0 0 150 150">
-        <defs>
-          <radialGradient id="hg1" cx="33%" cy="27%" r="68%">
-            <stop offset="0%" stop-color="#525252"/>
-            <stop offset="52%" stop-color="#1E1E1E"/>
-            <stop offset="100%" stop-color="#050505"/>
-          </radialGradient>
-          <linearGradient id="bg1" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%"   stop-color="#0C0C0C"/>
-            <stop offset="35%"  stop-color="#2E2E2E"/>
-            <stop offset="65%"  stop-color="#262626"/>
-            <stop offset="100%" stop-color="#0C0C0C"/>
-          </linearGradient>
-        </defs>
+    <!-- ── 냉장고 본체 (뒷면 - 내용물 보임) ── -->
+    <!-- 냉장고 외형 -->
+    <rect x="28" y="18" width="164" height="210" rx="14" fill="url(#fridgeBody)" stroke="#A8A49E" stroke-width="2"/>
+    <!-- 컴프레서(위 작은 박스) -->
+    <rect x="68" y="10" width="84" height="14" rx="5" fill="#C0BCB6" stroke="#A8A49E" stroke-width="1.5"/>
 
-        <!-- 냉장고 뒤 -->
-        <rect x="6" y="14" width="52" height="96" rx="6" fill="#CCCAC2" stroke="#9E9A92" stroke-width="1.5"/>
-        <circle cx="20" cy="31" r="5.5" fill="#E8734A" opacity=".42"/>
-        <rect x="29" y="23" width="20" height="9" rx="2" fill="#5A7A4A" opacity=".38"/>
-        <rect x="12" y="60" width="8" height="22" rx="2" fill="#E8734A" opacity=".3"/>
-        <circle cx="30" cy="74" r="7" fill="#5A7A4A" opacity=".28"/>
-        <!-- 문 -->
-        <g class="door door-ex">
-          <rect x="6" y="14" width="52" height="96" rx="6" fill="#F5F2EE" stroke="#C6C2BA" stroke-width="1.5"/>
-          <line x1="6" y1="52" x2="58" y2="52" stroke="#D2CEC6" stroke-width="1.2"/>
-          <rect x="54" y="23" width="4" height="14" rx="2" fill="#9E9A94"/>
-          <rect x="54" y="56" width="4" height="14" rx="2" fill="#9E9A94"/>
-        </g>
+    <!-- 냉동실 내부 (위) -->
+    <rect x="30" y="20" width="160" height="75" rx="13" fill="url(#innerLight)"/>
+    <!-- 냉동실 선반 -->
+    <rect x="36" y="58" width="148" height="4" rx="2" fill="#C8C4BC" opacity=".6"/>
 
-        <!-- 운동 캐릭터 -->
-        <g class="lean-ex" style="transform-origin:112px 130px">
-          <!-- 오른팔(냉장고) -->
-          <g class="arm-ex">
-            <path d="M117 61 C 100 57 83 53 65 51" stroke="#1C1C1C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <circle cx="63" cy="51" r="4" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          </g>
-          <!-- 왼팔(뒤) -->
-          <path d="M107 61 C 98 66 90 72 84 77" stroke="#1C1C1C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <circle cx="82" cy="79" r="4" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          <!-- 몸통 3D -->
-          <rect x="109" y="55" width="8" height="26" rx="4" fill="url(#bg1)"/>
-          <!-- 왼다리(앞) -->
-          <path d="M110 81 C 104 96 99 112 94 126" stroke="#1C1C1C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <ellipse cx="91" cy="128" rx="8" ry="4" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          <!-- 오른다리(뒤 들림) -->
-          <path d="M116 81 C 122 93 128 103 132 109" stroke="#1C1C1C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <ellipse cx="134" cy="111" rx="7" ry="4" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          <!-- 목 -->
-          <rect x="109" y="48" width="6" height="8" rx="3" fill="url(#bg1)"/>
-          <!-- 머리 (계란형 3D) -->
-          <ellipse cx="112" cy="33" rx="13" ry="17" fill="url(#hg1)"/>
-          <!-- 이마 하이라이트 -->
-          <ellipse cx="106" cy="22" rx="5" ry="2.8" fill="white" opacity=".18" transform="rotate(-18,106,22)"/>
-          <!-- 헤어밴드 -->
-          <rect x="99" y="19" width="26" height="4.5" rx="2" fill="white" opacity=".85"/>
-          <!-- 왼눈 -->
-          <ellipse cx="105" cy="30" rx="3.5" ry="4" fill="white"/>
-          <circle cx="106" cy="31" r="2.3" fill="#0A0A0A"/>
-          <circle cx="107.3" cy="29.8" r=".75" fill="white"/>
-          <!-- 오른눈 -->
-          <ellipse cx="119" cy="28" rx="3.5" ry="4" fill="white"/>
-          <circle cx="120" cy="29" r="2.3" fill="#0A0A0A"/>
-          <circle cx="121.3" cy="27.8" r=".75" fill="white"/>
-          <!-- 입 -->
-          <path d="M105 41 Q112 48 119 41" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-        </g>
-      </svg>
-      <div class="scene-label">🏃 운동하는</div>
-    </div>
+    <!-- 냉동실 음식들 -->
+    <g class="food-item">
+      <!-- 아이스크림 통 -->
+      <rect x="40" y="30" width="28" height="22" rx="5" fill="#7EC8E3"/>
+      <rect x="40" y="30" width="28" height="8" rx="5" fill="#5AB8D3"/>
+      <text x="54" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">🧊</text>
+    </g>
+    <g class="food-item">
+      <!-- 냉동 채소 봉지 -->
+      <rect x="76" y="32" width="26" height="20" rx="4" fill="#8BC87A"/>
+      <text x="89" y="46" text-anchor="middle" font-size="9" fill="white">🥦</text>
+    </g>
+    <g class="food-item">
+      <!-- 냉동 고기 -->
+      <rect x="110" y="32" width="26" height="20" rx="4" fill="#F4A0A0"/>
+      <text x="123" y="46" text-anchor="middle" font-size="9" fill="white">🥩</text>
+    </g>
+    <g class="food-item">
+      <!-- 아이스팩 -->
+      <rect x="144" y="34" width="24" height="18" rx="4" fill="#A8D8EA"/>
+      <text x="156" y="47" text-anchor="middle" font-size="8" fill="white">❄️</text>
+    </g>
 
-    <!-- ══════ 씬2: 다이어트 ══════ -->
-    <div class="scene-wrap">
-      <svg class="sb" width="150" height="150" viewBox="0 0 150 150">
-        <defs>
-          <radialGradient id="hg2" cx="33%" cy="27%" r="68%">
-            <stop offset="0%" stop-color="#525252"/>
-            <stop offset="52%" stop-color="#1E1E1E"/>
-            <stop offset="100%" stop-color="#050505"/>
-          </radialGradient>
-          <linearGradient id="bg2" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%"   stop-color="#0C0C0C"/>
-            <stop offset="35%"  stop-color="#2E2E2E"/>
-            <stop offset="65%"  stop-color="#262626"/>
-            <stop offset="100%" stop-color="#0C0C0C"/>
-          </linearGradient>
-        </defs>
+    <!-- 냉장실 내부 (아래) -->
+    <rect x="30" y="100" width="160" height="126" rx="0" fill="url(#innerLight)"/>
+    <rect x="30" y="196" width="160" height="30" rx="0" fill="url(#innerLight)"/>
 
-        <rect x="6" y="14" width="52" height="96" rx="6" fill="#CCCAC2" stroke="#9E9A92" stroke-width="1.5"/>
-        <circle cx="20" cy="31" r="5.5" fill="#E8734A" opacity=".42"/>
-        <rect x="29" y="23" width="20" height="9" rx="2" fill="#5A7A4A" opacity=".38"/>
-        <!-- 다이어트 금지 표시 -->
-        <circle cx="35" cy="78" r="8" fill="#E8734A" opacity=".38"/>
-        <line x1="29" y1="72" x2="41" y2="84" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <!-- 냉장실 선반 1 -->
+    <rect x="36" y="136" width="148" height="4" rx="2" fill="#C8C4BC" opacity=".5"/>
+    <!-- 냉장실 선반 2 -->
+    <rect x="36" y="168" width="148" height="4" rx="2" fill="#C8C4BC" opacity=".5"/>
 
-        <g class="door door-diet">
-          <rect x="6" y="14" width="52" height="96" rx="6" fill="#F5F2EE" stroke="#C6C2BA" stroke-width="1.5"/>
-          <line x1="6" y1="52" x2="58" y2="52" stroke="#D2CEC6" stroke-width="1.2"/>
-          <rect x="54" y="23" width="4" height="14" rx="2" fill="#9E9A94"/>
-          <rect x="54" y="56" width="4" height="14" rx="2" fill="#9E9A94"/>
-        </g>
+    <!-- 냉장실 음식들 (위 선반) -->
+    <g class="food-item">
+      <!-- 우유 -->
+      <rect x="38" y="108" width="20" height="26" rx="4" fill="#F0F0F0" stroke="#D8D8D8" stroke-width="1"/>
+      <rect x="38" y="108" width="20" height="8" rx="4" fill="#E8E8E8"/>
+      <text x="48" y="128" text-anchor="middle" font-size="8" fill="#888">🥛</text>
+    </g>
+    <g class="food-item">
+      <!-- 당근 -->
+      <ellipse cx="75" cy="121" rx="8" ry="12" fill="#FF8C42"/>
+      <path d="M72 110 Q75 104 78 110" stroke="#5A7A4A" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+    <g class="food-item">
+      <!-- 달걀 트레이 -->
+      <rect x="90" y="112" width="40" height="18" rx="4" fill="#F5E6C8"/>
+      <circle cx="100" cy="121" r="5" fill="#F0D8A0"/>
+      <circle cx="112" cy="121" r="5" fill="#F0D8A0"/>
+      <circle cx="124" cy="121" r="5" fill="#F0D8A0"/>
+    </g>
+    <g class="food-item">
+      <!-- 주스병 -->
+      <rect x="140" y="108" width="16" height="26" rx="5" fill="#FFB347"/>
+      <rect x="143" y="106" width="10" height="5" rx="2" fill="#FF8C42"/>
+      <text x="148" y="126" text-anchor="middle" font-size="7" fill="white">OJ</text>
+    </g>
+    <g class="food-item">
+      <!-- 브로콜리 -->
+      <circle cx="176" cy="115" r="9" fill="#5A8A4A"/>
+      <rect x="173" y="122" width="6" height="10" rx="2" fill="#4A7A3A"/>
+    </g>
 
-        <!-- 다이어트 캐릭터 -->
-        <g class="lean-diet" style="transform-origin:112px 130px">
-          <!-- 오른팔(냉장고) -->
-          <g class="arm-diet">
-            <path d="M117 61 C 100 57 83 53 65 51" stroke="#1C1C1C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <circle cx="63" cy="51" r="4" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          </g>
-          <!-- 왼팔(뺨에 손 - 갈등) -->
-          <path d="M107 61 C 101 65 98 68 97 70" stroke="#1C1C1C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <circle cx="96" cy="72" r="4" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          <!-- 몸통(더 슬림) -->
-          <rect x="110" y="55" width="6" height="26" rx="3" fill="url(#bg2)"/>
-          <!-- 다리 (모음) -->
-          <path d="M111 81 C 108 97 107 113 106 127" stroke="#1C1C1C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <ellipse cx="104" cy="129" rx="8" ry="4" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          <path d="M115 81 C 117 97 118 113 119 127" stroke="#1C1C1C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <ellipse cx="120" cy="129" rx="8" ry="4" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          <!-- 목 -->
-          <rect x="110" y="48" width="5" height="8" rx="2.5" fill="url(#bg2)"/>
-          <!-- 머리 계란형 3D -->
-          <ellipse cx="112" cy="33" rx="13" ry="17" fill="url(#hg2)"/>
-          <ellipse cx="106" cy="22" rx="5" ry="2.8" fill="white" opacity=".18" transform="rotate(-18,106,22)"/>
-          <!-- 왼눈(갈망하는) -->
-          <ellipse cx="104" cy="29" rx="4" ry="4.5" fill="white"/>
-          <circle cx="105" cy="30" r="2.6" fill="#0A0A0A"/>
-          <circle cx="106.4" cy="28.5" r=".8" fill="white"/>
-          <!-- 오른눈(갈망하는) -->
-          <ellipse cx="119" cy="27" rx="4" ry="4.5" fill="white"/>
-          <circle cx="120" cy="28" r="2.6" fill="#0A0A0A"/>
-          <circle cx="121.4" cy="26.5" r=".8" fill="white"/>
-          <!-- 입(갈등 지그재그) -->
-          <path d="M105 41 Q108 37 111 41 Q114 45 117 41" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-          <!-- 볼 홍조 -->
-          <ellipse cx="101" cy="38" rx="4" ry="2.5" fill="white" opacity=".12"/>
-          <ellipse cx="123" cy="36" rx="4" ry="2.5" fill="white" opacity=".12"/>
-        </g>
-      </svg>
-      <div class="scene-label">🥗 다이어트하는</div>
-    </div>
+    <!-- 중간 선반 음식 -->
+    <g class="food-item">
+      <!-- 두부 -->
+      <rect x="38" y="144" width="30" height="18" rx="3" fill="#F8F4EC" stroke="#E0DCD0" stroke-width="1"/>
+      <text x="53" y="157" text-anchor="middle" font-size="8" fill="#A89880">두부</text>
+    </g>
+    <g class="food-item">
+      <!-- 요거트 -->
+      <rect x="76" y="144" width="22" height="18" rx="5" fill="#FFE4E1"/>
+      <rect x="76" y="144" width="22" height="6" rx="5" fill="#FFB3AA"/>
+      <text x="87" y="158" text-anchor="middle" font-size="7" fill="#CC6060">🍓</text>
+    </g>
+    <g class="food-item">
+      <!-- 닭가슴살 -->
+      <rect x="106" y="144" width="36" height="18" rx="4" fill="#F5C8A0"/>
+      <text x="124" y="157" text-anchor="middle" font-size="8" fill="#A06030">닭가슴살</text>
+    </g>
+    <g class="food-item">
+      <!-- 채소 -->
+      <ellipse cx="165" cy="153" rx="18" ry="9" fill="#7AC86A"/>
+      <text x="165" y="157" text-anchor="middle" font-size="9">🥬</text>
+    </g>
 
-    <!-- ══════ 씬3: 근력 ══════ -->
-    <div class="scene-wrap">
-      <svg class="sb" width="150" height="150" viewBox="0 0 150 150">
-        <defs>
-          <radialGradient id="hg3" cx="33%" cy="27%" r="68%">
-            <stop offset="0%" stop-color="#525252"/>
-            <stop offset="52%" stop-color="#1E1E1E"/>
-            <stop offset="100%" stop-color="#050505"/>
-          </radialGradient>
-          <linearGradient id="bg3" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%"   stop-color="#0C0C0C"/>
-            <stop offset="35%"  stop-color="#2E2E2E"/>
-            <stop offset="65%"  stop-color="#262626"/>
-            <stop offset="100%" stop-color="#0C0C0C"/>
-          </linearGradient>
-        </defs>
+    <!-- 하단 서랍 음식 -->
+    <g class="food-item">
+      <text x="60"  y="192" text-anchor="middle" font-size="16">🍎</text>
+    </g>
+    <g class="food-item">
+      <text x="90"  y="192" text-anchor="middle" font-size="16">🥕</text>
+    </g>
+    <g class="food-item">
+      <text x="120" y="192" text-anchor="middle" font-size="16">🥒</text>
+    </g>
+    <g class="food-item">
+      <text x="150" y="192" text-anchor="middle" font-size="16">🍋</text>
+    </g>
 
-        <rect x="6" y="14" width="52" height="96" rx="6" fill="#CCCAC2" stroke="#9E9A92" stroke-width="1.5"/>
-        <circle cx="20" cy="31" r="5.5" fill="#E8734A" opacity=".42"/>
-        <rect x="29" y="23" width="20" height="9" rx="2" fill="#5A7A4A" opacity=".38"/>
-        <!-- 단백질 병 -->
-        <rect x="12" y="56" width="9" height="26" rx="4" fill="#C8A0E0" opacity=".45"/>
-        <text x="16.5" y="74" text-anchor="middle" font-size="6" fill="white" font-weight="700">P</text>
+    <!-- ── 냉장고 문 (앞) ── -->
+    <!-- 냉동실 문 -->
+    <g class="fridge-door-top">
+      <rect x="28" y="18" width="164" height="82" rx="13" fill="url(#doorGrad)" stroke="#A8A49E" stroke-width="2"/>
+      <!-- 문 가운데 패널 선 -->
+      <rect x="36" y="28" width="148" height="62" rx="8" fill="none" stroke="#C4C0B8" stroke-width="1"/>
+      <!-- 디스플레이 패널 -->
+      <rect x="70" y="36" width="80" height="30" rx="6" fill="#2A2A32"/>
+      <text x="110" y="51" text-anchor="middle" font-size="9" fill="#7EE8A2" font-family="monospace">28°F / -2°C</text>
+      <rect x="80" y="56" width="16" height="6" rx="2" fill="#3A3A42"/>
+      <rect x="100" y="56" width="16" height="6" rx="2" fill="#3A3A42"/>
+      <rect x="120" y="56" width="16" height="6" rx="2" fill="#3A3A42"/>
+      <!-- 손잡이 -->
+      <rect x="170" y="34" width="8" height="54" rx="4" fill="#C0BCB6" stroke="#A8A4A0" stroke-width="1"/>
+      <rect x="171" y="36" width="6" height="50" rx="3" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    </g>
 
-        <g class="door door-mu">
-          <rect x="6" y="14" width="52" height="96" rx="6" fill="#F5F2EE" stroke="#C6C2BA" stroke-width="1.5"/>
-          <line x1="6" y1="52" x2="58" y2="52" stroke="#D2CEC6" stroke-width="1.2"/>
-          <rect x="54" y="23" width="4" height="14" rx="2" fill="#9E9A94"/>
-          <rect x="54" y="56" width="4" height="14" rx="2" fill="#9E9A94"/>
-        </g>
+    <!-- 냉장실 문 -->
+    <g class="fridge-door-bottom">
+      <rect x="28" y="103" width="164" height="125" rx="8" fill="url(#doorGrad)" stroke="#A8A49E" stroke-width="2"/>
+      <!-- 문 테두리 패널 -->
+      <rect x="36" y="111" width="148" height="109" rx="6" fill="none" stroke="#C4C0B8" stroke-width="1"/>
+      <!-- 얼음/물 디스펜서 -->
+      <rect x="50" y="122" width="50" height="60" rx="6" fill="#2A2A32"/>
+      <rect x="55" y="128" width="40" height="20" rx="4" fill="#1A1A22"/>
+      <text x="75" y="142" text-anchor="middle" font-size="7" fill="#7EE8A2" font-family="monospace">ICE  WATER</text>
+      <rect x="60" y="152" width="30" height="24" rx="4" fill="#3A3A42"/>
+      <rect x="65" y="156" width="20" height="16" rx="3" fill="#2A2A32"/>
+      <!-- 손잡이 -->
+      <rect x="170" y="118" width="8" height="96" rx="4" fill="#C0BCB6" stroke="#A8A4A0" stroke-width="1"/>
+      <rect x="171" y="120" width="6" height="92" rx="3" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    </g>
 
-        <!-- 근력 캐릭터 -->
-        <g class="lean-mu" style="transform-origin:112px 130px">
-          <!-- 오른팔(냉장고 - 두꺼움) -->
-          <g class="arm-mu">
-            <path d="M119 60 C 102 56 84 52 66 50" stroke="#1C1C1C" stroke-width="3" fill="none" stroke-linecap="round"/>
-            <circle cx="64" cy="50" r="4.5" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          </g>
-          <!-- 왼팔(알통 flex) -->
-          <g class="flex-arm">
-            <path d="M105 60 C 96 52 88 46 84 42" stroke="#1C1C1C" stroke-width="3" fill="none" stroke-linecap="round"/>
-            <!-- 알통 볼록 -->
-            <ellipse cx="94" cy="52" rx="6" ry="4" fill="#1C1C1C"/>
-            <circle cx="83" cy="41" r="4.5" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          </g>
-          <!-- 몸통(조금 더 넓음) -->
-          <rect x="108" y="55" width="10" height="26" rx="4" fill="url(#bg3)"/>
-          <!-- 다리 와이드 스탠스 -->
-          <path d="M110 81 C 102 96 95 111 90 125" stroke="#1C1C1C" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <ellipse cx="87" cy="127" rx="9" ry="4.5" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          <path d="M118 81 C 126 96 132 111 136 125" stroke="#1C1C1C" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <ellipse cx="138" cy="127" rx="9" ry="4.5" fill="white" stroke="#1C1C1C" stroke-width="1.2"/>
-          <!-- 목(두꺼움) -->
-          <rect x="109" y="48" width="8" height="8" rx="4" fill="url(#bg3)"/>
-          <!-- 머리 계란형 3D -->
-          <ellipse cx="113" cy="32" rx="14" ry="17" fill="url(#hg3)"/>
-          <ellipse cx="107" cy="21" rx="5.5" ry="3" fill="white" opacity=".18" transform="rotate(-18,107,21)"/>
-          <!-- 왼눈(강렬) -->
-          <ellipse cx="106" cy="28" rx="3.5" ry="4" fill="white"/>
-          <circle cx="107" cy="29" r="2.3" fill="#0A0A0A"/>
-          <circle cx="108.3" cy="27.8" r=".75" fill="white"/>
-          <!-- 오른눈(강렬) -->
-          <ellipse cx="120" cy="26" rx="3.5" ry="4" fill="white"/>
-          <circle cx="121" cy="27" r="2.3" fill="#0A0A0A"/>
-          <circle cx="122.3" cy="25.8" r=".75" fill="white"/>
-          <!-- 강렬한 눈썹 -->
-          <path d="M102 23 L110 25" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M116 23 L124 24" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-          <!-- 입(굳은 결의) -->
-          <path d="M106 39 L120 39" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-          <!-- 광대 하이라이트 -->
-          <ellipse cx="103" cy="36" rx="3.5" ry="2" fill="white" opacity=".1"/>
-        </g>
-      </svg>
-      <div class="scene-label">💪 근력 키우는</div>
-    </div>
+    <!-- 냉장고 빛 효과 (문 열릴 때) -->
+    <ellipse class="fridge-light" cx="110" cy="120" rx="70" ry="100"
+      fill="url(#innerLight)" opacity="0"/>
 
+    <!-- 냉장고 하단 발 -->
+    <rect x="46"  y="225" width="20" height="10" rx="4" fill="#A8A49E"/>
+    <rect x="154" y="225" width="20" height="10" rx="4" fill="#A8A49E"/>
+  </svg>
   </div>
 </header>
 
