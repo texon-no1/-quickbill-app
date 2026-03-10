@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>출석체크 | 조졸란 다이어트</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: #f2ede4; min-height: 100vh; }
+
+    .header {
+      background: #4a5e3a;
+      color: white; padding: 20px 20px 30px;
+      text-align: center; position: relative;
+    }
+    .back-btn {
+      position: absolute; left: 16px; top: 20px;
+      color: white; text-decoration: none; font-size: 22px;
+    }
+    .header h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .header p  { font-size: 13px; opacity: 0.85; }
+
+    .point-card {
+      background: white; margin: -18px 16px 0;
+      border-radius: 16px; padding: 20px;
+      box-shadow: 0 4px 20px rgba(74,94,58,0.15);
+      display: flex; justify-content: space-around; text-align: center;
+    }
+    .point-item .value        { font-size: 26px; font-weight: 800; color: #4a5e3a; }
+    .point-item .label        { font-size: 12px; color: #888; margin-top: 2px; }
+    .point-item .streak-value { font-size: 26px; font-weight: 800; color: #e07b39; }
+    .divider { width: 1px; background: #eee; }
+
+    .section {
+      margin: 20px 16px 0; background: white;
+      border-radius: 16px; padding: 20px;
+      box-shadow: 0 2px 10px rgba(74,94,58,0.08);
+    }
+    .section-title {
+      font-size: 15px; font-weight: 700; color: #333;
+      margin-bottom: 16px; display: flex; align-items: center; gap: 6px;
+    }
+
+    .attend-btn {
+      width: 100%; padding: 16px; border: none;
+      border-radius: 12px; font-size: 17px;
+      font-weight: 700; cursor: pointer; transition: all 0.3s;
+    }
+    .attend-btn.active {
+      background: #4a5e3a;
+      color: white; box-shadow: 0 4px 15px rgba(74,94,58,0.35);
+    }
+    .attend-btn.done {
+      background: #eef3eb; color: #4a5e3a; cursor: not-allowed;
+    }
+    .attend-msg { text-align: center; font-size: 13px; color: #888; margin-top: 10px; }
+
+    .calendar-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 14px;
+    }
+    .cal-nav {
+      background: none; border: none; font-size: 20px;
+      cursor: pointer; color: #4a5e3a; padding: 4px 8px;
+    }
+    .cal-month { font-size: 15px; font-weight: 700; color: #333; }
+    .cal-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 6px; text-align: center;
+    }
+    .cal-day-name { font-size: 11px; color: #aaa; font-weight: 600; padding: 4px 0; }
+    .cal-day {
+      aspect-ratio: 1; display: flex; align-items: center;
+      justify-content: center; border-radius: 50%;
+      font-size: 13px; color: #555; font-weight: 500;
+    }
+    .cal-day.checked  { background: #4a5e3a; color: white; font-weight: 700; }
+    .cal-day.today    { border: 2px solid #4a5e3a; color: #4a5e3a; font-weight: 700; }
+    .cal-day.today.checked { border: none; }
+    .cal-day.empty    { visibility: hidden; }
+
+    .reward-list { display: flex; flex-direction: column; gap: 12px; }
+    .reward-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px; border-radius: 10px;
+      background: #f8f5ef; border: 1.5px solid #e8e0d0;
+    }
+    .reward-item.achieved { background: #eef3eb; border-color: #4a5e3a; }
+    .reward-item.next     { background: #fff8f0; border-color: #e07b39; }
+    .reward-icon  { font-size: 26px; }
+    .reward-info  { flex: 1; }
+    .reward-title { font-size: 13px; font-weight: 700; color: #333; }
+    .reward-desc  { font-size: 12px; color: #888; margin-top: 2px; }
+    .reward-badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
+    .badge-done { background: #eef3eb; color: #4a5e3a; }
+    .badge-next { background: #fff3e0; color: #e07b39; }
+    .badge-lock { background: #f5f5f5; color: #aaa; }
+
+    .use-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .use-item {
+      padding: 14px 12px; border-radius: 12px;
+      background: #f8f5ef; border: 1.5px solid #e8e0d0; text-align: center;
+    }
+    .use-item .use-icon  { font-size: 24px; margin-bottom: 6px; }
+    .use-item .use-title { font-size: 12px; font-weight: 700; color: #333; }
+    .use-item .use-point { font-size: 11px; color: #4a5e3a; font-weight: 600; margin-top: 3px; }
+
+    .history-list {
+      display: flex; flex-direction: column; gap: 8px;
+      max-height: 200px; overflow-y: auto;
+    }
+    .history-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 12px; background: #f8f5ef; border-radius: 8px; font-size: 13px;
+    }
+    .history-date  { color: #555; }
+    .history-point { color: #4a5e3a; font-weight: 700; }
+
+    .bottom-space { height: 30px; }
+
+    .toast {
+      position: fixed; bottom: 80px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #4a5e3a; color: white;
+      padding: 12px 24px; border-radius: 24px;
+      font-size: 14px; font-weight: 600;
+      opacity: 0; transition: all 0.3s; z-index: 9999; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a href="index.html" class="back-btn">←</a>
+  <h1>🗓️ 출석체크</h1>
+  <p>매일 출석하고 포인트를 모아요!</p>
+</div>
+
+<div class="point-card">
+  <div class="point-item">
+    <div class="value" id="totalPoints">0P</div>
+    <div class="label">총 포인트</div>
+  </div>
+  <div class="divider"></div>
+  <div class="point-item">
+    <div class="streak-value" id="streakCount">0일</div>
+    <div class="label">🔥 연속 출석</div>
+  </div>
+  <div class="divider"></div>
+  <div class="point-item">
+    <div class="value" id="totalAttend">0일</div>
+    <div class="label">총 출석일</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">✅ 오늘의 출석</div>
+  <button class="attend-btn active" id="attendBtn" onclick="doAttend()">출석하기 (+10P)</button>
+  <p class="attend-msg" id="attendMsg">오늘 아직 출석하지 않았어요</p>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 출석 달력</div>
+  <div class="calendar-header">
+    <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+    <span class="cal-month" id="calMonth"></span>
+    <button class="cal-nav" onclick="changeMonth(1)">›</button>
+  </div>
+  <div class="cal-grid" id="calGrid"></div>
+</div>
+
+<div class="section">
+  <div class="section-title">🏆 연속 출석 보상</div>
+  <div class="reward-list" id="rewardList"></div>
+</div>
+
+<div class="section">
+  <div class="section-title">🎁 포인트 사용처</div>
+  <div class="use-list">
+    <div class="use-item"><div class="use-icon">🛒</div><div class="use-title">쿠팡 할인쿠폰</div><div class="use-point">500P</div></div>
+    <div class="use-item"><div class="use-icon">📋</div><div class="use-title">맞춤 식단표</div><div class="use-point">200P</div></div>
+    <div class="use-item"><div class="use-icon">💪</div><div class="use-title">프리미엄 플랜</div><div class="use-point">1,000P</div></div>
+    <div class="use-item"><div class="use-icon">🎫</div><div class="use-title">제휴 기프티콘</div><div class="use-point">3,000P</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">📜 출석 기록</div>
+  <div class="history-list" id="historyList">
+    <p style="text-align:center;color:#aaa;font-size:13px;">아직 출석 기록이 없어요</p>
+  </div>
+</div>
+
+<div class="bottom-space"></div>
+<div class="toast" id="toast"></div>
+<script src="attendance.js"></script>
+</body>
+</html>
