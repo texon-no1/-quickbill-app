@@ -21,6 +21,47 @@
     </style>
 </head>
 <body>
+    <div id="attendPopup" style="
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.5); z-index:9999;
+  align-items:center; justify-content:center;">
+  <div style="
+    background:white; border-radius:24px;
+    padding:30px 24px; width:300px; margin:0 16px;
+    text-align:center; position:relative;
+    box-shadow:0 20px 60px rgba(74,94,58,0.3);">
+    <button onclick="closePopup()" style="
+      position:absolute; top:14px; right:16px;
+      background:none; border:none; font-size:20px;
+      cursor:pointer; color:#aaa;">✕</button>
+    <div style="font-size:48px; margin-bottom:10px;">🗓️</div>
+    <h2 style="font-size:18px; font-weight:800; color:#333; margin-bottom:6px;">오늘의 출석체크</h2>
+    <p style="font-size:13px; color:#888; margin-bottom:20px;" id="popupMsg">출석하고 포인트를 받아요!</p>
+    <div style="
+      background:#f8f5ef; border-radius:12px; padding:14px;
+      margin-bottom:20px; display:flex; justify-content:space-around;">
+      <div>
+        <div style="font-size:22px; font-weight:800; color:#4a5e3a;" id="popupPoints">0P</div>
+        <div style="font-size:11px; color:#aaa;">보유 포인트</div>
+      </div>
+      <div style="width:1px; background:#eee;"></div>
+      <div>
+        <div style="font-size:22px; font-weight:800; color:#e07b39;" id="popupStreak">0일</div>
+        <div style="font-size:11px; color:#aaa;">🔥 연속 출석</div>
+      </div>
+    </div>
+    <button id="popupAttendBtn" onclick="popupAttend()" style="
+      width:100%; padding:14px; border:none; border-radius:12px;
+      font-size:16px; font-weight:700; cursor:pointer;
+      background:#4a5e3a; color:white; margin-bottom:10px;
+      box-shadow:0 4px 15px rgba(74,94,58,0.35);">
+      출석하기 (+10P)
+    </button>
+    <a href="attendance.html" style="display:block; font-size:13px; color:#4a5e3a; text-decoration:none;">
+      출석 달력 전체보기 →
+    </a>
+  </div>
+</div>
 <div id="root"></div>
 <script type="text/babel">
 const { useState } = React;
@@ -491,5 +532,64 @@ function Settings({ user }) {
 
 ReactDOM.render(<App />, document.getElementById("root"));
 </script>
+ <script>
+  const ATTEND_KEY = 'attendance_data';
+  function getAttendData() {
+    const raw = localStorage.getItem(ATTEND_KEY);
+    return raw ? JSON.parse(raw) : {totalPoints:0,streak:0,totalDays:0,lastAttendDate:null,attendedDates:[],history:[]};
+  }
+  function saveAttendData(d) { localStorage.setItem(ATTEND_KEY, JSON.stringify(d)); }
+  function todayStr() { return new Date().toISOString().slice(0,10); }
+  function yestStr()  { const d=new Date(); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); }
+
+  function openAttendPopup() {
+    const data = getAttendData();
+    document.getElementById('popupPoints').textContent = data.totalPoints + 'P';
+    document.getElementById('popupStreak').textContent = data.streak + '일';
+    if (data.lastAttendDate === todayStr()) {
+      document.getElementById('popupMsg').textContent = '오늘 이미 출석했어요! 🎉';
+      const btn = document.getElementById('popupAttendBtn');
+      btn.textContent = '✅ 출석 완료!';
+      btn.style.background = '#eef3eb';
+      btn.style.color = '#4a5e3a';
+      btn.style.boxShadow = 'none';
+      btn.onclick = null;
+    }
+    document.getElementById('attendPopup').style.display = 'flex';
+  }
+
+  function closePopup() {
+    document.getElementById('attendPopup').style.display = 'none';
+  }
+
+  function popupAttend() {
+    const data = getAttendData();
+    const today = todayStr();
+    if (data.lastAttendDate === today) return;
+    data.streak = data.lastAttendDate === yestStr() ? data.streak + 1 : 1;
+    data.totalPoints += 10; data.totalDays += 1; data.lastAttendDate = today;
+    if (!data.attendedDates.includes(today)) data.attendedDates.push(today);
+    data.history.unshift({date:today, point:10, reason:'출석체크'});
+    saveAttendData(data);
+    document.getElementById('popupPoints').textContent = data.totalPoints + 'P';
+    document.getElementById('popupStreak').textContent = data.streak + '일';
+    document.getElementById('popupMsg').textContent = '+10P 획득! ' + data.streak + '일 연속 🔥';
+    const btn = document.getElementById('popupAttendBtn');
+    btn.textContent = '✅ 출석 완료!';
+    btn.style.background = '#eef3eb';
+    btn.style.color = '#4a5e3a';
+    btn.style.boxShadow = 'none';
+    btn.onclick = null;
+  }
+
+  // 앱 실행 시 하루 1번 자동 팝업 (1.5초 후)
+  (function() {
+    const shown = sessionStorage.getItem('attend_popup_shown');
+    if (!shown) {
+      setTimeout(openAttendPopup, 1500);
+      sessionStorage.setItem('attend_popup_shown', '1');
+    }
+  })();
+</script>   
 </body>
 </html>
