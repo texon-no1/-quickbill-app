@@ -47,7 +47,6 @@
     }
     textarea:focus { outline: none; border-color: var(--accent-olive); box-shadow: 0 0 0 3px rgba(90,122,74,.12); }
 
-    /* ── 목표별 타겟 광고 배너 ── */
     .goal-ad {
       margin-top: 14px; border-radius: 14px; padding: 14px 16px;
       border: 1.5px solid var(--border-color); background: var(--bg-color);
@@ -93,7 +92,6 @@
     .recipe-tags { font-size: .78rem; color: var(--accent-olive); margin-bottom: 7px; font-weight: 600; }
     .recipe-desc { font-size: .85rem; color: var(--text-muted); margin-bottom: 8px; }
 
-    /* ── 재료 + 쿠팡 장바구니 버튼 ── */
     .ingredient-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border-color); }
     .ingredient-row:last-child { border-bottom: none; }
     .ingredient-name { font-size: .83rem; color: var(--text-muted); }
@@ -115,7 +113,6 @@
     .recipe-link a { font-size: .8rem; color: var(--accent-orange); text-decoration: none; font-weight: 600; }
     .recipe-link a:hover { text-decoration: underline; }
 
-    /* ── 결과 하단 타겟 상품 추천 ── */
     .product-recommend {
       margin-top: 20px; padding: 18px; border-radius: 16px;
       background: linear-gradient(135deg, #F0F4EC 0%, #FFF8F4 100%);
@@ -149,248 +146,345 @@
   </style>
 </head>
 <body>
-  <header>
-    <a class="header-back" href="naengjanggo-intro.html">←</a>
-    <div class="header-text">
-      <div class="title">냉장고 피트니스 🥗</div>
-      <div class="subtitle">목표와 재료를 입력하면 딱 맞는 한 끼를 추천해드려요.</div>
+
+<!-- ===== 출석체크 팝업 ===== -->
+<div id="attendPopup" style="
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.5); z-index:9999;
+  align-items:center; justify-content:center;">
+  <div style="
+    background:white; border-radius:24px;
+    padding:30px 24px; width:300px; margin:0 16px;
+    text-align:center; position:relative;
+    box-shadow:0 20px 60px rgba(74,94,58,0.3);">
+    <button onclick="closePopup()" style="
+      position:absolute; top:14px; right:16px;
+      background:none; border:none; font-size:20px;
+      cursor:pointer; color:#aaa;">✕</button>
+    <div style="font-size:48px; margin-bottom:10px;">🗓️</div>
+    <h2 style="font-size:18px; font-weight:800; color:#333; margin-bottom:6px;">오늘의 출석체크</h2>
+    <p style="font-size:13px; color:#888; margin-bottom:20px;" id="popupMsg">출석하고 포인트를 받아요!</p>
+    <div style="
+      background:#f8f5ef; border-radius:12px; padding:14px;
+      margin-bottom:20px; display:flex; justify-content:space-around;">
+      <div>
+        <div style="font-size:22px; font-weight:800; color:#4a5e3a;" id="popupPoints">0P</div>
+        <div style="font-size:11px; color:#aaa;">보유 포인트</div>
+      </div>
+      <div style="width:1px; background:#eee;"></div>
+      <div>
+        <div style="font-size:22px; font-weight:800; color:#e07b39;" id="popupStreak">0일</div>
+        <div style="font-size:11px; color:#aaa;">🔥 연속 출석</div>
+      </div>
     </div>
-  </header>
+    <button id="popupAttendBtn" onclick="popupAttend()" style="
+      width:100%; padding:14px; border:none; border-radius:12px;
+      font-size:16px; font-weight:700; cursor:pointer;
+      background:#4a5e3a; color:white; margin-bottom:10px;
+      box-shadow:0 4px 15px rgba(74,94,58,0.35);">
+      출석하기 (+10P)
+    </button>
+    <a href="attendance.html" style="display:block; font-size:13px; color:#4a5e3a; text-decoration:none;">
+      출석 달력 전체보기 →
+    </a>
+  </div>
+</div>
+<!-- ===== 출석체크 팝업 끝 ===== -->
 
-  <main>
-    <section class="panel">
-      <div class="panel-title">1. 목표와 재료를 알려주세요</div>
+<header>
+  <a class="header-back" href="naengjanggo-intro.html">←</a>
+  <div class="header-text">
+    <div class="title">냉장고 피트니스 🥗</div>
+    <div class="subtitle">목표와 재료를 입력하면 딱 맞는 한 끼를 추천해드려요.</div>
+  </div>
+</header>
 
-      <div class="field-group">
-        <label class="field-label">헬스 목표</label>
-        <div class="help-text">원하는 방향을 고르면 그에 맞는 한 끼를 추천해드려요.</div>
-        <div class="radio-group">
-          <label class="radio-pill"><input type="radio" name="goal" value="diet" checked/>🥗 다이어트</label>
-          <label class="radio-pill"><input type="radio" name="goal" value="muscle"/>💪 근력/벌크업</label>
-          <label class="radio-pill"><input type="radio" name="goal" value="maintain"/>🌿 유지/건강관리</label>
+<main>
+  <section class="panel">
+    <div class="panel-title">1. 목표와 재료를 알려주세요</div>
+
+    <div class="field-group">
+      <label class="field-label">헬스 목표</label>
+      <div class="help-text">원하는 방향을 고르면 그에 맞는 한 끼를 추천해드려요.</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="goal" value="diet" checked/>🥗 다이어트</label>
+        <label class="radio-pill"><input type="radio" name="goal" value="muscle"/>💪 근력/벌크업</label>
+        <label class="radio-pill"><input type="radio" name="goal" value="maintain"/>🌿 유지/건강관리</label>
+      </div>
+      <div class="goal-ad active" id="ad-diet">
+        <div class="goal-ad-icon">🥗</div>
+        <div class="goal-ad-text">
+          <strong>다이어트 식단 추천 <span class="goal-ad-badge">AD</span></strong>
+          <span>저칼로리 간편식 · 식단 관리 앱 · 체중계</span>
         </div>
-        <!-- ── 목표별 타겟 광고 ── -->
-        <div class="goal-ad active" id="ad-diet">
-          <div class="goal-ad-icon">🥗</div>
-          <div class="goal-ad-text">
-            <strong>다이어트 식단 추천 <span class="goal-ad-badge">AD</span></strong>
-            <span>저칼로리 간편식 · 식단 관리 앱 · 체중계</span>
-          </div>
-          <a class="goal-ad-btn" href="https://www.coupang.com/np/search?q=다이어트+식품" target="_blank" rel="noopener sponsored">보러가기</a>
+        <a class="goal-ad-btn" href="https://www.coupang.com/np/search?q=다이어트+식품" target="_blank" rel="noopener sponsored">보러가기</a>
+      </div>
+      <div class="goal-ad" id="ad-muscle">
+        <div class="goal-ad-icon">💪</div>
+        <div class="goal-ad-text">
+          <strong>단백질 보충제 추천 <span class="goal-ad-badge">AD</span></strong>
+          <span>WPI 프로틴 · 닭가슴살 · BCAA</span>
         </div>
-        <div class="goal-ad" id="ad-muscle">
-          <div class="goal-ad-icon">💪</div>
-          <div class="goal-ad-text">
-            <strong>단백질 보충제 추천 <span class="goal-ad-badge">AD</span></strong>
-            <span>WPI 프로틴 · 닭가슴살 · BCAA</span>
-          </div>
-          <a class="goal-ad-btn" href="https://www.coupang.com/np/search?q=단백질+보충제" target="_blank" rel="noopener sponsored">보러가기</a>
+        <a class="goal-ad-btn" href="https://www.coupang.com/np/search?q=단백질+보충제" target="_blank" rel="noopener sponsored">보러가기</a>
+      </div>
+      <div class="goal-ad" id="ad-maintain">
+        <div class="goal-ad-icon">🌿</div>
+        <div class="goal-ad-text">
+          <strong>건강식품 추천 <span class="goal-ad-badge">AD</span></strong>
+          <span>유산균 · 오메가3 · 멀티비타민</span>
         </div>
-        <div class="goal-ad" id="ad-maintain">
-          <div class="goal-ad-icon">🌿</div>
-          <div class="goal-ad-text">
-            <strong>건강식품 추천 <span class="goal-ad-badge">AD</span></strong>
-            <span>유산균 · 오메가3 · 멀티비타민</span>
-          </div>
-          <a class="goal-ad-btn" href="https://www.coupang.com/np/search?q=건강식품+유산균" target="_blank" rel="noopener sponsored">보러가기</a>
-        </div>
+        <a class="goal-ad-btn" href="https://www.coupang.com/np/search?q=건강식품+유산균" target="_blank" rel="noopener sponsored">보러가기</a>
       </div>
+    </div>
 
-      <div class="field-group">
-        <label class="field-label">식단 스타일</label>
-        <div class="help-text">선호하는 식단 방식을 골라주세요.</div>
-        <div class="radio-group">
-          <label class="radio-pill"><input type="radio" name="style" value="basic" checked/>🍚 기본 한국식</label>
-          <label class="radio-pill"><input type="radio" name="style" value="high_protein"/>🥩 고단백 위주</label>
-        </div>
+    <div class="field-group">
+      <label class="field-label">식단 스타일</label>
+      <div class="help-text">선호하는 식단 방식을 골라주세요.</div>
+      <div class="radio-group">
+        <label class="radio-pill"><input type="radio" name="style" value="basic" checked/>🍚 기본 한국식</label>
+        <label class="radio-pill"><input type="radio" name="style" value="high_protein"/>🥩 고단백 위주</label>
       </div>
+    </div>
 
-      <div class="field-group">
-        <label class="field-label">냉장고 속 재료</label>
-        <div class="help-text">콤마(,)로 나눠 적어 주세요. 예: 닭가슴살, 고구마, 브로콜리</div>
-        <textarea id="ingredients" placeholder="예: 닭가슴살, 달걀, 방울토마토"></textarea>
-      </div>
+    <div class="field-group">
+      <label class="field-label">냉장고 속 재료</label>
+      <div class="help-text">콤마(,)로 나눠 적어 주세요. 예: 닭가슴살, 고구마, 브로콜리</div>
+      <textarea id="ingredients" placeholder="예: 닭가슴살, 달걀, 방울토마토"></textarea>
+    </div>
 
-      <button class="btn-recommend" id="recommendBtn">🍳 레시피 3개 추천 받기</button>
+    <button class="btn-recommend" id="recommendBtn">🍳 레시피 3개 추천 받기</button>
 
-      <div class="weekly-link">
-        <a href="naengjanggo-weekly.html">📅 1주일 식단 제안받기 →</a>
-      </div>
-    </section>
+    <div class="weekly-link">
+      <a href="naengjanggo-weekly.html">📅 1주일 식단 제안받기 →</a>
+    </div>
+  </section>
 
-    <section class="panel">
-      <div class="recipes-header">
-        <div class="panel-title">2. 추천 레시피</div>
-        <small id="recipesHint">왼쪽에서 정보를 입력하고 버튼을 눌러 주세요.</small>
-      </div>
-      <div class="recipe-list" id="recipeList"></div>
+  <section class="panel">
+    <div class="recipes-header">
+      <div class="panel-title">2. 추천 레시피</div>
+      <small id="recipesHint">왼쪽에서 정보를 입력하고 버튼을 눌러 주세요.</small>
+    </div>
+    <div class="recipe-list" id="recipeList"></div>
 
-      <!-- ── 결과 하단 제품 추천 (목표별) ── -->
-      <div class="product-recommend" id="productSection">
-        <div class="product-recommend-title">🛒 목표에 맞는 추천 제품 <span>파트너스 제휴 광고</span></div>
-        <div class="product-grid" id="productGrid"></div>
-        <div class="ad-notice">* 이 링크는 쿠팡 파트너스 제휴 링크입니다. 구매 시 소정의 수수료가 지급됩니다.</div>
-      </div>
-    </section>
-  </main>
+    <div class="product-recommend" id="productSection">
+      <div class="product-recommend-title">🛒 목표에 맞는 추천 제품 <span>파트너스 제휴 광고</span></div>
+      <div class="product-grid" id="productGrid"></div>
+      <div class="ad-notice">* 이 링크는 쿠팡 파트너스 제휴 링크입니다. 구매 시 소정의 수수료가 지급됩니다.</div>
+    </div>
+  </section>
+</main>
 
-  <footer>냉장고 피트니스 · 초기 실험 버전 · 실제 건강 상태는 꼭 전문가와 상의하세요.</footer>
+<footer>냉장고 피트니스 · 초기 실험 버전 · 실제 건강 상태는 꼭 전문가와 상의하세요.</footer>
 
-  <script>
-    // ── 목표 변경 시 광고 배너 전환 ──
-    const goalAds = { diet: 'ad-diet', muscle: 'ad-muscle', maintain: 'ad-maintain' };
-    document.querySelectorAll('input[name="goal"]').forEach(radio => {
-      radio.addEventListener('change', () => {
-        Object.values(goalAds).forEach(id => document.getElementById(id).classList.remove('active'));
-        document.getElementById(goalAds[radio.value]).classList.add('active');
-      });
+<script>
+  // ── 목표 변경 시 광고 배너 전환 ──
+  const goalAds = { diet: 'ad-diet', muscle: 'ad-muscle', maintain: 'ad-maintain' };
+  document.querySelectorAll('input[name="goal"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      Object.values(goalAds).forEach(id => document.getElementById(id).classList.remove('active'));
+      document.getElementById(goalAds[radio.value]).classList.add('active');
     });
+  });
 
-    // ── 목표별 추천 제품 데이터 ──
-    const productData = {
-      diet: [
-        { icon: '🥗', name: '닭가슴살 간편식', sub: '저칼로리 고단백', q: '닭가슴살+간편식' },
-        { icon: '⚖️', name: '체중계 스마트', sub: '체지방 측정 가능', q: '스마트+체중계' },
-        { icon: '🫙', name: '저칼로리 드레싱', sub: '샐러드 맛있게', q: '저칼로리+드레싱' },
-      ],
-      muscle: [
-        { icon: '🏋️', name: 'WPI 프로틴', sub: '근육 성장 단백질', q: 'WPI+프로틴' },
-        { icon: '🍗', name: '훈제 닭가슴살', sub: '간편 고단백', q: '훈제+닭가슴살' },
-        { icon: '💊', name: 'BCAA 아미노산', sub: '근육 회복 지원', q: 'BCAA+아미노산' },
-      ],
-      maintain: [
-        { icon: '🦠', name: '프로바이오틱스', sub: '장 건강 유산균', q: '유산균+프로바이오틱스' },
-        { icon: '🐟', name: '오메가3', sub: '심장·뇌 건강', q: '오메가3+영양제' },
-        { icon: '💊', name: '멀티비타민', sub: '균형 영양 보충', q: '멀티비타민' },
-      ],
-    };
+  // ── 목표별 추천 제품 데이터 ──
+  const productData = {
+    diet: [
+      { icon: '🥗', name: '닭가슴살 간편식', sub: '저칼로리 고단백', q: '닭가슴살+간편식' },
+      { icon: '⚖️', name: '체중계 스마트', sub: '체지방 측정 가능', q: '스마트+체중계' },
+      { icon: '🫙', name: '저칼로리 드레싱', sub: '샐러드 맛있게', q: '저칼로리+드레싱' },
+    ],
+    muscle: [
+      { icon: '🏋️', name: 'WPI 프로틴', sub: '근육 성장 단백질', q: 'WPI+프로틴' },
+      { icon: '🍗', name: '훈제 닭가슴살', sub: '간편 고단백', q: '훈제+닭가슴살' },
+      { icon: '💊', name: 'BCAA 아미노산', sub: '근육 회복 지원', q: 'BCAA+아미노산' },
+    ],
+    maintain: [
+      { icon: '🦠', name: '프로바이오틱스', sub: '장 건강 유산균', q: '유산균+프로바이오틱스' },
+      { icon: '🐟', name: '오메가3', sub: '심장·뇌 건강', q: '오메가3+영양제' },
+      { icon: '💊', name: '멀티비타민', sub: '균형 영양 보충', q: '멀티비타민' },
+    ],
+  };
 
-    function renderProducts(goal) {
-      const products = productData[goal] || productData.maintain;
-      const grid = document.getElementById('productGrid');
-      grid.innerHTML = products.map(p => `
-        <a class="product-card" href="https://www.coupang.com/np/search?q=${encodeURIComponent(p.q)}" target="_blank" rel="noopener sponsored">
-          <div class="p-icon">${p.icon}</div>
-          <div class="p-name">${p.name}</div>
-          <div class="p-sub">${p.sub}</div>
-          <div class="p-cta">쿠팡에서 보기</div>
-        </a>
-      `).join('');
-      document.getElementById('productSection').classList.add('active');
+  function renderProducts(goal) {
+    const products = productData[goal] || productData.maintain;
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = products.map(p => `
+      <a class="product-card" href="https://www.coupang.com/np/search?q=${encodeURIComponent(p.q)}" target="_blank" rel="noopener sponsored">
+        <div class="p-icon">${p.icon}</div>
+        <div class="p-name">${p.name}</div>
+        <div class="p-sub">${p.sub}</div>
+        <div class="p-cta">쿠팡에서 보기</div>
+      </a>
+    `).join('');
+    document.getElementById('productSection').classList.add('active');
+  }
+
+  // ── 레시피 추천 ──
+  const recommendBtn = document.getElementById('recommendBtn');
+  const recipeList = document.getElementById('recipeList');
+  const recipesHint = document.getElementById('recipesHint');
+
+  recommendBtn.addEventListener('click', async () => {
+    const goal = document.querySelector('input[name="goal"]:checked').value;
+    const style = document.querySelector('input[name="style"]:checked').value;
+    const ingredientsText = document.getElementById('ingredients').value;
+
+    if (!ingredientsText.trim()) {
+      alert('냉장고 속 재료를 한 가지 이상 입력해 주세요.');
+      document.getElementById('ingredients').focus();
+      return;
     }
 
-    // ── 레시피 추천 ──
-    const recommendBtn = document.getElementById('recommendBtn');
-    const recipeList = document.getElementById('recipeList');
-    const recipesHint = document.getElementById('recipesHint');
+    const origText = recommendBtn.textContent;
+    recommendBtn.textContent = '⏳ 추천 생성 중...';
+    recommendBtn.disabled = true;
+    recipeList.innerHTML = '';
+    document.getElementById('productSection').classList.remove('active');
+    recipesHint.textContent = 'AI가 레시피를 고민 중이에요. 잠시만요...';
 
-    recommendBtn.addEventListener('click', async () => {
-      const goal = document.querySelector('input[name="goal"]:checked').value;
-      const style = document.querySelector('input[name="style"]:checked').value;
-      const ingredientsText = document.getElementById('ingredients').value;
+    try {
+      const response = await fetch("https://naengjanggo-fitness-api-1.onrender.com/api/recipes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ goal, style, ingredients: ingredientsText })
+      });
 
-      if (!ingredientsText.trim()) {
-        alert('냉장고 속 재료를 한 가지 이상 입력해 주세요.');
-        document.getElementById('ingredients').focus();
+      if (!response.ok) throw new Error("서버 오류");
+      const data = await response.json();
+      const recipes = data.recipes || [];
+
+      recipesHint.textContent = '추천 결과는 참고용입니다. 실제 재료 상태와 알레르기를 확인하세요.';
+
+      if (recipes.length === 0) {
+        recipeList.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">레시피를 생성하지 못했습니다. 재료를 다시 확인해 주세요.</div>';
         return;
       }
 
-      const origText = recommendBtn.textContent;
-      recommendBtn.textContent = '⏳ 추천 생성 중...';
-      recommendBtn.disabled = true;
-      recipeList.innerHTML = '';
-      document.getElementById('productSection').classList.remove('active');
-      recipesHint.textContent = 'AI가 레시피를 고민 중이에요. 잠시만요...';
+      recipes.forEach(r => {
+        const searchQuery = encodeURIComponent(r.youtube_query || r.name);
+        const youtubeLink = 'https://www.youtube.com/results?search_query=' + searchQuery;
 
-      try {
-        const response = await fetch("https://naengjanggo-fitness-api-1.onrender.com/api/recipes", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ goal, style, ingredients: ingredientsText })
-        });
-
-        if (!response.ok) throw new Error("서버 오류");
-        const data = await response.json();
-        const recipes = data.recipes || [];
-
-        recipesHint.textContent = '추천 결과는 참고용입니다. 실제 재료 상태와 알레르기를 확인하세요.';
-
-        if (recipes.length === 0) {
-          recipeList.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">레시피를 생성하지 못했습니다. 재료를 다시 확인해 주세요.</div>';
-          return;
+        let ingredientsHtml = '';
+        if (r.ingredients && r.ingredients.length > 0) {
+          const rows = r.ingredients.map(ing => {
+            const ingName = ing.replace(/\(.*?\)/g, '').replace(/\s+\d.*$/, '').trim();
+            const coupangUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(ingName)}`;
+            return `
+              <div class="ingredient-row">
+                <span class="ingredient-name">${ing}</span>
+                <a class="coupang-btn" href="${coupangUrl}" target="_blank" rel="noopener sponsored">🛒 구매</a>
+              </div>`;
+          }).join('');
+          ingredientsHtml = `
+            <div style="margin-top:12px;">
+              <div style="font-weight:700;font-size:.83rem;margin-bottom:6px;">🥗 재료</div>
+              <div style="border:1px solid var(--border-color);border-radius:10px;overflow:hidden;padding:0 10px;">${rows}</div>
+              <div style="font-size:.68rem;color:var(--text-muted);margin-top:4px;">* 구매 링크는 쿠팡 파트너스 제휴 링크입니다.</div>
+            </div>`;
         }
 
-        recipes.forEach(r => {
-          const searchQuery = encodeURIComponent(r.youtube_query || r.name);
-          const youtubeLink = 'https://www.youtube.com/results?search_query=' + searchQuery;
+        const hasSteps = r.steps && r.steps.length > 0;
+        const stepsHtml = hasSteps ? `
+          <button class="steps-toggle-btn">🍳 조리 순서 보기</button>
+          <div class="steps-panel" style="display:none;margin-top:10px;">
+            <div style="font-weight:700;font-size:.83rem;margin-bottom:6px;">🍳 조리 순서</div>
+            <ol style="margin:0;padding-left:18px;font-size:.83rem;color:var(--text-muted);">
+              ${r.steps.map(s => `<li>${s.replace(/^[0-9]+[.)]\s*/,'')}</li>`).join('')}
+            </ol>
+          </div>` : '';
 
-          // 재료 + 쿠팡 장바구니 버튼
-          let ingredientsHtml = '';
-          if (r.ingredients && r.ingredients.length > 0) {
-            const rows = r.ingredients.map(ing => {
-              const ingName = ing.replace(/\(.*?\)/g, '').replace(/\s+\d.*$/, '').trim();
-              const coupangUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(ingName)}`;
-              return `
-                <div class="ingredient-row">
-                  <span class="ingredient-name">${ing}</span>
-                  <a class="coupang-btn" href="${coupangUrl}" target="_blank" rel="noopener sponsored">🛒 구매</a>
-                </div>`;
-            }).join('');
-            ingredientsHtml = `
-              <div style="margin-top:12px;">
-                <div style="font-weight:700;font-size:.83rem;margin-bottom:6px;">🥗 재료</div>
-                <div style="border:1px solid var(--border-color);border-radius:10px;overflow:hidden;padding:0 10px;">${rows}</div>
-                <div style="font-size:.68rem;color:var(--text-muted);margin-top:4px;">* 구매 링크는 쿠팡 파트너스 제휴 링크입니다.</div>
-              </div>`;
-          }
+        const div = document.createElement('div');
+        div.className = 'recipe-card';
+        div.innerHTML = `
+          <div class="recipe-name">${r.name}</div>
+          <div class="recipe-tags">${r.tags}</div>
+          <div class="recipe-desc">${r.desc}</div>
+          ${ingredientsHtml}
+          ${stepsHtml}
+          <div class="recipe-link" style="margin-top:10px;">
+            <a href="${youtubeLink}" target="_blank" rel="noopener noreferrer">▶ 유튜브에서 비슷한 레시피 보기 →</a>
+          </div>`;
+        recipeList.appendChild(div);
+      });
 
-          const hasSteps = r.steps && r.steps.length > 0;
-          const stepsHtml = hasSteps ? `
-            <button class="steps-toggle-btn">🍳 조리 순서 보기</button>
-            <div class="steps-panel" style="display:none;margin-top:10px;">
-              <div style="font-weight:700;font-size:.83rem;margin-bottom:6px;">🍳 조리 순서</div>
-              <ol style="margin:0;padding-left:18px;font-size:.83rem;color:var(--text-muted);">
-                ${r.steps.map(s => `<li>${s.replace(/^[0-9]+[.)]\s*/,'')}</li>`).join('')}
-              </ol>
-            </div>` : '';
+      renderProducts(goal);
 
-          const div = document.createElement('div');
-          div.className = 'recipe-card';
-          div.innerHTML = `
-            <div class="recipe-name">${r.name}</div>
-            <div class="recipe-tags">${r.tags}</div>
-            <div class="recipe-desc">${r.desc}</div>
-            ${ingredientsHtml}
-            ${stepsHtml}
-            <div class="recipe-link" style="margin-top:10px;">
-              <a href="${youtubeLink}" target="_blank" rel="noopener noreferrer">▶ 유튜브에서 비슷한 레시피 보기 →</a>
-            </div>`;
-          recipeList.appendChild(div);
-        });
+    } catch (err) {
+      console.error(err);
+      alert('레시피 생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      recipesHint.textContent = '오류가 발생했습니다.';
+    } finally {
+      recommendBtn.textContent = origText;
+      recommendBtn.disabled = false;
+    }
+  });
 
-        // 목표별 제품 추천 노출
-        renderProducts(goal);
+  // 조리 순서 토글
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.steps-toggle-btn');
+    if (!btn) return;
+    const panel = btn.nextElementSibling;
+    if (!panel?.classList.contains('steps-panel')) return;
+    const open = panel.style.display === 'block';
+    panel.style.display = open ? 'none' : 'block';
+    btn.textContent = open ? '🍳 조리 순서 보기' : '🍳 조리 순서 닫기';
+  });
 
-      } catch (err) {
-        console.error(err);
-        alert('레시피 생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
-        recipesHint.textContent = '오류가 발생했습니다.';
-      } finally {
-        recommendBtn.textContent = origText;
-        recommendBtn.disabled = false;
-      }
-    });
+  // ── 출석체크 팝업 ──
+  const ATTEND_KEY = 'attendance_data';
+  function getAttendData() {
+    const raw = localStorage.getItem(ATTEND_KEY);
+    return raw ? JSON.parse(raw) : {totalPoints:0,streak:0,totalDays:0,lastAttendDate:null,attendedDates:[],history:[]};
+  }
+  function saveAttendData(d) { localStorage.setItem(ATTEND_KEY, JSON.stringify(d)); }
+  function todayStr() { return new Date().toISOString().slice(0,10); }
+  function yestStr()  { const d=new Date(); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); }
 
-    // 조리 순서 토글
-    document.addEventListener('click', e => {
-      const btn = e.target.closest('.steps-toggle-btn');
-      if (!btn) return;
-      const panel = btn.nextElementSibling;
-      if (!panel?.classList.contains('steps-panel')) return;
-      const open = panel.style.display === 'block';
-      panel.style.display = open ? 'none' : 'block';
-      btn.textContent = open ? '🍳 조리 순서 보기' : '🍳 조리 순서 닫기';
-    });
-  </script>
+  function openAttendPopup() {
+    const data = getAttendData();
+    document.getElementById('popupPoints').textContent = data.totalPoints + 'P';
+    document.getElementById('popupStreak').textContent = data.streak + '일';
+    if (data.lastAttendDate === todayStr()) {
+      document.getElementById('popupMsg').textContent = '오늘 이미 출석했어요! 🎉';
+      const btn = document.getElementById('popupAttendBtn');
+      btn.textContent = '✅ 출석 완료!';
+      btn.style.background = '#eef3eb';
+      btn.style.color = '#4a5e3a';
+      btn.style.boxShadow = 'none';
+      btn.onclick = null;
+    }
+    document.getElementById('attendPopup').style.display = 'flex';
+  }
+  function closePopup() {
+    document.getElementById('attendPopup').style.display = 'none';
+  }
+  function popupAttend() {
+    const data = getAttendData();
+    const today = todayStr();
+    if (data.lastAttendDate === today) return;
+    data.streak = data.lastAttendDate === yestStr() ? data.streak + 1 : 1;
+    data.totalPoints += 10; data.totalDays += 1; data.lastAttendDate = today;
+    if (!data.attendedDates.includes(today)) data.attendedDates.push(today);
+    data.history.unshift({date:today, point:10, reason:'출석체크'});
+    saveAttendData(data);
+    document.getElementById('popupPoints').textContent = data.totalPoints + 'P';
+    document.getElementById('popupStreak').textContent = data.streak + '일';
+    document.getElementById('popupMsg').textContent = '+10P 획득! ' + data.streak + '일 연속 🔥';
+    const btn = document.getElementById('popupAttendBtn');
+    btn.textContent = '✅ 출석 완료!';
+    btn.style.background = '#eef3eb';
+    btn.style.color = '#4a5e3a';
+    btn.style.boxShadow = 'none';
+    btn.onclick = null;
+  }
+  (function() {
+    const shown = sessionStorage.getItem('attend_popup_shown');
+    if (!shown) {
+      setTimeout(openAttendPopup, 1500);
+      sessionStorage.setItem('attend_popup_shown', '1');
+    }
+  })();
+</script>
+
 </body>
 </html>
