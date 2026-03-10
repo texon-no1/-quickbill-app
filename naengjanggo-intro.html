@@ -33,33 +33,33 @@
     /* ── 졸라맨 이미지 래퍼 ── */
     .zolaman-wrapper {
       display: flex;
-      justify-content: center;
-      align-items: flex-end;
+      flex-direction: column;
+      align-items: center;
       margin-top: 20px;
       position: relative;
+      gap: 0;
     }
 
     /* 말풍선 */
     .speech-bubble {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-200px);
-      top: 10px;
       background: white;
       border-radius: 16px;
-      padding: 10px 16px;
-      font-size: 0.88rem;
+      padding: 10px 20px;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--accent-olive);
       white-space: nowrap;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      position: relative;
       animation: bubblePop 4s ease-in-out infinite;
+      margin-bottom: 8px;
     }
     .speech-bubble::after {
       content: "";
       position: absolute;
       bottom: -10px;
-      right: 20px;
+      left: 50%;
+      transform: translateX(-50%);
       border-width: 10px 8px 0;
       border-style: solid;
       border-color: white transparent transparent;
@@ -67,23 +67,24 @@
     .speech-bubble .line2 {
       color: var(--accent-orange);
       display: block;
+      text-align: center;
     }
     @keyframes bubblePop {
-      0%,10%  { opacity: 0; transform: translateX(-200px) scale(0.7) translateY(6px); }
-      20%     { opacity: 1; transform: translateX(-200px) scale(1) translateY(0); }
-      75%     { opacity: 1; transform: translateX(-200px) scale(1) translateY(0); }
-      90%,100%{ opacity: 0; transform: translateX(-200px) scale(0.7) translateY(6px); }
+      0%,10%  { opacity: 0; transform: scale(0.7) translateY(6px); }
+      20%     { opacity: 1; transform: scale(1) translateY(0); }
+      75%     { opacity: 1; transform: scale(1) translateY(0); }
+      90%,100%{ opacity: 0; transform: scale(0.7) translateY(6px); }
     }
 
     /* 졸라맨 이미지 애니메이션 */
     .zolaman-img {
-      width: 320px;
-      max-width: 90vw;
+      width: 260px;
+      max-width: 80vw;
       display: block;
       animation: floatBob 2.4s ease-in-out infinite alternate,
                  wiggle 6s ease-in-out infinite;
       transform-origin: bottom center;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25));
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.25));
     }
     @keyframes floatBob {
       from { transform: translateY(0px); }
