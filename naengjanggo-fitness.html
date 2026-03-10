@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <script>
+  // 인앱 브라우저 감지 → 외부 브라우저로 리디렉션
+  (function() {
+    const ua = navigator.userAgent.toLowerCase();
+    const isInApp = /kakaotalk|instagram|fban|fbav|naver|line|wv/i.test(ua);
+    
+    if (isInApp) {
+      const currentUrl = location.href;
+      
+      // 안드로이드: 크롬으로 강제 오픈
+      if (/android/i.test(ua)) {
+        location.href = 'intent://' + currentUrl.replace(/https?:\/\//, '') +
+          '#Intent;scheme=https;package=com.android.chrome;end';
+      }
+      // 아이폰: 사파리로 강제 오픈
+      else if (/iphone|ipad/i.test(ua)) {
+        location.href = currentUrl.replace(/^https?:\/\//, 'googlechrome://');
+        setTimeout(function() {
+          location.href = currentUrl;
+        }, 1000);
+      }
+    }
+  })();
+</script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>냉장고 피트니스 🥗</title>
@@ -545,3 +570,4 @@
 
 </body>
 </html>
+
