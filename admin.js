@@ -128,7 +128,11 @@ productForm.addEventListener('submit', async (e) => {
         loadProducts();
     } catch (e) {
         console.error("저장 에러:", e);
-        alert("저장에 실패했습니다: " + e.message);
+        if (e.code === 'permission-denied') {
+            alert("저장 실패: 권한이 없습니다.\nFirebase Console에서 보안 규칙(Security Rules)에 본인의 이메일(" + currentUser.email + ")이 등록되어 있는지 확인해 주세요.");
+        } else {
+            alert("저장 실패: " + e.message);
+        }
     }
     showLoading(false);
 });
