@@ -970,6 +970,56 @@
       margin-top: 8px;
       text-align: center;
     }
+
+    /* 추천 상품 레이아웃 스타일 */
+    .product-recommend {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 2px dashed var(--border-color);
+      display: none;
+    }
+
+    .product-recommend.active {
+      display: block;
+    }
+
+    .product-recommend-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .product-recommend-title span {
+      background: #eee;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #888;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 480px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ad-notice {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 20px;
+    }
   </style>
 </head>
 
