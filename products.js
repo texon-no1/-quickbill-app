@@ -10,16 +10,25 @@ async function loadRecommendedProducts(containerId) {
     container.innerHTML = '<div class="loading-products">상품을 불러오는 중...</div>';
 
     try {
-        // Firestore에서 visible: true인 상품만 order 순으로 가져오기
+        // Firebase 초기화 확인
+        if (typeof db === 'undefined') {
+            console.error("Firestore 'db' 객체가 정의되지 않았습니다.");
+            container.innerHTML = '<div class="error-products">시스템 초기화 중... 잠시 후 다시 시도해 주세요.</div>';
+            return;
+        }
+
+        // Firestore에서 visible: true인 상품만 가져오기 (인덱스 오류 방지를 위해 정렬은 메모리에서 수행)
         const querySnapshot = await db.collection('recommended_products')
             .where('visible', '==', true)
-            .orderBy('order', 'asc')
             .get();
 
         const products = [];
         querySnapshot.forEach((doc) => {
             products.push({ id: doc.id, ...doc.data() });
         });
+
+        // 클라이언트 사이드 정렬 (정렬 순서 기준)
+        products.sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
 
         if (products.length === 0) {
             container.innerHTML = '<div class="no-products">추천 상품이 준비 중입니다.</div>';
