@@ -81,9 +81,12 @@
 
         <!-- Modern Header -->
         <header class="p-6 pb-2 flex justify-between items-center bg-white sticky top-0 z-40">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight text-[#1a1a1a]">Weekly Plan 📅</h1>
-                <p class="text-sm text-gray-500 mt-0.5">최우수 헬스 파트너와 함께하는 목표 달성</p>
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary text-3xl">kitchen</span>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight text-[#1a1a1a]">냉장고 피트니스 🥗</h1>
+                    <p class="text-sm text-gray-500 mt-0.5">최우수 1주일 식단 파트너</p>
+                </div>
             </div>
             <div class="flex items-center gap-3">
                 <button
@@ -160,30 +163,27 @@
 
         <!-- Bottom Navigation -->
         <nav class="bottom-nav border-t border-gray-100 glass-effect">
-            <div class="flex justify-around items-center h-16 px-4">
-                <a href="naengjanggo-fitness.html" class="flex flex-col items-center gap-1 group">
-                    <span
-                        class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">home</span>
-                    <span class="text-[10px] text-gray-500 group-hover:text-primary font-medium">홈</span>
+            <div class="flex justify-around items-center h-full px-4">
+                <a href="naengjanggo-fitness.html" class="flex flex-col items-center gap-1 text-gray-400">
+                    <span class="material-symbols-outlined">home</span>
+                    <span class="text-[10px] font-medium">홈</span>
                 </a>
-                <a href="fridge.html" class="flex flex-col items-center gap-1 group">
-                    <span
-                        class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">kitchen</span>
-                    <span class="text-[10px] text-gray-500 group-hover:text-primary font-medium">냉장고</span>
+                <a href="naengjanggo-fitness.html#fridge" class="flex flex-col items-center gap-1 text-gray-400">
+                    <span class="text-xl">🧊</span>
+                    <span class="text-[10px] font-medium">냉장고</span>
                 </a>
-                <a href="naengjanggo-weekly.html" class="flex flex-col items-center gap-1 group">
-                    <span class="material-symbols-outlined text-primary">calendar_month</span>
-                    <span class="text-[10px] text-primary font-bold">1주 식단</span>
+                <a href="naengjanggo-weekly.html" class="flex flex-col items-center gap-1 text-primary">
+                    <span class="material-symbols-outlined leading-none"
+                        style="font-variation-settings: 'FILL' 1">calendar_month</span>
+                    <span class="text-[10px] font-bold">식단</span>
                 </a>
-                <a href="attendance.html" class="flex flex-col items-center gap-1 group">
-                    <span
-                        class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">task_alt</span>
-                    <span class="text-[10px] text-gray-500 group-hover:text-primary font-medium">관리자</span>
+                <a href="admin.html" class="flex flex-col items-center gap-1 text-gray-400">
+                    <span class="material-symbols-outlined">shield_person</span>
+                    <span class="text-[10px] font-medium">관리자</span>
                 </a>
-                <a href="profile.html" class="flex flex-col items-center gap-1 group text-secondary">
-                    <span
-                        class="material-symbols-outlined text-gray-400 group-hover:text-secondary transition-colors">person</span>
-                    <span class="text-[10px] text-gray-500 group-hover:text-secondary font-medium">프로필</span>
+                <a href="naengjanggo-fitness.html#profile" class="flex flex-col items-center gap-1 text-gray-400">
+                    <span class="material-symbols-outlined">person</span>
+                    <span class="text-[10px] font-medium">프로필</span>
                 </a>
             </div>
         </nav>
