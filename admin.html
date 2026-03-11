@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>냉장고 피트니스 - 관리자 패널 🛠️</title>
+    <!-- Firebase SDK (Compatibility mode) -->
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore-compat.js"></script>
+    <!-- Tailwind CSS for quick UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <div id="loading" class="loading-overlay">
+        <div class="text-xl font-bold">로딩 중...</div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-section" class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
+            <h1 class="text-2xl font-bold mb-6">관리자 로그인</h1>
+            <p class="text-gray-500 mb-8 text-sm">제휴 상품 관리를 위해 구글 계정으로 로그인해 주세요.</p>
+            <button onclick="loginWithGoogle()"
+                class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition">
+                Google 로그인
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Panel Screen (Hidden by default) -->
+    <div id="admin-section" class="hidden max-w-4xl mx-auto p-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-800">상품 관리자 패널 🛠️</h1>
+            <button onclick="logout()" class="text-sm text-red-500 font-medium">로그아웃</button>
+        </div>
+
+        <!-- Add Product Form -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm mb-8">
+            <h2 class="text-lg font-bold mb-4">새 상품 추가</h2>
+            <form id="product-form" class="space-y-4">
+                <input type="hidden" id="edit-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="p-name" placeholder="상품명 *" class="p-3 border rounded-xl w-full" required>
+                    <select id="p-category" class="p-3 border rounded-xl w-full">
+                        <option value="protein">프로틴</option>
+                        <option value="snack">식단/간식</option>
+                        <option value="equipment">운동기구</option>
+                        <option value="etc">기타</option>
+                    </select>
+                </div>
+                <input type="url" id="p-image" placeholder="이미지 URL (https://...)" class="p-3 border rounded-xl w-full"
+                    required>
+                <input type="url" id="p-link" placeholder="네이버 쇼핑커넥트 제휴 링크 *" class="p-3 border rounded-xl w-full"
+                    required>
+                <textarea id="p-desc" placeholder="상품 설명 (선택 사항)" class="p-3 border rounded-xl w-full h-20"></textarea>
+                <div class="flex items-center gap-4">
+                    <div class="flex-1">
+                        <label class="text-xs text-gray-400 block mb-1">표시 순서 (낮을수록 먼저 표시)</label>
+                        <input type="number" id="p-order" value="1" class="p-3 border rounded-xl w-full">
+                    </div>
+                    <div class="flex items-center gap-2 pt-5">
+                        <input type="checkbox" id="p-visible" checked class="w-5 h-5">
+                        <label for="p-visible" class="text-sm font-medium">공개 여부</label>
+                    </div>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" id="btn-submit"
+                        class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold">상품 저장</button>
+                    <button type="button" id="btn-cancel" onclick="resetForm()"
+                        class="hidden px-6 py-3 bg-gray-200 rounded-xl font-bold">취소</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Product List -->
+        <div class="space-y-4" id="product-list">
+            <h2 class="text-lg font-bold mb-2">등록된 상품 목록</h2>
+            <!-- List items will be injected here -->
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>

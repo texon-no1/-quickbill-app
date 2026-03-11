@@ -1,8 +1,88 @@
 // ===========================
-//  출석체크 시스템 v1.0
+//  출석체크 시스템 v1.1 (Refined)
 // ===========================
 
 const STORAGE_KEY = 'attendance_data';
+
+/**
+ * 1. 현재 날짜를 YYYY-MM-DD 형식 문자열로 반환
+ */
+function getCurrentDateYYYYMMDD() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/**
+ * 2. Firestore에서 사용자별 lastAttendDate를 조회하는 비동기 함수
+ * (Firestore db 객체가 전역에 있거나 전달되어야 함)
+ */
+async function getLastAttendDateFromFirestore(userId, db) {
+  if (!userId || !db) return null;
+  try {
+    const doc = await db.collection("users").doc(userId).get();
+    if (doc.exists && doc.data().lastAttendDate) {
+      return doc.data().lastAttendDate;
+    }
+  } catch (e) {
+    console.error("Firestore 조회 에러:", e);
+  }
+  return null;
+}
+
+/**
+ * 3. localStorage에 저장된 lastAttendDate를 조회
+ */
+function getLastAttendDateFromLocalStorage(userId) {
+  const key = userId ? `lastAttendDate_${userId}` : 'lastAttendDate_guest';
+  return localStorage.getItem(key);
+}
+
+/**
+ * 4. 오늘 이미 출석체크했는지 여부를 판단 (팝업 표시 여부 결정)
+ * @returns {boolean} true: 팝업 표시 필요 (아직 안함), false: 팝업 숨김 (이미 함)
+ */
+function shouldShowAttendancePopup(lastAttendDate, todayDate) {
+  // 마지막 출석일이 오늘과 다르면 팝업 표시 필요
+  return lastAttendDate !== todayDate;
+}
+
+/**
+ * 5. Firestore에 lastAttendDate를 업데이트
+ */
+async function updateLastAttendDateToFirestore(userId, dateStr, db) {
+  if (!userId || !db) return;
+  try {
+    await db.collection("users").doc(userId).set({
+      lastAttendDate: dateStr
+    }, { merge: true });
+  } catch (e) {
+    console.error("Firestore 업데이트 에러:", e);
+  }
+}
+
+/**
+ * 6. localStorage에 lastAttendDate를 저장
+ */
+function updateLastAttendDateToLocalStorage(userId, dateStr) {
+  const key = userId ? `lastAttendDate_${userId}` : 'lastAttendDate_guest';
+  localStorage.setItem(key, dateStr);
+}
+
+// --- 기존 코드 호환성 및 유틸리티 ---
+
+function todayStr() {
+  return getCurrentDateYYYYMMDD();
+}
+
+// 데이터 로드 (우선순위: 파라미터로 명시적 전달 > localStorage)
+function loadAttendanceData(externalData = null) {
+  if (externalData) return { ...getDefaultData(), ...externalData };
+  const raw = localStorage.getItem(STORAGE_KEY);
+  return raw ? JSON.parse(raw) : getDefaultData();
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
 
 // 기본 데이터 구조
 function getDefaultData() {
@@ -16,19 +96,6 @@ function getDefaultData() {
   };
 }
 
-function loadData() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  return raw ? JSON.parse(raw) : getDefaultData();
-}
-
-function saveData(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function todayStr() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 function yesterdayStr() {
   const d = new Date();
   d.setDate(d.getDate() - 1);
@@ -37,21 +104,21 @@ function yesterdayStr() {
 
 // 보상 테이블
 const REWARDS = [
-  { days: 3,  point: 30,   icon: '🌱', title: '3일 연속 출석',  desc: '새싹 달성! +30P 보너스' },
-  { days: 5,  point: 50,   icon: '⭐', title: '5일 연속 출석',  desc: '스타! +50P 보너스' },
-  { days: 7,  point: 100,  icon: '🏅', title: '7일 연속 출석',  desc: '1주일 달성! +100P 보너스' },
-  { days: 14, point: 200,  icon: '💎', title: '14일 연속 출석', desc: '2주일 달성! +200P 보너스' },
+  { days: 3, point: 30, icon: '🌱', title: '3일 연속 출석', desc: '새싹 달성! +30P 보너스' },
+  { days: 5, point: 50, icon: '⭐', title: '5일 연속 출석', desc: '스타! +50P 보너스' },
+  { days: 7, point: 100, icon: '🏅', title: '7일 연속 출석', desc: '1주일 달성! +100P 보너스' },
+  { days: 14, point: 200, icon: '💎', title: '14일 연속 출석', desc: '2주일 달성! +200P 보너스' },
   { days: 30, point: 1000, icon: '👑', title: '30일 연속 출석', desc: '전설! +1,000P 보너스' },
 ];
 
 // 출석 처리
-function doAttend() {
-  const data = loadData();
+function doAttend(externalData = null) {
+  const data = loadAttendanceData(externalData);
   const today = todayStr();
 
   if (data.lastAttendDate === today) {
     showToast('오늘은 이미 출석했어요! 내일 또 와요 😊');
-    return;
+    return data; // 데이터 반환
   }
 
   // 연속 출석 계산
@@ -84,32 +151,45 @@ function doAttend() {
   }
 
   data.history.unshift({ date: today, point: earned, reason });
-  saveData(data);
-  renderAll();
+
+  if (!externalData) {
+    saveData(data);
+  }
+
+  renderAll(data);
+  return data;
 }
 
 // UI 렌더링
-function renderAll() {
-  const data = loadData();
+function renderAll(providedData = null) {
+  const data = providedData || loadAttendanceData();
   const today = todayStr();
 
-  document.getElementById('totalPoints').textContent = data.totalPoints.toLocaleString() + 'P';
-  document.getElementById('streakCount').textContent = data.streak + '일';
-  document.getElementById('totalAttend').textContent = data.totalDays + '일';
+  // DOM 존재 여부 체크 후 렌더링
+  const setElText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
+  setElText('totalPoints', data.totalPoints.toLocaleString() + 'P');
+  setElText('streakCount', data.streak + '일');
+  setElText('totalAttend', data.totalDays + '일');
 
   // 출석 버튼
   const btn = document.getElementById('attendBtn');
   const msg = document.getElementById('attendMsg');
-  if (data.lastAttendDate === today) {
-    btn.className = 'attend-btn done';
-    btn.textContent = '✅ 오늘 출석 완료!';
-    btn.onclick = null;
-    msg.textContent = `오늘도 출석 완료! ${data.streak}일 연속 달성 중 🔥`;
-  } else {
-    btn.className = 'attend-btn active';
-    btn.textContent = '출석하기 (+10P)';
-    btn.onclick = doAttend;
-    msg.textContent = '오늘 아직 출석하지 않았어요';
+  if (btn) {
+    if (data.lastAttendDate === today) {
+      btn.className = 'attend-btn done';
+      btn.textContent = '✅ 오늘 출석 완료!';
+      btn.onclick = null;
+      if (msg) msg.textContent = `오늘도 출석 완료! ${data.streak}일 연속 달성 중 🔥`;
+    } else {
+      btn.className = 'attend-btn active';
+      btn.textContent = '출석하기 (+10P)';
+      btn.onclick = doAttend;
+      if (msg) msg.textContent = '오늘 아직 출석하지 않았어요';
+    }
   }
 
   renderCalendar(data);
@@ -124,13 +204,14 @@ function renderCalendar(data) {
   if (calYear === undefined) calYear = now.getFullYear();
   if (calMonth === undefined) calMonth = now.getMonth();
 
-  document.getElementById('calMonth').textContent =
-    `${calYear}년 ${calMonth + 1}월`;
+  const monthEl = document.getElementById('calMonth');
+  if (monthEl) monthEl.textContent = `${calYear}년 ${calMonth + 1}월`;
 
   const grid = document.getElementById('calGrid');
+  if (!grid) return;
   grid.innerHTML = '';
 
-  const dayNames = ['일','월','화','수','목','금','토'];
+  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
   dayNames.forEach(d => {
     const el = document.createElement('div');
     el.className = 'cal-day-name';
@@ -149,7 +230,7 @@ function renderCalendar(data) {
   }
 
   for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const el = document.createElement('div');
     el.className = 'cal-day';
     el.textContent = d;
@@ -157,6 +238,11 @@ function renderCalendar(data) {
     if (dateStr === todayFull) el.classList.add('today');
     grid.appendChild(el);
   }
+}
+
+// 명칭 통일: loadData -> loadAttendanceData
+function loadData() {
+  return loadAttendanceData();
 }
 
 function changeMonth(dir) {
@@ -169,6 +255,7 @@ function changeMonth(dir) {
 // 보상 목록
 function renderRewards(data) {
   const list = document.getElementById('rewardList');
+  if (!list) return;
   list.innerHTML = '';
   REWARDS.forEach(r => {
     const item = document.createElement('div');
@@ -199,6 +286,7 @@ function renderRewards(data) {
 // 히스토리
 function renderHistory(data) {
   const list = document.getElementById('historyList');
+  if (!list) return;
   if (!data.history.length) {
     list.innerHTML = '<p style="text-align:center;color:#aaa;font-size:13px;">아직 출석 기록이 없어요</p>';
     return;
@@ -214,6 +302,10 @@ function renderHistory(data) {
 // 토스트
 function showToast(msg) {
   const t = document.getElementById('toast');
+  if (!t) {
+    alert(msg); // 토스트 요소가 없으면 alert로 대체
+    return;
+  }
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
