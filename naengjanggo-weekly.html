@@ -2,254 +2,69 @@
 <html lang="ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>냉장고 피트니스 - 1주일 다이너트 식단</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>냉장고 피트니스 - 1주일 식단 📅</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;700&display=swap"
-        rel="stylesheet">
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4cae4f",
+                        "secondary": "#FFD700",
+                        "background-light": "#f6f7f6",
+                        "background-dark": "#121212",
+                    },
+                    borderRadius: {
+                        "button": "12px",
+                        "card": "16px",
+                    }
+                }
+            }
+        };
+    </script>
     <style>
-        :root {
-            --bg-color: #FAFAF7;
-            --card-bg: #FFFFFF;
-            --accent-olive: #5A7A4A;
-            --accent-orange: #E8734A;
-            --text-main: #2C2416;
-            --text-muted: #7A7060;
-            --border-color: #E8E4DC;
-            --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'DM Sans', 'Noto Sans KR', sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding-bottom: 50px;
+            font-family: 'Inter', sans-serif;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
-        header {
-            text-align: center;
-            padding: 40px 0;
+        .card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-olive) 0%, var(--accent-orange) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        .controls {
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 30px;
-            box-shadow: var(--shadow);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-        }
-
-        select,
-        textarea {
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
-            padding: 12px 16px;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            color: var(--text-main);
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
+            max-width: 600px;
+            z-index: 50;
         }
 
-        select:focus,
-        textarea:focus {
-            border-color: var(--accent-olive);
-        }
-
-        .generate-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--accent-olive) 0%, #7A9A6A 100%);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-
-        .generate-btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-
-        .generate-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .plan-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        .day-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            padding: 24px;
-            transition: all 0.2s;
-            box-shadow: var(--shadow);
-        }
-
-        .day-card:hover {
-            transform: scale(1.01);
-            border-color: var(--accent-olive);
-        }
-
-        .day-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 18px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--accent-orange);
-        }
-
-        .meal {
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px dashed var(--border-color);
-        }
-
-        .meal:last-child {
-            border-bottom: none;
-        }
-
-        .meal-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 4px;
-            flex-wrap: wrap;
-        }
-
-        .meal-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            background: #f0f4ef;
-            padding: 2px 8px;
-            border-radius: 6px;
-            margin-right: 12px;
-            width: 50px;
-            text-align: center;
-        }
-
-        .meal-name {
-            font-size: 1rem;
-            font-weight: 500;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .ingredients-toggle-btn {
-            font-size: 0.7rem;
-            padding: 4px 10px;
-            border-radius: 999px;
-            border: 1px solid var(--border-color);
-            background: transparent;
-            color: var(--accent-olive);
-            cursor: pointer;
-            margin-left: 8px;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .ingredients-toggle-btn:hover {
-            background: #f0f4ef;
-        }
-
-        .ingredients-panel {
-            margin-top: 10px;
-            padding: 12px;
-            background: #fafafa;
-            border-radius: 12px;
-            display: none;
-        }
-
-        .ingredients-list {
-            margin: 0;
-            padding-left: 18px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .footer-actions {
-            margin-top: 40px;
-            text-align: center;
-        }
-
-        .back-link {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 1rem;
-            transition: color 0.2s;
-            font-weight: 500;
-        }
-
-        .back-link:hover {
-            color: var(--text-main);
-        }
-
-        #loading {
-            text-align: center;
-            padding: 40px;
-            display: none;
-        }
-
+        /* 로딩 스피너 커스텀 */
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--border-color);
-            border-left-color: var(--accent-olive);
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e5e7eb;
+            border-left-color: #4cae4f;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
         }
 
         @keyframes spin {
@@ -257,60 +72,122 @@
                 transform: rotate(360deg);
             }
         }
-
-        @media (min-width: 640px) {
-            .plan-grid {
-                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            }
-        }
     </style>
 </head>
 
-<body>
-    <div class="container">
-        <header>
-            <h1>Weekly Diet Plan 📅</h1>
-            <p class="subtitle">당신의 목표에 맞춘 1주일 맞춤형 식단</p>
+<body class="bg-[#f6f7f6] min-h-screen text-[#1a1a1a]">
+
+    <div class="max-w-[600px] mx-auto bg-white min-h-screen shadow-sm relative pb-24">
+
+        <!-- Modern Header -->
+        <header class="p-6 pb-2 flex justify-between items-center bg-white sticky top-0 z-40">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-[#1a1a1a]">Weekly Plan 📅</h1>
+                <p class="text-sm text-gray-500 mt-0.5">최우수 헬스 파트너와 함께하는 목표 달성</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button
+                    class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100 transition-colors">
+                    <span class="material-symbols-outlined text-[22px]">notifications</span>
+                </button>
+                <div
+                    class="w-10 h-10 rounded-full overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center">
+                    <img id="headerUserImg"
+                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&h=256&auto=format&fit=crop"
+                        alt="User Profile" class="w-full h-full object-cover hidden">
+                    <span id="headerUserInitial" class="material-symbols-outlined text-gray-400">person</span>
+                </div>
+            </div>
         </header>
 
-        <div class="controls">
-            <div class="form-group">
-                <label>헬스 목표</label>
-                <select id="goal">
-                    <option value="diet">다이어트 (체지방 감량)</option>
-                    <option value="muscle">근질 향상 (벌크업)</option>
-                    <option value="maintain">체중 유지 / 건강 관리</option>
-                </select>
+        <main class="p-6 pt-4 space-y-6">
+
+            <!-- Control Section (Input Form Card) -->
+            <section class="bg-white rounded-card border border-gray-100 card-shadow p-5 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-[13px] font-semibold text-gray-500 ml-1">나의 헬스 목표</label>
+                        <select id="goal"
+                            class="w-full h-11 px-3 bg-gray-50 border-none rounded-button text-[14px] focus:ring-2 focus:ring-primary/20 transition-all font-medium text-gray-700">
+                            <option value="diet">🥗 다이어트 (체지방 감량)</option>
+                            <option value="muscle">💪 근질 향상 (벌크업)</option>
+                            <option value="maintain">⚖️ 체중 유지 / 건강 관리</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[13px] font-semibold text-gray-500 ml-1">식단 스타일</label>
+                        <select id="style"
+                            class="w-full h-11 px-3 bg-gray-50 border-none rounded-button text-[14px] focus:ring-2 focus:ring-primary/20 transition-all font-medium text-gray-700">
+                            <option value="basic">🍱 기본 한국식 식단</option>
+                            <option value="high_protein">🥩 고단백 위주 식단</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-[13px] font-semibold text-gray-500 ml-1">냉장고 속 활용 재료 (선택)</label>
+                    <textarea id="ingredients" rows="2" placeholder="예: 닭가슴살, 고구마, 브로콜리..."
+                        class="w-full p-3 bg-gray-50 border-none rounded-button text-[14px] focus:ring-2 focus:ring-primary/20 transition-all resize-none placeholder:text-gray-400 text-gray-700 font-medium"></textarea>
+                </div>
+
+                <button id="generate-btn"
+                    class="w-full h-13 py-3.5 bg-primary text-white rounded-button font-bold text-[15px] hover:bg-opacity-90 active:scale-[0.98] transition-all shadow-md shadow-primary/20">
+                    오늘부터 1주일 식단 만들기
+                </button>
+            </section>
+
+            <!-- Loading State -->
+            <div id="loading" class="hidden py-10 text-center">
+                <div class="spinner mx-auto mb-4"></div>
+                <p class="text-[15px] font-medium text-gray-600 animate-pulse">따뜻하고 건강한 식단을 짜고 있어요...</p>
             </div>
 
-            <div class="form-group">
-                <label>식단 스타일</label>
-                <select id="style">
-                    <option value="basic">기본 한국식 식단</option>
-                    <option value="high_protein">고단백 위주 식단</option>
-                </select>
+            <!-- Weekly Plan Container -->
+            <div id="plan-container" class="space-y-4">
+                <!-- AI Generated Plan Cards will be rendered here -->
             </div>
 
-            <div class="form-group">
-                <label>활용할 재료 (선택)</label>
-                <textarea id="ingredients" rows="2" placeholder="예: 닭가슴살, 고구마, 브로콜리..."></textarea>
+            <!-- Footer Action -->
+            <div class="pt-4 pb-8 text-center">
+                <a href="naengjanggo-fitness.html"
+                    class="inline-flex items-center gap-2 text-primary font-bold text-[14px] hover:underline decoration-2 underline-offset-4">
+                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    레시피 검색으로 돌아가기
+                </a>
             </div>
 
-            <button id="generate-btn" class="generate-btn">오늘부터 1주일 식단 만들기</button>
-        </div>
+        </main>
 
-        <div id="loading">
-            <div class="spinner"></div>
-            <p style="color: var(--text-muted);">따뜻하고 건강한 식단을 짜고 있어요...</p>
-        </div>
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav border-t border-gray-100 glass-effect">
+            <div class="flex justify-around items-center h-16 px-4">
+                <a href="naengjanggo-fitness.html" class="flex flex-col items-center gap-1 group">
+                    <span
+                        class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">home</span>
+                    <span class="text-[10px] text-gray-500 group-hover:text-primary font-medium">홈</span>
+                </a>
+                <a href="fridge.html" class="flex flex-col items-center gap-1 group">
+                    <span
+                        class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">kitchen</span>
+                    <span class="text-[10px] text-gray-500 group-hover:text-primary font-medium">냉장고</span>
+                </a>
+                <a href="naengjanggo-weekly.html" class="flex flex-col items-center gap-1 group">
+                    <span class="material-symbols-outlined text-primary">calendar_month</span>
+                    <span class="text-[10px] text-primary font-bold">1주 식단</span>
+                </a>
+                <a href="attendance.html" class="flex flex-col items-center gap-1 group">
+                    <span
+                        class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">task_alt</span>
+                    <span class="text-[10px] text-gray-500 group-hover:text-primary font-medium">관리자</span>
+                </a>
+                <a href="profile.html" class="flex flex-col items-center gap-1 group text-secondary">
+                    <span
+                        class="material-symbols-outlined text-gray-400 group-hover:text-secondary transition-colors">person</span>
+                    <span class="text-[10px] text-gray-500 group-hover:text-secondary font-medium">프로필</span>
+                </a>
+            </div>
+        </nav>
 
-        <div id="plan-container" class="plan-grid">
-            <!-- 식단 카드들이 여기에 렌더링됩니다 -->
-        </div>
-
-        <div class="footer-actions">
-            <a href="naengjanggo-fitness.html" class="back-link">← 레시피 검색으로 돌아가기</a>
-        </div>
     </div>
 
     <script>
@@ -323,6 +200,20 @@
             const savedIngredients = localStorage.getItem('naengjanggo_ingredients');
             if (savedIngredients) {
                 document.getElementById('ingredients').value = savedIngredients;
+            }
+
+            // 헤더 사용자 정보 연동
+            const userName = localStorage.getItem('naengjanggo_user_name');
+            const userPhoto = localStorage.getItem('naengjanggo_user_photo');
+            const headerUserImg = document.getElementById('headerUserImg');
+            const headerUserInitial = document.getElementById('headerUserInitial');
+
+            if (userPhoto && headerUserImg) {
+                headerUserImg.src = userPhoto;
+                headerUserImg.classList.remove('hidden');
+                headerUserInitial.classList.add('hidden');
+            } else if (userName && headerUserInitial) {
+                headerUserInitial.textContent = userName.charAt(0);
             }
         };
 
@@ -363,53 +254,81 @@
         function renderIngredients(ingredients) {
             if (!ingredients || ingredients.length === 0) return '';
             return `
-        <div class="ingredients-panel">
-          <ul class="ingredients-list">
-            ${ingredients.map(ing => `<li>${ing}</li>`).join('')}
-          </ul>
-        </div>
-      `;
+                <div class="ingredients-panel hidden mt-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <h4 class="text-[12px] font-bold text-gray-400 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+                        <span class="material-symbols-outlined text-[14px]">shopping_basket</span> 
+                        필요한 재료
+                    </h4>
+                    <ul class="space-y-1.5">
+                        ${ingredients.map(ing => `
+                            <li class="flex items-start gap-2 text-[13px] text-gray-600 font-medium">
+                                <span class="text-primary mt-0.5 text-[10px]">●</span>
+                                ${ing}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
         }
 
         function renderMeal(label, mealName, ingredients) {
             const hasIngredients = ingredients && ingredients.length > 0;
+            const labelColors = {
+                '아침': 'bg-blue-50 text-blue-500',
+                '점심': 'bg-orange-50 text-orange-500',
+                '저녁': 'bg-purple-50 text-purple-500'
+            };
+            const colorClass = labelColors[label] || 'bg-gray-50 text-gray-500';
+
             return `
-        <div class="meal">
-          <div class="meal-header">
-            <span class="meal-label">${label}</span>
-            <span class="meal-name">${mealName}</span>
-            ${hasIngredients ? `
-              <button class="ingredients-toggle-btn">
-                재료 보기 ▼
-              </button>
-            ` : ''}
-          </div>
-          ${hasIngredients ? renderIngredients(ingredients) : ''}
-        </div>
-      `;
+                <div class="py-4 border-b border-gray-50 last:border-0">
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-6 flex items-center justify-center rounded-md ${colorClass} text-[11px] font-bold leading-none shrink-0">${label}</span>
+                            <span class="text-[15px] font-semibold text-gray-800 leading-tight">${mealName}</span>
+                        </div>
+                        ${hasIngredients ? `
+                            <button class="ingredients-toggle-btn w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-primary transition-all">
+                                <span class="material-symbols-outlined text-[20px]">expand_circle_down</span>
+                            </button>
+                        ` : ''}
+                    </div>
+                    ${hasIngredients ? renderIngredients(ingredients) : ''}
+                </div>
+            `;
         }
 
         function renderPlan(plan) {
-            planContainer.innerHTML = plan.map(day => `
-        <div class="day-card">
-          <div class="day-title">${day.day}</div>
-          ${renderMeal('아침', day.breakfast, day.breakfast_ingredients)}
-          ${renderMeal('점심', day.lunch, day.lunch_ingredients)}
-          ${renderMeal('저녁', day.dinner, day.dinner_ingredients)}
-        </div>
-      `).join('');
+            planContainer.innerHTML = plan.map((day, idx) => `
+                <div class="bg-white rounded-card border border-gray-100 card-shadow p-5 overflow-hidden transition-all hover:scale-[1.01]">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-[17px] font-bold text-gray-900">${day.day}</h3>
+                        ${idx === 0 ? '<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded-md">TODAY</span>' : ''}
+                    </div>
+                    <div class="divide-y divide-gray-50">
+                        ${renderMeal('아침', day.breakfast, day.breakfast_ingredients)}
+                        ${renderMeal('점심', day.lunch, day.lunch_ingredients)}
+                        ${renderMeal('저녁', day.dinner, day.dinner_ingredients)}
+                    </div>
+                </div>
+            `).join('');
         }
 
         document.addEventListener('click', (e) => {
             const btn = e.target.closest('.ingredients-toggle-btn');
             if (!btn) return;
 
-            const panel = btn.parentElement.nextElementSibling;
+            const panel = btn.closest('div').nextElementSibling;
             if (!panel || !panel.classList.contains('ingredients-panel')) return;
 
-            const isOpen = panel.style.display === 'block';
-            panel.style.display = isOpen ? 'none' : 'block';
-            btn.textContent = isOpen ? '재료 보기 ▼' : '재료 닫기 ▲';
+            const isOpen = !panel.classList.contains('hidden');
+            if (isOpen) {
+                panel.classList.add('hidden');
+                btn.classList.remove('rotate-180', 'text-primary');
+            } else {
+                panel.classList.remove('hidden');
+                btn.classList.add('rotate-180', 'text-primary');
+            }
         });
     </script>
 </body>
