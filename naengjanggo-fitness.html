@@ -1255,6 +1255,20 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
+    // 페이지 로드 시 상품 로드 시도
+    document.addEventListener('DOMContentLoaded', () => {
+      // Firebase 초기화가 비동기로 완료된 후 실행되도록 약간의 지연을 주거나 
+      // auth 상태 변경 시점에 실행하는 것이 안전함
+      setTimeout(() => {
+        if (typeof loadRecommendedProducts === 'function') {
+          loadRecommendedProducts("productGrid");
+          // 상품 섹션 노출 (데이터가 있으면 products.js에서 내부적으로 처리하겠지만, 
+          // 여기서는 섹션 자체를 보이게 함)
+          document.getElementById("productSection").classList.add("active");
+        }
+      }, 1500);
+    });
+
     let currentUser = null;
 
     // ── 구글 로그인 ──

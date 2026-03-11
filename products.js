@@ -40,7 +40,11 @@ async function loadRecommendedProducts(containerId) {
             <div class="product-card-v2">
                 <div class="product-badge">추천 상품</div>
                 <div class="product-img-wrap">
-                    <img src="${p.image_url}" alt="${p.name}" class="product-img" onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+                    <img src="${p.image_url}" 
+                         alt="${p.name}" 
+                         class="product-img" 
+                         referrerpolicy="no-referrer"
+                         onerror="this.onerror=null; this.src='https://placehold.co/300x300?text=No+Image';">
                 </div>
                 <div class="product-info">
                     <h4 class="product-name">${p.name}</h4>
