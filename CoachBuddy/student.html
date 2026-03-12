@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoachBuddy - 학생 포털</title>
+    <meta name="description" content="나의 AI 코칭 리포트 및 성장 추이 확인">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="student-body">
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="welcome.html">
+                    <img src="asset_main_logo.svg" alt="CoachBuddy Logo" class="logo-img">
+                    <span class="logo-text">CoachBuddy</span>
+                </a>
+                <span class="logo-tag">학생용</span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#my-dashboard">내 대시보드</a></li>
+                    <li><a href="#my-reports">리포트 보관함</a></li>
+                    <li><a href="#ai-shop">AI 추천 샵</a></li>
+                    <li><a href="#premium">프리미엄 레슨</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="mode-switcher">
+                    <a href="index.html" class="mode-btn">코치 모드</a>
+                    <a href="student.html" class="mode-btn active">학생 모드</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Dashboard Header -->
+        <section class="hero text-left mb-1" id="my-dashboard">
+            <h1>안녕하세요, 최준호 학생! 👋</h1>
+            <p class="text-secondary">오늘도 성장을 위한 분석 리포트가 도착했습니다.</p>
+        </section>
+
+        <div class="dashboard-grid">
+            <div class="main-content">
+                <!-- Recent Analysis Result -->
+                <section class="card">
+                    <div class="section-title m-0 mb-1">
+                        <h3>최근 분석 결과</h3>
+                        <a href="#my-reports" class="text-small text-primary">전체보기 ></a>
+                    </div>
+                    <div id="latest-analysis-container" class="feedback-list">
+                        <!-- Dynamic Content from JS -->
+                        <div class="loading-placeholder">데이터를 불러오는 중...</div>
+                    </div>
+                </section>
+
+                <!-- Growth Metrics Chart -->
+                <section class="card">
+                    <h3>성장 추이 (최근 7회)</h3>
+                    <p class="text-muted text-small mb-1">릴리즈 아크 및 점프 높이 변화</p>
+                    <div id="chart-container" class="chart-placeholder">
+                        <!-- Chart Mockup -->
+                        <div class="chart-mockup">
+                            <div class="chart-line-point" style="height: 60%;" title="60%"></div>
+                            <div class="chart-line-point" style="height: 65%;" title="65%"></div>
+                            <div class="chart-line-point" style="height: 62%;" title="62%"></div>
+                            <div class="chart-line-point" style="height: 70%;" title="70%"></div>
+                            <div class="chart-line-point" style="height: 75%;" title="75%"></div>
+                            <div class="chart-line-point" style="height: 82%;" title="82%"></div>
+                            <div class="chart-line-point" style="height: 85%;" title="85%"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AI Recommended Shop -->
+                <section id="ai-shop" class="card">
+                    <div class="section-title m-0">
+                        <h3>AI 추천 샵 <span class="badge-new">MONETIZE</span></h3>
+                    </div>
+                    <p class="text-muted text-small mb-1">분석 결과 기반: 하체 근력 및 슛 밸런스 개선 추천 상품</p>
+                    <div id="shop-container" class="student-grid">
+                        <!-- Dynamic Content from JS -->
+                    </div>
+                </section>
+            </div>
+
+            <aside class="sidebar">
+                <!-- Coach Comments -->
+                <div class="card" style="border-left: 4px solid var(--primary-color);">
+                    <h3>코치 코멘트</h3>
+                    <div class="coach-comment-box">
+                        "준호 학생, 이번 분석에서 **릴리즈 아크가 3도 정도 개선**된 것이 눈에 띕니다! 다만 점프 시 왼쪽 발목 지지가 조금 불안정하니 아래 추천 루틴을 꼭 진행해
+                        보세요."
+                    </div>
+                </div>
+
+                <!-- Recommended Routines -->
+                <div class="card">
+                    <h3>추천 운동 루틴</h3>
+                    <div id="routines-container" class="feedback-list">
+                        <!-- Dynamic Content from JS -->
+                    </div>
+                </div>
+
+                <!-- Pro Plan Banner -->
+                <div class="card pro-banner">
+                    <h3>Pro 플랜 안내</h3>
+                    <p class="text-small m-0 mb-1">무제한 영상 분석과 평생 리포트 소장권, PDF 다운로드 혜택을 누리세요.</p>
+                    <button class="btn w-full" data-product-id="pro_yearly"
+                        onclick="startPayment(this.dataset.productId)">Pro 플랜 결제하기 (테스트)</button>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Premium Lessons -->
+        <section id="premium" class="mt-1">
+            <div class="section-title">
+                <h2>프리미엄 전용 강의</h2>
+                <p class="text-muted">내 약점을 보완해줄 1% 리더들의 시크릿 레슨</p>
+            </div>
+            <div id="premium-lessons-container" class="student-grid">
+                <!-- Dynamic Content from JS -->
+            </div>
+        </section>
+    </main>
+
+    <script src="js/payment-sdk-mock.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

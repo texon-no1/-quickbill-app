@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 분석 결과 - CoachBuddy</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+</head>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="welcome.html">
+                    <img src="asset_main_logo.svg" alt="CoachBuddy Logo" class="logo-img">
+                    <span class="logo-text">CoachBuddy</span>
+                </a>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary btn-pdf-download pro-only" onclick="generatePDFFromReport()">PDF 리포트
+                    저장</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <a href="index.html" class="back-btn">← 대시보드로 돌아가기</a>
+
+        <div class="hero text-left mb-1">
+            <h1>AI 상세 분석 보고서</h1>
+            <p class="text-secondary">최준호 학생 - 농구 자유투 메커니즘 (2026.03.12)</p>
+        </div>
+
+        <div class="analysis-container">
+            <div class="main-content">
+                <div class="video-player-mock">
+                    <img src="assets/analysis-detail.png" alt="AI Analysis Detail">
+                </div>
+
+                <div class="mt-1">
+                    <h3>AI 종합 피드백</h3>
+                    <div class="ai-commentary">
+                        최준호 학생의 자유투 폼은 전반적으로 매우 안정적입니다. 특히 **릴리즈 아크(48°)**가 이상적인 범위에 있어 볼의 회전과 비거리가 정교합니다.
+                        다만, 점프 정점에서 **엘보우 각도(151°)**가 미세하게 넓어지는 경향이 있어, 일관성을 위해 팔꿈치를 조금 더 몸쪽으로 붙이는 연습을 추천합니다.
+                        무릎 반동을 이용한 힘의 전달은 최적화되어 있습니다(Symmetry 94%).
+                    </div>
+                </div>
+            </div>
+
+            <aside class="metrics-sidebar">
+                <h3>분석 메트릭</h3>
+                <div class="metric-card">
+                    <div class="metric-label">Release Angle</div>
+                    <div class="metric-value">46° <small style="font-size: 0.8rem; color: #2ecc71;">(Optimal)</small>
+                    </div>
+                </div>
+                <div class="metric-card" style="border-left-color: #f1c40f;">
+                    <div class="metric-label">Elbow Extension</div>
+                    <div class="metric-value">151° <small style="font-size: 0.8rem; color: #f39c12;">(Needs
+                            Adjust)</small></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Power Symmetry</div>
+                    <div class="metric-value">94%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Vertical Height</div>
+                    <div class="metric-value">72cm</div>
+                </div>
+
+                <div class="card mt-1">
+                    <h3>코치 코멘트</h3>
+                    <textarea class="w-full"
+                        style="border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; font-family: inherit; height: 100px; background: #111; color: #fff;"
+                        placeholder="학생에게 전달할 추가 코멘트를 입력하세요..."></textarea>
+                    <button class="btn btn-primary w-full mt-1">피드백 전송</button>
+                </div>
+            </aside>
+        </div>
+
+        <!-- AI Metrics Section -->
+        <section class="analysis-results">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">엘보우 각도</div>
+                    <div class="metric-value">151°</div>
+                    <div class="metric-change improvement">↑ 3° 개선됨</div>
+                </div>
+                <!-- ... other metrics ... -->
+            </div>
+        </section>
+
+        <!-- AI Recommended Shop (Monetization) -->
+        <section class="card mt-1">
+            <h3>AI 추천 상품 <span class="badge-new">MONETIZE</span></h3>
+            <p class="text-muted text-small mb-1">분석된 약점(하체 안정성)을 보완하기 위한 추천 아이템입니다.</p>
+            <div class="student-grid">
+                <div class="product-card">
+                    <div class="product-img">💊</div>
+                    <div class="product-info">
+                        <div class="product-title">하체 강화 머슬 프로틴</div>
+                        <div class="product-desc">안정적인 점프력을 위한 필수 아미노산 함유</div>
+                        <a href="#" class="btn btn-primary btn-small w-full">쿠팡 링크 보기</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🧎</div>
+                    <div class="product-info">
+                        <div class="product-title">프로페셔널 무릎 보호대</div>
+                        <div class="product-desc">착지 시 무릎 충격을 최소화하는 고탄성 소재</div>
+                        <a href="#" class="btn btn-primary btn-small w-full">네이버 스토어</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Premium Content (Monetization) -->
+        <section class="card">
+            <h3>코칭 추천 프리미엄 레슨</h3>
+            <div class="routine-card">
+                <div class="w-full">
+                    <h4>자유투 개선 퍼팩트 트레이닝</h4>
+                    <p class="text-secondary text-small mb-1">난이도: 중급 | 시간: 30분 | 기대효과: 아크 2도 향상</p>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-primary btn-small">구매하기 (예정)</button>
+                        <button class="btn btn-small" style="border: 1px solid var(--border-color);">프리뷰 보기</button>
+                    </div>
+                </div>
+                <div class="video-lesson-badge">VIDEO</div>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons mt-1" style="display: flex; gap: 1rem;">
+            <button class="btn btn-primary w-full">피드백 전송하기</button>
+            <button class="btn btn-pdf-download pro-only w-full"
+                style="border: 1px solid var(--border-color); background: #222;" onclick="generatePDFFromReport()">
+                PDF 리포트 다운로드
+                <span class="pro-badge">PRO</span>
+            </button>
+        </div>
+    </main>
+
+    <script src="js/payment-sdk-mock.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
