@@ -297,6 +297,27 @@ main {
     gap: 1.25rem;
 }
 
+.product-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.product-badge.coupang {
+    background: #ff4d4d;
+    color: white;
+}
+
+.product-badge.naver {
+    background: #27ae60;
+    color: white;
+}
+
 .feedback-item {
     display: flex;
     justify-content: space-between;

@@ -11,8 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
             unit: '아크 48°, 엘보우 151°',
             icon: 'asset_basketball.svg',
             shopItems: [
-                { name: '하체 강화 머슬 프로틴', desc: '안정적인 점프력을 위한 필수 영양', icon: '💊', linkType: '쿠팡' },
-                { name: '프로페셔널 무릎 보호대', desc: '착지 시 충격 완화 및 부상 방지', icon: '🧎', linkType: '네이버' }
+                { id: 'B001', name: '하체 강화 머슬 프로틴', desc: '안정적인 점프력을 위한 필수 영양', image: 'https://images.unsplash.com/photo-1593095195730-80e8fca3396d?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example1', label: '쿠팡 파트너스' },
+                { id: 'B002', name: '프로페셔널 무릎 보호대', desc: '착지 시 충격 완화 및 부상 방지', image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=200&h=200&fit=crop', isCoupang: false, affiliateUrl: 'https://smartstore.naver.com/example1', label: '네이버 스토어' },
+                { id: 'B003', name: '고탄성 농구 양말', desc: '접지력 향상 및 물집 방지 테크놀로지', image: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example2', label: '쿠팡 파트너스' }
             ],
             routines: [
                 { name: '벽 스쿼트 버티기', desc: '하체 근지구력 및 슛 밸런스 강화', icon: '🏋️', isPremium: false },
@@ -27,8 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
             unit: '좌우 균형 94%, 골반 각도 12°',
             icon: 'asset_yoga.svg',
             shopItems: [
-                { name: '프리미엄 요가 매트', desc: '땀 흡수 및 미끄럼 방지 최적화', icon: '🧘‍♀️', linkType: '쿠팡' },
-                { name: '요가 블록 세트', desc: '자세 교정 및 유연성 향상 도우미', icon: '🧱', linkType: '네이버' }
+                { id: 'Y001', name: '프리미엄 천연고무 요가 매트', desc: '땀 흡수 및 미끄럼 방지 최적화', image: 'https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example3', label: '쿠팡 파트너스' },
+                { id: 'Y002', name: '요가 블록 & 스트랩 세트', desc: '자세 교정 및 유연성 향상 도우미', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=200&h=200&fit=crop', isCoupang: false, affiliateUrl: 'https://smartstore.naver.com/example2', label: '네이버 스토어' },
+                { id: 'Y003', name: '아로마 테라피 디퓨저', desc: '깊은 이완과 명상을 위한 숲속 향기', image: 'https://images.unsplash.com/photo-1570197788417-0e93323c93bf?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example4', label: '쿠팡 파트너스' }
             ],
             routines: [
                 { name: '아침 수리야 나마스카라', desc: '몸 전체의 에너지를 깨우는 흐름', icon: '☀️', isPremium: false },
@@ -43,8 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
             unit: '정확도 92%, 표현력 88점',
             icon: 'asset_dance.svg',
             shopItems: [
-                { name: '퍼포먼스 댄스화', desc: '충격 흡수 및 발목 회전 지원', icon: '👟', linkType: '쿠팡' },
-                { name: '고화질 연습용 대형 거울', desc: '디테일한 동작 체크를 위한 필수템', icon: '🪞', linkType: '네이버' }
+                { id: 'D001', name: '퍼포먼스 스트릿 댄스화', desc: '충격 흡수 및 발목 회전 지원', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example5', label: '쿠팡 파트너스' },
+                { id: 'D002', name: '고화질 연습용 대형 거울', desc: '디테일한 동작 체크를 위한 필수템', image: 'https://images.unsplash.com/photo-1594911772125-07fc7a2d8d9f?w=200&h=200&fit=crop', isCoupang: false, affiliateUrl: 'https://smartstore.naver.com/example3', label: '네이버 스토어' },
+                { id: 'D003', name: '무선 블루투스 가이드 모니터', desc: '박자 지연 없는 실시간 영상 모니터링', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example6', label: '쿠팡 파트너스' }
             ],
             routines: [
                 { name: '기초 코어 강화', desc: '파워풀한 동작을 위한 중심 잡기', icon: '💪', isPremium: false },
@@ -115,19 +118,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (shopList) {
+        shopList.innerHTML = '';
         shopItems.forEach(item => {
             const div = document.createElement('div');
             div.className = 'product-card';
             div.innerHTML = `
-                <div class="product-img">${item.icon}</div>
+                <div class="product-img" style="background-image: url('${item.image}'); background-size: cover; background-position: center; height: 160px; position: relative;">
+                    <span class="product-badge ${item.isCoupang ? 'coupang' : 'naver'}">${item.label}</span>
+                </div>
                 <div class="product-info">
                     <div class="product-title">${item.name}</div>
                     <div class="product-desc">${item.desc}</div>
-                    <a href="#" class="btn btn-primary" style="width: 100%; font-size: 0.8rem; padding: 0.5rem;">${item.linkType} 링크</a>
+                    <a href="${item.affiliateUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%; font-size: 0.8rem; padding: 0.5rem; display: block; text-align: center;">추천 상품 보기</a>
                 </div>
             `;
             shopList.appendChild(div);
         });
+
+        // Add Coupang Partners Disclosure
+        const disclosure = document.createElement('p');
+        disclosure.className = 'text-muted text-tiny mt-1';
+        disclosure.style.cssText = 'font-size: 0.7rem; width: 100%; grid-column: 1 / -1; opacity: 0.8;';
+        disclosure.innerText = '이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.';
+        shopList.appendChild(disclosure);
     }
 
     if (routineList) {
