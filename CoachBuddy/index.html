@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 
 <body>
@@ -45,7 +47,7 @@
                 <img src="asset_main_logo.svg" alt="CoachBuddy Logo">
                 <span class="logo-text">CoachBuddy</span>
             </a>
-            <nav>
+            <nav class="desktop-only">
                 <ul class="nav-links">
                     <li><a href="#dashboard">대시보드</a></li>
                     <li><a href="#students">학생 관리</a></li>
@@ -53,7 +55,7 @@
                     <li><a href="#pricing">프리미엄</a></li>
                 </ul>
             </nav>
-            <div class="header-actions">
+            <div class="header-actions desktop-only">
                 <div class="mode-switcher">
                     <a href="index.html" class="mode-btn active">코치 모드</a>
                     <a href="student.html" class="mode-btn">학생 모드</a>
@@ -86,8 +88,7 @@
                                     <div class="avatar">김</div>
                                     <div>
                                         <strong>김민준 학생 - 요가 기본 자세</strong>
-                                        <div class="text-mini text-muted">2026.03.12 14:30
-                                        </div>
+                                        <div class="text-mini text-muted">2026.03.12 14:30</div>
                                     </div>
                                 </div>
                                 <span class="status-badge status-ready">분석 완료</span>
@@ -99,21 +100,7 @@
                                     <div class="avatar">최</div>
                                     <div>
                                         <strong>최준호 학생 - 농구 자유투 메커니즘</strong>
-                                        <div class="text-mini text-muted">2026.03.12 15:45
-                                        </div>
-                                    </div>
-                                </div>
-                                <span class="status-badge status-ready">분석 완료</span>
-                            </div>
-                        </a>
-                        <a href="analysis.html" class="student-card-link">
-                            <div class="feedback-item">
-                                <div class="student-info">
-                                    <div class="avatar">이</div>
-                                    <div>
-                                        <strong>이서연 학생 - 필라테스 코어</strong>
-                                        <div class="text-mini text-muted">2026.03.12 11:20
-                                        </div>
+                                        <div class="text-mini text-muted">2026.03.12 15:45</div>
                                     </div>
                                 </div>
                                 <span class="status-badge status-ready">분석 완료</span>
@@ -124,8 +111,7 @@
 
                 <div class="card">
                     <h3>AI 분석 하이라이트 <span class="badge-new">NEW</span></h3>
-                    <p class="text-secondary mb-1">농구 자유투 슛 폼 분석 - AI 메트릭
-                        기반 심층 피드백</p>
+                    <p class="text-secondary mb-1">농구 자유투 슛 폼 분석 - AI 메트릭 기반 심층 피드백</p>
                     <div class="featured-analysis">
                         <img src="assets/basketball-analysis.png" alt="Basketball AI Analysis">
                         <div class="analysis-overlay">
@@ -136,7 +122,7 @@
                 </div>
             </section>
 
-            <aside class="sidebar-stats">
+            <aside class="sidebar-stats desktop-only">
                 <div class="card">
                     <h3>성장 추이 (정확도)</h3>
                     <div class="chart-placeholder">
@@ -145,12 +131,22 @@
                         <div class="chart-bar" style="height: 75%;"></div>
                         <div class="chart-bar" style="height: 91%;"></div>
                     </div>
-                    <p class="text-small mt-1 text-muted">이번 달 평균 정확도가
-                        <strong>12%</strong> 향상되었습니다.
-                    </p>
+                    <p class="text-small mt-1 text-muted">이번 달 평균 정확도가 <strong>12%</strong> 향상되었습니다.</p>
                 </div>
             </aside>
         </div>
+
+        <!-- Mobile Only Stats (visible only on small screens) -->
+        <section class="mobile-only mt-2">
+            <div class="card">
+                <h3>주간 활동 요약</h3>
+                <div class="chart-placeholder">
+                    <div class="chart-bar" style="height: 70%;"></div>
+                    <div class="chart-bar" style="height: 85%;"></div>
+                    <div class="chart-bar" style="height: 60%;"></div>
+                </div>
+            </div>
+        </section>
 
         <!-- Students Section -->
         <section id="students">
@@ -240,6 +236,26 @@
             </div>
         </section>
     </main>
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="bottom-nav mobile-only">
+        <a href="#dashboard" class="bottom-nav-item active">
+            <i class="ph-bold ph-house"></i>
+            <span>홈</span>
+        </a>
+        <a href="#students" class="bottom-nav-item">
+            <i class="ph-bold ph-users"></i>
+            <span>학생</span>
+        </a>
+        <a href="#reports" class="bottom-nav-item">
+            <i class="ph-bold ph-chart-pie-slice"></i>
+            <span>리포트</span>
+        </a>
+        <a href="#pricing" class="bottom-nav-item">
+            <i class="ph-bold ph-crown"></i>
+            <span>프로</span>
+        </a>
+    </nav>
 
     <script src="js/payment-sdk-mock.js"></script>
     <script src="js/app.js"></script>

@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 
 <body class="student-body">
@@ -23,7 +25,7 @@
                 </a>
                 <span class="logo-tag">학생용</span>
             </div>
-            <nav>
+            <nav class="desktop-only">
                 <ul class="nav-links">
                     <li><a href="#my-dashboard">내 대시보드</a></li>
                     <li><a href="#my-reports">리포트 보관함</a></li>
@@ -31,7 +33,7 @@
                     <li><a href="#premium">프리미엄 레슨</a></li>
                 </ul>
             </nav>
-            <div class="header-actions">
+            <div class="header-actions desktop-only">
                 <div class="mode-switcher">
                     <a href="index.html" class="mode-btn">코치 모드</a>
                     <a href="student.html" class="mode-btn active">학생 모드</a>
@@ -129,6 +131,26 @@
                 <!-- Dynamic Content from JS -->
             </div>
         </section>
+
+        <!-- Bottom Navigation (Mobile Only) -->
+        <nav class="bottom-nav mobile-only">
+            <a href="#my-dashboard" class="bottom-nav-item active">
+                <i class="ph-bold ph-house"></i>
+                <span>홈</span>
+            </a>
+            <a href="#my-reports" class="bottom-nav-item">
+                <i class="ph-bold ph-files"></i>
+                <span>리포트</span>
+            </a>
+            <a href="#ai-shop" class="bottom-nav-item">
+                <i class="ph-bold ph-shopping-cart"></i>
+                <span>추천샵</span>
+            </a>
+            <a href="#premium" class="bottom-nav-item">
+                <i class="ph-bold ph-graduation-cap"></i>
+                <span>레슨</span>
+            </a>
+        </nav>
     </main>
 
     <script src="js/payment-sdk-mock.js"></script>

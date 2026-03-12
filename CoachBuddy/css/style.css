@@ -14,6 +14,7 @@
     --radius: 16px;
     --glass-bg: rgba(20, 20, 20, 0.8);
     --glass-blur: blur(12px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 * {
@@ -257,6 +258,13 @@ main {
     gap: 3rem;
 }
 
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
 .section-title {
     margin: 4rem 0 2rem;
     padding-bottom: 1.5rem;
@@ -400,7 +408,10 @@ main {
 .featured-analysis img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    /* 가로/세로 잘림 방지 */
+    background: #000;
+    /* 빈 공간은 검정색으로 채움 */
     display: block;
     transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -456,6 +467,15 @@ main {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 2.5rem;
+}
+
+@media (max-width: 768px) {
+
+    .student-grid,
+    .report-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
 }
 
 /* --- Mode & Category Switchers --- */
@@ -730,75 +750,6 @@ main {
     flex-wrap: wrap;
 }
 
-.price-card {
-    background: var(--bg-card);
-    color: var(--text-main);
-    padding: 3rem;
-    border-radius: 24px;
-    width: 340px;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s;
-}
-
-.price-card.featured {
-    border: 2px solid var(--primary-color);
-    transform: scale(1.05);
-    background: #111;
-    box-shadow: 0 20px 50px rgba(198, 255, 0, 0.1);
-}
-
-.price {
-    font-size: 4rem;
-    font-weight: 900;
-    margin: 2rem 0;
-    color: var(--primary-color);
-}
-
-/* --- Print & Utilities --- */
-@media (max-width: 768px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .hero h1 {
-        font-size: 2.5rem;
-    }
-
-    .category-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media print {
-    body {
-        background: white;
-        color: black;
-    }
-
-    body * {
-        visibility: hidden;
-    }
-
-    #printable-report,
-    #printable-report * {
-        visibility: visible;
-    }
-
-    #printable-report {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-    }
-
-    .no-print {
-        display: none !important;
-    }
-}
-
-#printable-report {
-    display: none;
-}
 
 /* ==========================================================================
    New High Contrast Dark Theme Additions
@@ -1081,4 +1032,205 @@ main {
 
 .w-full {
     width: 100% !important;
+}/* ==========================================================================
+   Responsive Logic (Move to end for priority)
+   ========================================================================== */
+
+/* Mobile (Up to 768px) */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    header .container {
+        justify-content: center;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero h1 {
+        font-size: 2.2rem;
+        letter-spacing: -1px;
+    }
+
+    .dashboard-grid,
+    .student-grid,
+    .report-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .pricing-section {
+        padding: 4rem 1.5rem;
+        border-radius: 24px;
+    }
+
+    .pricing-grid {
+        gap: 1.5rem;
+    }
+
+    .price-card.featured {
+        transform: scale(1.02);
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .chart-placeholder {
+        height: 180px;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    /* Welcome Screen Mobile Fix */
+    .welcome-container {
+        padding: 1.5rem;
+    }
+
+    .logo-welcome {
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .logo-welcome img {
+        height: 60px;
+    }
+
+    .logo-welcome span {
+        font-size: 2.2rem;
+    }
+
+    .category-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        margin-top: 2rem;
+    }
+
+    .category-card {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+    }
+
+    .category-card img {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 1.25rem;
+    }
+
+    .category-title {
+        font-size: 1.3rem;
+    }
+
+    /* Bottom Navigation Bar (Mobile Only) */
+    .bottom-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(13, 13, 13, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        justify-content: space-around;
+        align-items: center;
+        padding: 12px 0 calc(12px + var(--safe-area-bottom));
+        border-top: 1px solid var(--border-color);
+        z-index: 2000;
+    }
+
+    .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .bottom-nav-item i {
+        font-size: 1.25rem;
+    }
+
+    .bottom-nav-item.active {
+        color: var(--primary-color);
+    }
+
+    /* Utility to hide desktop elements */
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+/* Tablet & PC (From 769px) */
+@media (min-width: 769px) {
+    .container {
+        max-width: 1400px;
+    }
+
+    .mobile-only,
+    .bottom-nav {
+        display: none !important;
+    }
+
+    aside.sidebar,
+    aside.sidebar-stats,
+    aside.metrics-sidebar {
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+    }
+
+    .student-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+}
+
+/* Large Desktop Tweak: Analysis View */
+@media (min-width: 1025px) {
+    .analysis-container {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 3rem;
+        align-items: start;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    #printable-report,
+    #printable-report * {
+        visibility: visible;
+    }
+
+    #printable-report {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}
+
+#printable-report {
+    display: none;
 }

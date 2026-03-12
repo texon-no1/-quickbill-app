@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 </head>
 
@@ -21,7 +23,7 @@
                     <span class="logo-text">CoachBuddy</span>
                 </a>
             </div>
-            <div class="header-actions">
+            <div class="header-actions desktop-only">
                 <button class="btn btn-primary btn-pdf-download pro-only" onclick="generatePDFFromReport()">PDF 리포트
                     저장</button>
             </div>
@@ -52,7 +54,11 @@
                 </div>
             </div>
 
-            <aside class="metrics-sidebar">
+        </div>
+        </div>
+
+        <aside class="metrics-sidebar">
+            <div class="card">
                 <h3>분석 메트릭</h3>
                 <div class="metric-card">
                     <div class="metric-label">Release Angle</div>
@@ -68,19 +74,24 @@
                     <div class="metric-label">Power Symmetry</div>
                     <div class="metric-value">94%</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-label">Vertical Height</div>
-                    <div class="metric-value">72cm</div>
-                </div>
+            </div>
 
-                <div class="card mt-1">
-                    <h3>코치 코멘트</h3>
-                    <textarea class="w-full"
-                        style="border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; font-family: inherit; height: 100px; background: #111; color: #fff;"
-                        placeholder="학생에게 전달할 추가 코멘트를 입력하세요..."></textarea>
-                    <button class="btn btn-primary w-full mt-1">피드백 전송</button>
+            <div class="card mt-1 desktop-only">
+                <h3>심층 통계</h3>
+                <div class="chart-placeholder" style="height: 120px;">
+                    <div class="chart-bar" style="height: 40%;"></div>
+                    <div class="chart-bar" style="height: 90%;"></div>
                 </div>
-            </aside>
+            </div>
+
+            <div class="card mt-1">
+                <h3>코치 코멘트</h3>
+                <textarea class="w-full"
+                    style="border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; font-family: inherit; height: 100px; background: #111; color: #fff;"
+                    placeholder="학생에게 전달할 추가 코멘트를 입력하세요..."></textarea>
+                <button class="btn btn-primary w-full mt-1">피드백 전송</button>
+            </div>
+        </aside>
         </div>
 
         <!-- AI Metrics Section -->
@@ -132,6 +143,26 @@
             </button>
         </div>
     </main>
+
+    <!-- Bottom Navigation (Mobile Only) - Simplified for Analysis Page -->
+    <nav class="bottom-nav mobile-only">
+        <a href="index.html" class="bottom-nav-item">
+            <i class="ph-bold ph-caret-left"></i>
+            <span>뒤로</span>
+        </a>
+        <a href="#" class="bottom-nav-item active">
+            <i class="ph-bold ph-microscope"></i>
+            <span>분석</span>
+        </a>
+        <a href="#shop-container" class="bottom-nav-item">
+            <i class="ph-bold ph-shopping-cart"></i>
+            <span>추천</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="generatePDFFromReport()">
+            <i class="ph-bold ph-file-pdf"></i>
+            <span>PDF</span>
+        </a>
+    </nav>
 
     <script src="js/payment-sdk-mock.js"></script>
     <script src="js/app.js"></script>
