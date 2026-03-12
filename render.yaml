@@ -1,6 +1,5 @@
 services:
   - type: web
-    name: coachbuddy
+    name: coachbuddy-site
     env: static
-    buildCommand: ""
     publishDir: CoachBuddy
