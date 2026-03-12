@@ -912,10 +912,12 @@ main {
 
 /* --- Analysis Detail --- */
 .analysis-container {
-    display: grid;
-    grid-template-columns: 1fr 350px;
-    gap: 2rem;
+    display: block;
     margin-top: 2rem;
+}
+
+.analysis-container>* {
+    margin-bottom: 2rem;
 }
 
 .video-player-mock {
@@ -1032,7 +1034,9 @@ main {
 
 .w-full {
     width: 100% !important;
-}/* ==========================================================================
+}
+
+/* ==========================================================================
    Responsive Logic (Move to end for priority)
    ========================================================================== */
 
@@ -1186,6 +1190,16 @@ main {
         position: sticky;
         top: 100px;
         height: fit-content;
+    }
+
+    .analysis-container {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 2rem;
+    }
+
+    .analysis-container>* {
+        margin-bottom: 0;
     }
 
     .student-grid {
