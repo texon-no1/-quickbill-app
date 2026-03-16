@@ -1,0 +1,379 @@
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('CoachBuddy Initialized');
+
+    // --- Multi-Category Configuration ---
+    const CATEGORY_CONFIG = {
+        basketball: {
+            title: '농구 코치 대시보드',
+            desc: '자유투 및 전술 동작 분석 전문 엔진 활성화 중',
+            analysisTitle: '자유투 슛 아크 분석',
+            statsLabel: '최다 조회 레슨: 슛 아크 마스터',
+            unit: '아크 48°, 엘보우 151°',
+            icon: 'asset_basketball.svg',
+            shopItems: [
+                { id: 'B001', name: '하체 강화 머슬 프로틴', desc: '안정적인 점프력을 위한 필수 영양', image: 'https://images.unsplash.com/photo-1593095195730-80e8fca3396d?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example1', label: '쿠팡 파트너스' },
+                { id: 'B002', name: '프로페셔널 무릎 보호대', desc: '착지 시 충격 완화 및 부상 방지', image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=200&h=200&fit=crop', isCoupang: false, affiliateUrl: 'https://smartstore.naver.com/example1', label: '네이버 스토어' },
+                { id: 'B003', name: '고탄성 농구 양말', desc: '접지력 향상 및 물집 방지 테크놀로지', image: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example2', label: '쿠팡 파트너스' }
+            ],
+            routines: [
+                { name: '벽 스쿼트 버티기', desc: '하체 근지구력 및 슛 밸런스 강화', icon: '🏋️', isPremium: false },
+                { name: '한 발 밸런스 훈련', desc: '릴리즈 시 하체 안정성 확보', icon: '🧘', isPremium: true }
+            ]
+        },
+        yoga: {
+            title: '요가 강사 대시보드',
+            desc: '정렬 및 유연성 밸런스 분석 엔진 활성화 중',
+            analysisTitle: '전사 자세 대칭성 분석',
+            statsLabel: '최다 조회 레슨: 골반 정렬 기초',
+            unit: '좌우 균형 94%, 골반 각도 12°',
+            icon: 'asset_yoga.svg',
+            shopItems: [
+                { id: 'Y001', name: '프리미엄 천연고무 요가 매트', desc: '땀 흡수 및 미끄럼 방지 최적화', image: 'https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example3', label: '쿠팡 파트너스' },
+                { id: 'Y002', name: '요가 블록 & 스트랩 세트', desc: '자세 교정 및 유연성 향상 도우미', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=200&h=200&fit=crop', isCoupang: false, affiliateUrl: 'https://smartstore.naver.com/example2', label: '네이버 스토어' },
+                { id: 'Y003', name: '아로마 테라피 디퓨저', desc: '깊은 이완과 명상을 위한 숲속 향기', image: 'https://images.unsplash.com/photo-1570197788417-0e93323c93bf?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example4', label: '쿠팡 파트너스' }
+            ],
+            routines: [
+                { name: '아침 수리야 나마스카라', desc: '몸 전체의 에너지를 깨우는 흐름', icon: '☀️', isPremium: false },
+                { name: '딥 스트레칭 이완', desc: '근육 긴장 완화 및 유연성 증대', icon: '🐚', isPremium: true }
+            ]
+        },
+        dance: {
+            title: '댄스 안무가 대시보드',
+            desc: '박자 및 전신 일체감 분석 엔진 활성화 중',
+            analysisTitle: 'K-POP 안무 일치율 분석',
+            statsLabel: '최다 조회 레슨: 아이솔레이션 마스터',
+            unit: '정확도 92%, 표현력 88점',
+            icon: 'asset_dance.svg',
+            shopItems: [
+                { id: 'D001', name: '퍼포먼스 스트릿 댄스화', desc: '충격 흡수 및 발목 회전 지원', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example5', label: '쿠팡 파트너스' },
+                { id: 'D002', name: '고화질 연습용 대형 거울', desc: '디테일한 동작 체크를 위한 필수템', image: 'https://images.unsplash.com/photo-1594911772125-07fc7a2d8d9f?w=200&h=200&fit=crop', isCoupang: false, affiliateUrl: 'https://smartstore.naver.com/example3', label: '네이버 스토어' },
+                { id: 'D003', name: '무선 블루투스 가이드 모니터', desc: '박자 지연 없는 실시간 영상 모니터링', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop', isCoupang: true, affiliateUrl: 'https://link.coupang.com/a/example6', label: '쿠팡 파트너스' }
+            ],
+            routines: [
+                { name: '기초 코어 강화', desc: '파워풀한 동작을 위한 중심 잡기', icon: '💪', isPremium: false },
+                { name: '음악 비트 매칭 훈련', desc: '박자 감각 및 그루브 향상', icon: '🎵', isPremium: true }
+            ]
+        }
+    };
+
+    window.selectCategory = function (cat) {
+        localStorage.setItem('selectedCategory', cat);
+        const modal = document.getElementById('category-modal-overlay');
+        if (modal) modal.style.display = 'none';
+        location.reload(); // Reload to apply all config changes
+    };
+
+    const currentCat = localStorage.getItem('selectedCategory');
+    if (!currentCat && window.location.pathname.includes('index.html')) {
+        const modal = document.getElementById('category-modal-overlay');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    const config = CATEGORY_CONFIG[currentCat || 'basketball'];
+
+    console.log(`[App] Current Category: ${currentCat || 'default:basketball'}`);
+
+    // Update Page Titles Dynamically
+    const mainTitle = document.getElementById('main-dashboard-title');
+    const mainDesc = document.getElementById('main-dashboard-desc');
+    if (mainTitle) mainTitle.innerText = config.title;
+    if (mainDesc) mainDesc.innerText = config.desc;
+
+    // Specific for student.html if needed
+    const studentPortalTitle = document.querySelector('.hero h2');
+    if (studentPortalTitle && window.location.pathname.includes('student.html')) {
+        studentPortalTitle.innerText = `${config.title.split(' ')[0]} 학생 포털`;
+    }
+
+    // --- Production Logic Configuration ---
+
+    const premiumLessons = [
+        { id: 'v1', title: '자유투 개선 퍼팩트 트레이닝', level: '중급', time: '30분', effect: '아크 2도 개선', isPro: true },
+        { id: 'v2', title: '수직 점프력 폭발 루틴', level: '고급', time: '45분', effect: '점프 5cm 향상', isPro: true }
+    ];
+
+    // --- Dynamic Rendering for Student Portal ---
+    const analysisList = document.getElementById('latest-analysis-container');
+    const shopList = document.getElementById('shop-container');
+    const routineList = document.getElementById('routines-container');
+    const premiumList = document.getElementById('premium-lessons-container');
+
+    if (analysisList) {
+        analysisList.innerHTML = '';
+        latestAnalysis.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'feedback-item';
+            div.innerHTML = `
+                <div class="student-info">
+                    <div class="avatar" style="background: var(--primary-dark); color: white;">B</div>
+                    <div>
+                        <strong>${item.title}</strong>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">${item.date} | ${item.summary}</div>
+                    </div>
+                </div>
+                <button class="btn" style="font-size: 0.8rem; border: 1px solid var(--border-color);" onclick="window.location.href='analysis.html'">보고서 보기</button>
+            `;
+            analysisList.appendChild(div);
+        });
+    }
+
+    if (shopList) {
+        shopList.innerHTML = '';
+        shopItems.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'product-card';
+            div.innerHTML = `
+                <div class="product-img" style="background-image: url('${item.image}'); background-size: cover; background-position: center; height: 160px; position: relative;">
+                    <span class="product-badge ${item.isCoupang ? 'coupang' : 'naver'}">${item.label}</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-title">${item.name}</div>
+                    <div class="product-desc">${item.desc}</div>
+                    <a href="${item.affiliateUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%; font-size: 0.8rem; padding: 0.5rem; display: block; text-align: center;">추천 상품 보기</a>
+                </div>
+            `;
+            shopList.appendChild(div);
+        });
+
+        // Add Coupang Partners Disclosure
+        const disclosure = document.createElement('p');
+        disclosure.className = 'text-muted text-tiny mt-1';
+        disclosure.style.cssText = 'font-size: 0.7rem; width: 100%; grid-column: 1 / -1; opacity: 0.8;';
+        disclosure.innerText = '이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.';
+        shopList.appendChild(disclosure);
+    }
+
+    if (routineList) {
+        routines.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'routine-card';
+            div.innerHTML = `
+                <div class="routine-icon" style="color: var(--primary-color);">${item.icon}</div>
+                <div>
+                    <h4>${item.name} ${item.isPremium ? '<span class="pro-badge">PRO</span>' : ''}</h4>
+                    <p>${item.desc}</p>
+                </div>
+            `;
+            routineList.appendChild(div);
+        });
+    }
+
+    if (premiumList) {
+        premiumLessons.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'video-lesson-card';
+            div.innerHTML = `
+                <div class="video-thumb">
+                    <div class="play-icon">▶</div>
+                    <div class="video-lesson-badge">${item.isPro ? 'PRO' : 'FREE'}</div>
+                    <div class="video-locked-overlay">
+                        <div class="lock-icon">🔒</div>
+                        <div style="font-size: 0.8rem;">구매 시 시청 가능</div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h4>${item.title}</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 5px 0;">${item.level} | ${item.time} | ${item.effect}</p>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 10px; font-size: 0.85rem;">구매하기 (예정)</button>
+                </div>
+            `;
+            premiumList.appendChild(div);
+        });
+    }
+
+    // --- Dummy Data (Using Config) ---
+    const latestAnalysis = [
+        { id: 1, date: '2026.03.12', title: config.analysisTitle, summary: config.unit },
+        { id: 2, date: '2026.03.10', title: '기본 밸런스 체크', summary: '정확도 88%' },
+        { id: 3, date: '2026.03.05', title: '성장 리포트', summary: '지난주 대비 향상' }
+    ];
+
+    const shopItems = config.shopItems;
+    const routines = config.routines;
+
+    // ... (keep premiumLessons and rendering logic) ...
+
+    // --- Pro State Management (localStorage) ---
+    window.isPro = localStorage.getItem('isPro') === 'true';
+
+    function updateProElements() {
+        // Update body class for global targeting
+        if (window.isPro) {
+            document.body.classList.add('is-pro');
+            document.body.classList.remove('is-free');
+        } else {
+            document.body.classList.add('is-free');
+            document.body.classList.remove('is-pro');
+        }
+
+        // Handle locked overlays
+        document.querySelectorAll('.video-locked-overlay').forEach(overlay => {
+            overlay.style.display = window.isPro ? 'none' : 'flex';
+        });
+
+        // Update Pro badges visibility if needed
+        document.querySelectorAll('.pro-badge').forEach(badge => {
+            badge.style.opacity = window.isPro ? '1' : '0.6';
+        });
+
+        // Update main dashboard title/desc based on Pro status
+        const mainTitle = document.getElementById('main-dashboard-title');
+        if (mainTitle && window.location.pathname.includes('index.html')) {
+            mainTitle.innerText = window.isPro ? `${config.title} (PRO)` : config.title;
+        }
+
+        console.log(`[App] Pro Elements Updated. Status: ${window.isPro}`);
+    }
+
+    // --- Payment Integration Standard Interface ---
+
+    /**
+     * 결제 프로세스 시작
+     */
+    window.startPayment = async function (productId) {
+        console.log(`[Payment] Starting payment for product: ${productId}`);
+
+        try {
+            // 1. SDK 초기화 (이미 되어있어도 안전하게 호출)
+            await PaymentSDK.init();
+
+            // 2. 결제 요청 설정 생성
+            const paymentConfig = {
+                amount: productId === 'pro_monthly' ? 9900 : 99000,
+                orderId: "ORDER_" + Date.now(),
+                orderName: productId === 'pro_monthly' ? "CoachBuddy Pro Monthly" : "CoachBuddy Pro Yearly",
+                method: "CARD"
+            };
+
+            // 3. SDK 결제창 호출
+            const result = await PaymentSDK.requestPayment(paymentConfig);
+
+            // 4. 성공 핸들러 호출
+            handlePaymentSuccess(result);
+
+        } catch (error) {
+            // 5. 실패/취소 핸들러 호출
+            if (error.error === "USER_CANCELLED") {
+                console.log("[Payment] User cancelled the payment.");
+            } else {
+                handlePaymentFail(error);
+            }
+        }
+    };
+
+    /**
+     * 결제 성공 처리
+     */
+    function handlePaymentSuccess(data) {
+        console.log("[Payment] Success Handler:", data);
+
+        // 1. 상태 영구 저장
+        window.isPro = true;
+        localStorage.setItem('isPro', 'true');
+        localStorage.setItem('subscriptionData', JSON.stringify({
+            date: new Date().toISOString(),
+            paymentKey: data.paymentKey,
+            amount: data.amount
+        }));
+
+        // 2. UI 갱신
+        updateProElements();
+
+        // 3. 사용자 알림
+        alert("결제가 성공적으로 완료되었습니다! 이제 모든 Pro 기능을 사용할 수 있습니다.");
+    }
+
+    /**
+     * 결제 실패 처리
+     */
+    function handlePaymentFail(error) {
+        console.error("[Payment] Fail Handler:", error);
+        alert(`결제에 실패했습니다: ${error.message || '알 수 없는 오류'}`);
+    }
+
+    // --- PDF Generation Simulation ---
+    window.generatePDFFromReport = function () {
+        if (!window.isPro) {
+            alert("PDF 리포트 다운로드는 Pro 플랜 전용 기능입니다.");
+            return;
+        }
+
+        const btn = document.querySelector('.btn-pdf-download');
+        if (btn) btn.innerText = "PDF 생성 중...";
+
+        setTimeout(() => {
+            alert("농구 분석 정밀 보고서(PDF)가 생성 및 다운로드되었습니다.");
+            if (btn) btn.innerText = "PDF 리포트 다운로드";
+        }, 2000);
+    };
+
+    // --- Coach Dashboard Analytics ---
+    const coachStatsContainer = document.getElementById('coach-stats-container');
+    const studentStats = [
+        { name: '최준호', plan: window.isPro ? 'Pro' : 'Free', lastAnalysis: '2026.03.12' },
+        { name: '김민지', plan: 'Free', lastAnalysis: '2026.03.11' },
+        { name: '이현우', plan: 'Free', lastAnalysis: '2026.03.10' }
+    ];
+
+    if (coachStatsContainer) {
+        const totalStudents = studentStats.length;
+        const proStudents = studentStats.filter(s => s.plan === 'Pro').length;
+        const proRatio = Math.round((proStudents / totalStudents) * 100);
+
+        coachStatsContainer.innerHTML = `
+            <div class="stats-card">
+                <h4>Pro 전환율</h4>
+                <div class="stats-value">${proRatio}%</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">${proStudents} / ${totalStudents} 명</div>
+            </div>
+            <div class="stats-card" style="border-left-color: #2ecc71;">
+                <h4>최다 조회 레슨</h4>
+                <div class="stats-value" style="font-size: 1.2rem; margin-top: 10px;">${config.statsLabel.split(': ')[1]}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">조회수 128회</div>
+            </div>
+        `;
+    }
+
+    // Initialize UI
+    updateProElements();
+
+    // --- Coach View Specific (Upload Simulation) ---
+    const uploadArea = document.querySelector('.upload-section');
+    const chartBars = document.querySelectorAll('.chart-bar');
+
+    if (uploadArea) {
+        uploadArea.addEventListener('click', () => simulateUpload());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#13b6ec';
+            uploadArea.style.background = '#e7f8fd';
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#e1e8ed';
+            uploadArea.style.background = '#ffffff';
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            simulateUpload();
+        });
+
+        function simulateUpload() {
+            uploadArea.innerHTML = `
+                <div class="loading-spinner"></div>
+                <img src="${config.icon}" style="width: 60px; margin-bottom: 1rem; opacity: 0.8;">
+                <h2 style="color: var(--primary-color);">AI ${config.title.split(' ')[0]} 분석 중...</h2>
+                <p>영상을 정교하게 분석하고 있습니다. 잠시만 기다려 주세요.</p>
+            `;
+            uploadArea.style.pointerEvents = 'none';
+            setTimeout(() => { window.location.href = 'analysis.html'; }, 2000);
+        }
+    }
+
+    // Animate Chart Bars
+    setTimeout(() => {
+        chartBars.forEach(bar => {
+            const finalHeight = bar.getAttribute('data-height');
+            bar.style.height = `${finalHeight}%`;
+        });
+    }, 500);
+});
