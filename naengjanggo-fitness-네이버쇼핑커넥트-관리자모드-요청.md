@@ -98,3 +98,31 @@
 - 현재 네이버 쇼핑커넥트 제휴 링크는 이미 발급되어 있음.
 - `attendance.js`와 `naengjanggo-fitness.html`에 Firestore/출석 로직이 이미 존재함.
 - 관리자 모드는 새 `admin.html` 또는 `naengjanggo-fitness.html` 내부에 분리된 섹션으로 구현해 주셔도 됩니다.
+# naengjanggo-fitness – 네이버 쇼핑커넥트 추천 상품 예시 및 UI 구조
+
+## 1. Firestore 컬렉션: `recommended_products` 예시 문서
+
+`recommended_products` 컬렉션에는 아래와 같은 형태의 문서를 저장하고자 합니다.  
+AntiGravity AI 에이전트께서는 이 구조를 기준으로 **Firestore Schema 및 CRUD 코드**를 설계해 주시면 됩니다.
+
+### 1.1 전체 컬렉션 설명
+
+- 컬렉션 이름: `recommended_products`
+- 역할:  
+  - 네이버 쇼핑커넥트 제휴 상품을 저장하는 컬렉션  
+  - `naengjanggo-fitness.html`에서 `visible: true`인 상품만 읽어와 UI에 표시  
+  - `admin.html`에서 관리자가 추가/수정/삭제
+
+### 1.2 예시 문서 1 (프로틴 바)
+
+```json
+{
+  "name": "프로틴 바 12입 (고단백, 저칼로리)",
+  "image_url": "https://shopping-phinf.pstatic.net/.../protein-bar.png",
+  "naver_link": "https://shopping.naver.com/.../product/protein-bar",
+  "category": "protein",
+  "order": 1,
+  "visible": true,
+  "description": "운동 후 간편하게 먹을 수 있는 고단백 프로틴 바"
+}
+
