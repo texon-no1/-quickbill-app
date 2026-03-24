@@ -44,7 +44,8 @@
 
   <!-- 카카오 SDK -->
   <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
-    integrity="sha384-l63h9m7nS6R2h3t9g8B7vF4lGzL6z8v7V8m9N0v1N2n3L4z5v6b7n8m9N0v1N2n3" crossorigin="anonymous"></script>
+    integrity="sha384-l63h9m7nS6R2h3t9g8B7vF4lGzL6z8v7V8m9N0v1N2n3L4z5v6b7n8m9N0v1N2n3"
+    crossorigin="anonymous"></script>
   <script>
     if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
       Kakao.init('61198547432049d5aa9b8f2d5a371239'); // 임시 키 (사용자 키로 교체 필요)
@@ -78,41 +79,25 @@
     }
 
     header {
-      background-image: url('img-fridge-hero.png');
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+        url('Gemini_Generated_Image_s7ju7ls7ju7ls7ju.png');
       background-size: cover;
       background-position: center;
-      padding: 15px 20px;
-      text-align: left;
+      color: white;
+      padding: 40px 20px 60px;
+      text-align: center;
+      display: block;
       position: relative;
-      border-bottom: 2px solid #2c2416;
-      min-height: 200px;
     }
 
-    header h1, header .title, header .subtitle, header p {
-      color: #000 !important;
+    .header-top {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 2;
     }
-
-    .header-text {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      padding: 10px 16px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      display: inline-block;
-    }
-    
-    .header-text .title {
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-    
-    .header-text .subtitle {
-      font-size: 0.75rem;
-      margin-top: 2px;
-    }
-
 
     .main-intro-text {
       max-width: 600px;
@@ -255,6 +240,7 @@
       color: var(--text-main);
       transition: all .15s;
     }
+
     .radio-pill img {
       width: 20px;
       height: 20px;
@@ -310,6 +296,7 @@
       height: 48px;
       flex-shrink: 0;
     }
+
     .goal-ad-icon img {
       width: 100%;
       height: 100%;
@@ -944,6 +931,7 @@
       border-radius: 99px;
       display: inline-block;
     }
+
     .btn-action-small {
       flex: 1;
       padding: 10px 0;
@@ -957,6 +945,7 @@
       color: var(--text-main);
       cursor: pointer;
     }
+
     .kitchen-master-section {
       margin-top: 30px;
       padding: 20px;
@@ -964,6 +953,7 @@
       border-radius: 15px;
       border: 1px dashed var(--accent-olive);
     }
+
     .kitchen-title {
       font-weight: 700;
       margin-bottom: 12px;
@@ -972,6 +962,7 @@
       align-items: center;
       gap: 5px;
     }
+
     .kitchen-item {
       display: flex;
       align-items: center;
@@ -980,22 +971,36 @@
       background: white;
       border-radius: 10px;
       margin-bottom: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     }
-    .kitchen-item-icon { 
+
+    .kitchen-item-icon {
       width: 40px;
       height: 40px;
       flex-shrink: 0;
     }
+
     .kitchen-item-icon img {
       width: 100%;
       height: 100%;
       border-radius: 6px;
       object-fit: cover;
     }
-    .kitchen-item-info { flex: 1; }
-    .kitchen-item-name { font-size: 0.9rem; font-weight: 700; }
-    .kitchen-item-desc { font-size: 0.75rem; color: var(--text-muted); }
+
+    .kitchen-item-info {
+      flex: 1;
+    }
+
+    .kitchen-item-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .kitchen-item-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
     .kitchen-buy-btn {
       padding: 6px 12px;
       background: var(--accent-olive);
@@ -1075,6 +1080,9 @@
           onclick="document.getElementById('loginPopup').classList.add('show')">로그인</button>
       </div>
     </div>
+    <<<<<<< HEAD=======<div style="height: 120px;">
+      </div>
+      >>>>>>> 104bee9 (Update header images with new Gemini hero image and cleanup legacy SVG)
   </header>
 
   <section class="main-intro-text">
@@ -1089,11 +1097,16 @@
         <label class="field-label">헬스 목표</label>
         <div class="help-text">원하는 방향을 고르면 그에 맞는 한 끼를 추천해드려요.</div>
         <div class="radio-group">
-          <label class="radio-pill"><input type="radio" name="goal" value="diet" checked /><img src="img-diet.png"> 다이어트</label>
-          <label class="radio-pill"><input type="radio" name="goal" value="muscle" /><img src="img-muscle.png"> 근력/벌크업</label>
-          <label class="radio-pill"><input type="radio" name="goal" value="maintain" /><img src="img-health.png"> 유지/건강관리</label>
-          <label class="radio-pill"><input type="radio" name="goal" value="detox" /><img src="img-beauty.png"> 디톡스 (피부미용)</label>
-          <label class="radio-pill"><input type="radio" name="goal" value="collagen" /><img src="img-beauty.png"> 콜라겐 (노화방지)</label>
+          <label class="radio-pill"><input type="radio" name="goal" value="diet" checked /><img src="img-diet.png">
+            다이어트</label>
+          <label class="radio-pill"><input type="radio" name="goal" value="muscle" /><img src="img-muscle.png">
+            근력/벌크업</label>
+          <label class="radio-pill"><input type="radio" name="goal" value="maintain" /><img src="img-health.png">
+            유지/건강관리</label>
+          <label class="radio-pill"><input type="radio" name="goal" value="detox" /><img src="img-beauty.png"> 디톡스
+            (피부미용)</label>
+          <label class="radio-pill"><input type="radio" name="goal" value="collagen" /><img src="img-beauty.png"> 콜라겐
+            (노화방지)</label>
         </div>
         <div class="goal-ad active" id="ad-diet">
           <div class="goal-ad-icon"><img src="img-diet.png"></div>

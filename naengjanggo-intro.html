@@ -1,171 +1,292 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>냉장고 피트니스</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg:#FAFAF7; --card:#FFFFFF; --olive:#5A7A4A; --orange:#E8734A;
-      --text:#2C2416; --muted:#7A7060; --border:#E8E4DC; --shadow:0 2px 12px rgba(0,0,0,0.06);
-    }
-    *{box-sizing:border-box;margin:0;padding:0;font-family:'DM Sans','Noto Sans KR',sans-serif;}
-    body{background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;}
-    header {
-      background: url('img-fridge-hero.png?v=1.1') no-repeat center center;
-      background-size: cover;
-      color: #000;
-      padding: 20px;
-      text-align: left;
-      position: relative;
-      border-bottom: 2px solid #2c2416;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-      min-height: 260px;
-    }
+  <<<<<<< HEAD <title>냉장고 피트니스 🥗</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap"
+      rel="stylesheet">
+    <style>
+      :root {
+        --bg: #FAFAF7;
+        --card: #FFFFFF;
+        --olive: #5A7A4A;
+        --orange: #E8734A;
+        --text: #2C2416;
+        --muted: #7A7060;
+        --border: #E8E4DC;
+        --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      }
 
-    .header-content-box {
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      padding: 12px 18px;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      margin-top: 10px;
-      margin-left: 10px;
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'DM Sans', 'Noto Sans KR', sans-serif;
+      }
 
-    header h1 {
-      font-size: 1.25rem;
-      font-weight: 800;
-      margin-bottom: 4px;
-      color: #000;
-      letter-spacing: -0.5px;
-      text-shadow: none;
-    }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
 
-    header p {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 0;
-      text-shadow: none;
-    }
+      header {
+        background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+          url('Gemini_Generated_Image_s7ju7ls7ju7ls7ju.png');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 80px 20px 100px;
+        text-align: center;
+        position: relative;
+      }
 
+      header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
 
+      header p {
+        font-size: 1.1rem;
+        opacity: .9;
+        margin-bottom: 0;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+      }
 
-    /* ── 나머지 레이아웃 ── */
-    .main-intro{max-width:780px;margin:56px auto 36px;text-align:center;padding:0 20px;}
-    .main-intro h2{font-size:1.75rem;margin-bottom:14px;word-break:keep-all;}
-    .main-intro p{font-size:1.02rem;color:var(--muted);}
-    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-      gap:22px;max-width:980px;margin:36px auto;padding:0 20px;}
-    .feature-card{background:var(--card);padding:28px 22px;border-radius:22px;
-      box-shadow:var(--shadow);text-align:center;transition:transform .2s;}
-    .feature-card:hover{transform:translateY(-5px);}
-    .feature-card .icon{font-size:2rem;margin-bottom:12px;display:flex;justify-content:center;align-items:center;}
-    .feature-card .icon img{width:64px;height:64px;object-fit:cover;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-    .feature-card h3{font-size:1.1rem;margin-bottom:8px;color:var(--olive);}
-    .feature-card p{color:var(--muted);font-size:.9rem;word-break:keep-all;}
-    .cta-section{text-align:center;margin:56px 0;padding:0 20px;}
-    .cta-buttons{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;}
-    .btn{display:inline-block;padding:16px 32px;border-radius:999px;
-      font-size:1rem;font-weight:700;text-decoration:none;transition:transform .2s;border:none;cursor:pointer;}
-    .btn:hover{transform:scale(1.04);}
-    .btn-recipe{background:var(--olive);color:white;}
-    .btn-weekly{background:var(--orange);color:white;}
-    .trust-badges{margin-top:28px;color:var(--muted);font-size:.88rem;}
-    .trust-badges span{margin:0 8px;}
-    
-    /* ── 7일 챌린지 배너 스타일 ── */
-    .challenge-banner {
-      max-width: 980px;
-      margin: 40px auto 0;
-      padding: 0 20px;
-    }
-    .challenge-card {
-      background: linear-gradient(135deg, #FF8C42, #E8734A);
-      color: white;
-      padding: 30px;
-      border-radius: 25px;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 10px 20px rgba(232, 115, 74, 0.2);
-    }
-    .challenge-info h3 { font-size: 1.4rem; margin-bottom: 5px; }
-    .challenge-info p { font-size: 0.95rem; opacity: 0.9; }
-    .challenge-btn {
-      background: white;
-      color: #E8734A;
-      padding: 12px 24px;
-      border-radius: 99px;
-      font-weight: 700;
-      text-decoration: none;
-      white-space: nowrap;
-    }
+      /* ── 나머지 레이아웃 ── */
+      .main-intro {
+        max-width: 780px;
+        margin: 56px auto 36px;
+        text-align: center;
+        padding: 0 20px;
+      }
 
-    footer{background:var(--border);padding:28px 20px;text-align:center;font-size:.83rem;color:var(--muted);margin-top:56px;}
-  </style>
+      .main-intro h2 {
+        font-size: 1.75rem;
+        margin-bottom: 14px;
+        word-break: keep-all;
+      }
+
+      .main-intro p {
+        font-size: 1.02rem;
+        color: var(--muted);
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 22px;
+        max-width: 980px;
+        margin: 36px auto;
+        padding: 0 20px;
+      }
+
+      .feature-card {
+        background: var(--card);
+        padding: 28px 22px;
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        text-align: center;
+        transition: transform .2s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .feature-card .icon {
+        font-size: 2rem;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .feature-card .icon img {
+        width: 64px;
+        height: 64px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .feature-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        color: var(--olive);
+      }
+
+      .feature-card p {
+        color: var(--muted);
+        font-size: .9rem;
+        word-break: keep-all;
+      }
+
+      .cta-section {
+        text-align: center;
+        margin: 56px 0;
+        padding: 0 20px;
+      }
+
+      .cta-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 16px 32px;
+        border-radius: 999px;
+        font-size: 1rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform .2s;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        transform: scale(1.04);
+      }
+
+      .btn-recipe {
+        background: var(--olive);
+        color: white;
+      }
+
+      .btn-weekly {
+        background: var(--orange);
+        color: white;
+      }
+
+      .trust-badges {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: .88rem;
+      }
+
+      .trust-badges span {
+        margin: 0 8px;
+      }
+
+      /* ── 7일 챌린지 배너 스타일 ── */
+      .challenge-banner {
+        max-width: 980px;
+        margin: 40px auto 0;
+        padding: 0 20px;
+      }
+
+      .challenge-card {
+        background: linear-gradient(135deg, #FF8C42, #E8734A);
+        color: white;
+        padding: 30px;
+        border-radius: 25px;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 10px 20px rgba(232, 115, 74, 0.2);
+      }
+
+      .challenge-info h3 {
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+      }
+
+      .challenge-info p {
+        font-size: 0.95rem;
+        opacity: 0.9;
+      }
+
+      .challenge-btn {
+        background: white;
+        color: #E8734A;
+        padding: 12px 24px;
+        border-radius: 99px;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      footer {
+        background: var(--border);
+        padding: 28px 20px;
+        text-align: center;
+        font-size: .83rem;
+        color: var(--muted);
+        margin-top: 56px;
+      }
+    </style>
 </head>
+
 <body>
-<header>
-  <!-- 헤더 제목 제거 -->
-</header>
+  <header>
+    <h1>냉장고 피트니스 🥗</h1>
+    <p>냉장고 속 재료 + 내 목표 = 오늘의 식단</p>
+  </header>
 
-<main>
-  <section class="main-intro">
-    <h2>냉장고 열었는데 오늘 뭐 해먹지?</h2>
-    <p>다이어트든, 근력이든, 그냥 건강하게 먹고 싶든 —<br>
-    재료만 넣으면 내 목표에 딱 맞는 한 끼와 1주일 식단이 나와요.</p>
-  <section class="challenge-banner">
-    <div class="challenge-card">
-      <div class="challenge-info">
-        <h3>🔥 7일 냉장고 파먹기 챌린지!</h3>
-        <p>오늘부터 7일간, 냉장고 속 재료로만 맛있는 식단을 만들어보세요.<br>매일 성공하면 특별한 혜택이 기다립니다!</p>
+  <main>
+    <section class="main-intro">
+      <h2>냉장고 열었는데 오늘 뭐 해먹지?</h2>
+      <p>다이어트든, 근력이든, 그냥 건강하게 먹고 싶든 —<br>
+        재료만 넣으면 내 목표에 딱 맞는 한 끼와 1주일 식단이 나와요.</p>
+    </section>
+
+    <section class="challenge-banner">
+      <div class="challenge-card">
+        <div class="challenge-info">
+          <h3>🔥 7일 냉장고 파먹기 챌린지!</h3>
+          <p>오늘부터 7일간, 냉장고 속 재료로만 맛있는 식단을 만들어보세요.<br>매일 성공하면 특별한 혜택이 기다립니다!</p>
+        </div>
+        <a href="naengjanggo-fitness.html" class="challenge-btn">지금 시작하기 →</a>
       </div>
-      <a href="naengjanggo-fitness.html" class="challenge-btn">지금 시작하기 →</a>
-    </div>
-  </section>
+    </section>
 
-  <section class="features-grid">
-    <div class="feature-card">
-      <div class="icon"><img src="img-salad.png" alt="오늘 뭐 먹지"></div>
-      <h3>오늘 뭐 먹지?</h3>
-      <p>냉장고 속 재료를 넣으면 다이어트·근력·유지 목표에 맞는 레시피 3개를 바로 추천해드려요.</p>
-    </div>
-    <div class="feature-card">
-      <div class="icon"><img src="img-health.png" alt="재료 용량까지"></div>
-      <h3>재료 용량까지</h3>
-      <p>각 레시피마다 필요한 재료와 정확한 용량, 조리 순서까지 한눈에 확인할 수 있어요.</p>
-    </div>
-    <div class="feature-card">
-      <div class="icon"><img src="img-diet.png" alt="1주일 식단표"></div>
-      <h3>1주일 식단표</h3>
-      <p>월요일부터 일요일까지 아침·점심·저녁 21끼를 한 번에 계획해 드려요.</p>
-    </div>
-  </section>
+    <section class="features-grid">
+      <div class="feature-card">
+        <div class="icon"><img src="img-salad.png" alt="오늘 뭐 먹지"></div>
+        <h3>오늘 뭐 먹지?</h3>
+        <p>냉장고 속 재료를 넣으면 다이어트·근력·유지 목표에 맞는 레시피 3개를 바로 추천해드려요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><img src="img-health.png" alt="재료 용량까지"></div>
+        <h3>재료 용량까지</h3>
+        <p>각 레시피마다 필요한 재료와 정확한 용량, 조리 순서까지 한눈에 확인할 수 있어요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><img src="img-diet.png" alt="1주일 식단표"></div>
+        <h3>1주일 식단표</h3>
+        <p>월요일부터 일요일까지 아침·점심·저녁 21끼를 한 번에 계획해 드려요.</p>
+      </div>
+    </section>
 
-  <section class="cta-section">
-    <div class="cta-buttons">
-      <a href="naengjanggo-fitness.html" class="btn btn-recipe">오늘 레시피 추천 받기</a>
-      <a href="naengjanggo-weekly.html" class="btn btn-weekly">1주일 식단 짜기</a>
-    </div>
-    <div class="trust-badges">
-      <span>✔ 무료로 사용 가능</span>
-      <span>✔ 로그인 불필요</span>
-      <span>✔ AI 생성 참고용</span>
-    </div>
-  </section>
-</main>
+    <section class="cta-section">
+      <div class="cta-buttons">
+        <a href="naengjanggo-fitness.html" class="btn btn-recipe">오늘 레시피 추천 받기</a>
+        <a href="naengjanggo-weekly.html" class="btn btn-weekly">1주일 식단 짜기</a>
+      </div>
+      <div class="trust-badges">
+        <span>✔ 무료로 사용 가능</span>
+        <span>✔ 로그인 불필요</span>
+        <span>✔ AI 생성 참고용</span>
+      </div>
+    </section>
+  </main>
 
-<footer>
-  <p>냉장고 피트니스 · AI 생성 식단은 참고용입니다. 실제 건강 상태는 전문가와 상의하세요.</p>
-</footer>
+  <footer>
+    <p>냉장고 피트니스 · AI 생성 식단은 참고용입니다. 실제 건강 상태는 전문가와 상의하세요.</p>
+  </footer>
 </body>
+
+</html>
+</body>
+
 </html>
